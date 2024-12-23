@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("DayTodayTransactionsLibrary")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+929e74c63df45b04e4bd79a067ff0aa08f5c57f2")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d447c49940afb27a43c6b0936d441c0f0c4f5360")]
 [assembly: System.Reflection.AssemblyProductAttribute("DayTodayTransactionsLibrary")]
 [assembly: System.Reflection.AssemblyTitleAttribute("DayTodayTransactionsLibrary")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

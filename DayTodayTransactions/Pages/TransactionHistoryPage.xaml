@@ -2,6 +2,8 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="DayTodayTransactions.Pages.TransactionHistoryPage"
+             xmlns:microcharts="clr-namespace:Microcharts.Maui;assembly=Microcharts.Maui"
+             xmlns:skia="clr-namespace:SkiaSharp.Views.Maui.Controls;assembly=SkiaSharp.Views.Maui.Controls"
              Title="Transaction History">
 
     <VerticalStackLayout>
@@ -33,6 +35,12 @@
             <Label Text="Remaining Balance:" />
             <Label Text="{Binding Balance, StringFormat='${0:N2}'}" />
         </StackLayout>
+        
+        <!-- Show Income vs Expenses Chart -->
+        <StackLayout Padding="10">
+            <skia:SKCanvasView PaintSurface="OnPaintSurface" HeightRequest="300" />
+        </StackLayout>
+
 
         <!-- List of Transactions -->
         <CollectionView ItemsSource="{Binding Transactions}">
