@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="DayTodayTransactions.Pages.TransactionHistoryPage"
+             Title="TransactionHistoryPage">
+    <VerticalStackLayout>
+        <!-- Filters Section -->
+        <StackLayout Padding="10">
+            <Label Text="Filter by Date" />
+            <Entry x:Name="DateFilter" Placeholder="Enter Date (yyyy-mm-dd)" 
+               Text="{Binding FilterDate}" />
+
+            <Label Text="Filter by Category" />
+            <Entry x:Name="CategoryFilter" Placeholder="Enter Category" 
+               Text="{Binding FilterCategory}" />
+
+            <Label Text="Filter by Type (Income/Expense)" />
+            <Entry x:Name="TypeFilter" Placeholder="Enter Type (Income/Expense)" 
+               Text="{Binding FilterType}" />
+
+            <Button Text="Apply Filters" Clicked="OnFilterChanged" />
+        </StackLayout>
+
+        <!-- List of Transactions -->
+        <CollectionView ItemsSource="{Binding Transactions}">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <StackLayout Padding="10">
+                        <Label Text="{Binding Date}" />
+                        <Label Text="{Binding Category}" />
+                        <Label Text="{Binding Amount}" />
+                        <Label Text="{Binding Type}" />
+                        <Label Text="{Binding Reason}" />
+                    </StackLayout>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </VerticalStackLayout>
+</ContentPage>
