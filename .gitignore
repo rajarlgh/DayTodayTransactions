@@ -8,3 +8,13 @@
 /DayTodayTransactionsService/obj
 /DayTodayTransactionsService/bin/Release
 /DayTodayTransactionsLibrary/bin
+/DayTodayTransactionsService/bin/Debug/net9.0-android/DayTodayTransactionsLibrary.dll
+/DayTodayTransactionsService/bin/Debug/net9.0-android/DayTodayTransactionsLibrary.pdb
+/DayTodayTransactionsService/bin/Debug/net9.0-android/DayTodayTransactionsService.dll
+/DayTodayTransactionsService/bin/Debug/net9.0-android/DayTodayTransactionsService.pdb
+/DayTodayTransactionsService/bin/Debug/net9.0-ios
+/DayTodayTransactionsService/bin/Debug/net9.0-maccatalyst
+/DayTodayTransactionsService/bin/Debug/net9.0-windows10.0.19041.0/DayTodayTransactionsLibrary.dll
+/DayTodayTransactionsService/bin/Debug/net9.0-windows10.0.19041.0/DayTodayTransactionsLibrary.pdb
+/DayTodayTransactionsService/bin/Debug/net9.0-windows10.0.19041.0/DayTodayTransactionsService.dll
+/DayTodayTransactionsService/bin/Debug/net9.0-windows10.0.19041.0/DayTodayTransactionsService.pdb
