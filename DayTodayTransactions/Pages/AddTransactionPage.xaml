@@ -15,7 +15,7 @@
             </Picker.ItemsSource>
         </Picker>
         <DatePicker Date="{Binding Date}" />
-        <Button Text="Add Transaction" Command="{Binding AddTransactionCommand}" />
+        <Button Text="Add Transaction" Command="{Binding AddTransactionAsyncaCommand}" />
     </VerticalStackLayout>
 
 </ContentPage>

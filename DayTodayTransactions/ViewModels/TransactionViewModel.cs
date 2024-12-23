@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using DayTodayTransactionsLibrary.Interfaces;
 using DayTodayTransactionsLibrary.Models;
 
@@ -28,7 +29,8 @@ namespace DayTodayTransactions.ViewModels
         [ObservableProperty]
         private DateTime date = DateTime.Now;
 
-        public async Task AddTransactionAsync()
+        [RelayCommand]
+        public async Task AddTransactionAsynca()
         {
             var transaction = new Transaction
             {

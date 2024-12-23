@@ -30,6 +30,8 @@ namespace DayTodayTransactions
             builder.Services.AddSingleton<TransactionViewModel>();
             builder.Services.AddSingleton<AddTransactionPage>();
 
+            // Update to use the App constructor that accepts IServiceProvider
+            builder.Services.AddSingleton<App>();
 
             return builder.Build();
         }
