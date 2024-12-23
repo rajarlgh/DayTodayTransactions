@@ -12,7 +12,8 @@ namespace DayTodayTransactions
             _serviceProvider = serviceProvider;
 
             // Resolve the AddTransactionPage from the DI container
-            MainPage = new NavigationPage(_serviceProvider.GetRequiredService<AddTransactionPage>());
+            //MainPage = new NavigationPage(_serviceProvider.GetRequiredService<AddTransactionPage>());
+            MainPage = new NavigationPage(_serviceProvider.GetRequiredService<TransactionHistoryPage>());
         }
 
         //protected override Window CreateWindow(IActivationState? activationState)
