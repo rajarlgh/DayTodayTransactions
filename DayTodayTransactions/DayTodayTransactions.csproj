@@ -69,4 +69,21 @@
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="9.0.0" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <ProjectReference Include="..\DayTodayTransactionsLibrary\DayTodayTransactionsLibrary.csproj" />
+	  <ProjectReference Include="..\DayTodayTransactionsService\DayTodayTransactionsService.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Compile Update="Pages\AddTransactionPage.xaml.cs">
+	    <DependentUpon>AddTransactionPage.xaml</DependentUpon>
+	  </Compile>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <MauiXaml Update="Pages\AddTransactionPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	</ItemGroup>
+
 </Project>

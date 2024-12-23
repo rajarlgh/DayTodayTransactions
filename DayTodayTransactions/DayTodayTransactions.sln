@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DayTodayTransactions", "Day
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DayTodayTransactionsService", "..\DayTodayTransactionsService\DayTodayTransactionsService.csproj", "{2723C5D1-928D-44E5-A5BB-A1180347BCE8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DayTodayTransactionsLibrary", "..\DayTodayTransactionsLibrary\DayTodayTransactionsLibrary.csproj", "{7794EB32-B4D5-493A-A179-53CDF80B8962}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,6 +25,10 @@ Global
 		{2723C5D1-928D-44E5-A5BB-A1180347BCE8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2723C5D1-928D-44E5-A5BB-A1180347BCE8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2723C5D1-928D-44E5-A5BB-A1180347BCE8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7794EB32-B4D5-493A-A179-53CDF80B8962}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7794EB32-B4D5-493A-A179-53CDF80B8962}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7794EB32-B4D5-493A-A179-53CDF80B8962}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7794EB32-B4D5-493A-A179-53CDF80B8962}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

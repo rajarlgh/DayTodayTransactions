@@ -1,4 +1,8 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using DayTodayTransactions.Pages;
+using DayTodayTransactions.ViewModels;
+using DayTodayTransactionsLibrary.Interfaces;
+using DayTodayTransactionsService;
+using Microsoft.Extensions.Logging;
 
 namespace DayTodayTransactions
 {
@@ -18,6 +22,14 @@ namespace DayTodayTransactions
 #if DEBUG
     		builder.Logging.AddDebug();
 #endif
+
+            // Dependency Injection Registration
+            var dbPath = Path.Combine(FileSystem.AppDataDirectory, "expenses.db");
+            builder.Services.AddSingleton<ITransactionService>(new TransactionService(dbPath));
+
+            builder.Services.AddSingleton<TransactionViewModel>();
+            builder.Services.AddSingleton<AddTransactionPage>();
+
 
             return builder.Build();
         }

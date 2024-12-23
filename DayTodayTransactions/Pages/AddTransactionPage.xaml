@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="DayTodayTransactions.Pages.AddTransactionPage"
+             Title="TransactionPage">
+    <VerticalStackLayout Padding="10">
+        <Entry Placeholder="Amount" Text="{Binding Amount}" Keyboard="Numeric"/>
+        <Entry Placeholder="Reason" Text="{Binding Reason}"/>
+        <Picker Title="Type" SelectedItem="{Binding Type}">
+            <Picker.ItemsSource>
+                <x:Array Type="{x:Type x:String}">
+                    <x:String>Income</x:String>
+                    <x:String>Expense</x:String>
+                </x:Array>
+            </Picker.ItemsSource>
+        </Picker>
+        <DatePicker Date="{Binding Date}" />
+        <Button Text="Add Transaction" Command="{Binding AddTransactionCommand}" />
+    </VerticalStackLayout>
+
+</ContentPage>

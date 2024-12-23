@@ -1,17 +1,17 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using DayTodayTransactions.Models;
-using static System.Runtime.InteropServices.JavaScript.JSType;
+using DayTodayTransactionsLibrary.Interfaces;
+using DayTodayTransactionsLibrary.Models;
 
 namespace DayTodayTransactions.ViewModels
 {
     public partial class TransactionViewModel : ObservableObject
     {
-        //private readonly ITransactionService _transactionService;
+        private readonly ITransactionService _transactionService;
 
-        //public TransactionViewModel(ITransactionService transactionService)
-        //{
-        //    _transactionService = transactionService;
-        //}
+        public TransactionViewModel(ITransactionService transactionService)
+        {
+            _transactionService = transactionService;
+        }
 
         [ObservableProperty]
         private decimal amount;
@@ -39,7 +39,7 @@ namespace DayTodayTransactions.ViewModels
                 Date = Date
             };
 
-            //await _transactionService.AddTransactionAsync(transaction);
+            await _transactionService.AddTransactionAsync(transaction);
         }
     }
 
