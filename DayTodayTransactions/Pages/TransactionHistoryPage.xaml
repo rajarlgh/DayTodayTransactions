@@ -50,8 +50,13 @@
                 <RowDefinition Height="Auto" />
                 <!-- For Save Button -->
             </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
             
-            <ScrollView Grid.Row="1" Scrolled="OnScrollViewScrolled">
+            <ScrollView Grid.Row="1" Scrolled="OnScrollViewScrolled" Grid.ColumnSpan="3" >
                 <StackLayout>
                     <coreControls:CardView Title="Transactions"  Padding="10">
                         <StackLayout>
@@ -61,9 +66,20 @@
                                                    WidthRequest="300" 
                                                    IsVisible="{Binding DoVisibleChart}" />
                             </StackLayout>
-                            <Button
-                    Text="Transactions"
-                    Command="{Binding ShowContentCommand}" />
+                            <Grid ColumnSpacing="10">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+
+                                </Grid.ColumnDefinitions>
+                                <Button Grid.Column="0" Text="☰"  FontSize="30" Command="{Binding ShowMenuCommand}" />
+                                <Button Grid.Column="1" Text="Transactions" Command="{Binding ShowContentCommand}" />
+                                <Button Grid.Column="2" Text="☰"  FontSize="30" Command="{Binding ShowMenuCommand}" />
+
+
+                            </Grid>
+
                             <Grid IsVisible="{Binding DoVisibleChart, Converter={StaticResource InverseBooleanConverter}}">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto" />
@@ -94,7 +110,7 @@
                 </StackLayout>
             </ScrollView>
             <!-- Overlay with dynamic scroll message -->
-            <Label
+            <!--<Label
                   Grid.Row="2"
                   Text="{Binding ScrollMessage}"
                   VerticalOptions="End"
@@ -102,7 +118,10 @@
                   FontSize="Small"
                   Margin="0,0,0,10"
                   Opacity="0.8"
-                  FontAttributes="Italic" />
+                  FontAttributes="Italic" />-->
+
+            <Button  Grid.Row="2" Grid.Column="0" Margin="25,0,0,0" Text="-"></Button>
+            <Button  Grid.Row="2" Grid.Column="2" Margin="0,0,25,0" Text="+"></Button>
         </Grid>
         <!--<VerticalStackLayout Padding="10">
         --><!-- Accordion Header --><!--
