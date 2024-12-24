@@ -1,13 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.13.35605.110 d17.13
+VisualStudioVersion = 17.13.35605.110
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DayTodayTransactions", "DayTodayTransactions.csproj", "{F518BC8D-4759-47D0-9263-93A3BB252A75}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DayTodayTransactionsService", "..\DayTodayTransactionsService\DayTodayTransactionsService.csproj", "{2723C5D1-928D-44E5-A5BB-A1180347BCE8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DayTodayTransactionsLibrary", "..\DayTodayTransactionsLibrary\DayTodayTransactionsLibrary.csproj", "{7794EB32-B4D5-493A-A179-53CDF80B8962}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Controls", "..\Core.Controls\Core.Controls.csproj", "{062705BF-72B8-4675-8994-35665C913239}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -29,6 +31,10 @@ Global
 		{7794EB32-B4D5-493A-A179-53CDF80B8962}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7794EB32-B4D5-493A-A179-53CDF80B8962}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7794EB32-B4D5-493A-A179-53CDF80B8962}.Release|Any CPU.Build.0 = Release|Any CPU
+		{062705BF-72B8-4675-8994-35665C913239}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{062705BF-72B8-4675-8994-35665C913239}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{062705BF-72B8-4675-8994-35665C913239}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{062705BF-72B8-4675-8994-35665C913239}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

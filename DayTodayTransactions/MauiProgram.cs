@@ -2,6 +2,7 @@
 using DayTodayTransactions.ViewModels;
 using DayTodayTransactionsLibrary.Interfaces;
 using DayTodayTransactionsService;
+using Microcharts.Maui;
 using Microsoft.Extensions.Logging;
 using SkiaSharp.Views.Maui.Controls.Hosting;
 
@@ -13,8 +14,9 @@ namespace DayTodayTransactions
         {
             var builder = MauiApp.CreateBuilder();
             builder
-                .UseMauiApp<App>()
-                .UseSkiaSharp() // Register SkiaSharp handlers
+            .UseMauiApp<App>()
+                .UseMicrocharts()
+                //.UseSkiaSharp() // Register SkiaSharp handlers
                 .ConfigureFonts(fonts =>
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
