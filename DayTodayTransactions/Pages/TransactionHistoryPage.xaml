@@ -5,7 +5,7 @@
              xmlns:coreControls="clr-namespace:Core.Controls.Controls;assembly=Core.Controls"
              xmlns:local="clr-namespace:DayTodayTransactions.ViewModels"
              x:Class="DayTodayTransactions.Pages.TransactionHistoryPage"
-             Title="Transaction History">
+             >
     <ContentPage.Resources>
         <ResourceDictionary>
             <local:InverseBooleanConverter x:Key="InverseBooleanConverter" />
@@ -17,32 +17,35 @@
         <Grid 
               Padding="10"
               Row="0"
-              ColumnDefinitions="*" Grid.ColumnSpan="3">
+              ColumnDefinitions="Auto,*, Auto, Auto" Grid.ColumnSpan="3">
             <!-- Top Bar Content -->
-            <HorizontalStackLayout HorizontalOptions="FillAndExpand" Spacing="10">
-                <!-- Title -->
-                <Label Text="Transaction History"
+            <!-- Search Icon -->
+            <ImageButton Source="search_icon.png" Grid.Column="0"
+                 HeightRequest="30"
+                 WidthRequest="30"
+                 BackgroundColor="Transparent"
+                 Command="{Binding OnSearchClickedCommand}" />
+            <!-- Title -->
+            <Label Text="Day Today Transactions" Grid.Column="1"
                FontSize="18"
                VerticalOptions="Center"
                HorizontalOptions="Start" />
 
                 <!-- Spacer to push icons to the right -->
-                <Label HorizontalOptions="FillAndExpand" />
 
                 <!-- Search Icon -->
-                <ImageButton Source="search_icon.png"
+            <ImageButton Source="search_icon.png" Grid.Column="2"
                      HeightRequest="30"
                      WidthRequest="30"
                      BackgroundColor="Transparent"
                      Command="{Binding OnSearchClickedCommand}" />
 
                 <!-- More Icon -->
-                <ImageButton Source="more_icon.png"
+            <ImageButton Source="more_icon.png" Grid.Column="3"
                      HeightRequest="30"
                      WidthRequest="30"
                      BackgroundColor="Transparent"
                      Command="{Binding OnMoneyTransferClickedCommand}" />
-            </HorizontalStackLayout>
         </Grid>
 
 
@@ -53,7 +56,7 @@
                 <coreControls:CardView Title="Transactions">
                     <StackLayout>
                         <!-- Chart -->
-                        <microcharts:ChartView x:Name="donutChart" 
+                        <microcharts:ChartView x:Name="donutChart" Margin="5"
                                                HeightRequest="370" 
                                                WidthRequest="330" 
                                                IsVisible="{Binding DoVisibleChart}" />
@@ -88,9 +91,9 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
-            <Button Grid.Column="0" Text="☰" FontSize="30" Command="{Binding ShowMenuCommand}" />
-            <Button Grid.Column="1" Text="Transactions" Command="{Binding ShowContentCommand}" />
-            <Button Grid.Column="2" Text="☰" FontSize="30" Command="{Binding ShowMenuCommand}" />
+            <Button Grid.Column="0" Text="☰" FontSize="30" Margin="15,15,0,0" Command="{Binding ShowMenuCommand}" />
+            <Button Grid.Column="1" Text="Transactions" Margin="15,15,15,0" Command="{Binding ShowContentCommand}" />
+            <Button Grid.Column="2" Text="☰" FontSize="30"  Margin="0,15,15,0" Command="{Binding ShowMenuCommand}" />
         </Grid>
         <Grid Grid.Row="3" Grid.ColumnSpan="3" >
             <Grid.ColumnDefinitions>
