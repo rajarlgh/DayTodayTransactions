@@ -12,12 +12,12 @@
         </ResourceDictionary>
     </ContentPage.Resources>
 
-    <Grid RowDefinitions="Auto, *">
+    <Grid RowDefinitions="Auto, *, Auto">
         <!-- Top Bar -->
         <Grid 
               Padding="10"
               Row="0"
-      ColumnDefinitions="*">
+              ColumnDefinitions="*" Grid.ColumnSpan="3">
             <!-- Top Bar Content -->
             <HorizontalStackLayout HorizontalOptions="FillAndExpand" Spacing="10">
                 <!-- Title -->
@@ -48,7 +48,7 @@
 
 
         <!-- Content Area -->
-        <ScrollView Grid.Row="1" Scrolled="OnScrollViewScrolled">
+        <ScrollView Grid.Row="1" Scrolled="OnScrollViewScrolled" Grid.ColumnSpan="3">
             <StackLayout Padding="10">
                 <coreControls:CardView Title="Transactions">
                     <StackLayout>
@@ -91,5 +91,14 @@
                 </coreControls:CardView>
             </StackLayout>
         </ScrollView>
+        <Grid Grid.Row="2" Grid.ColumnSpan="3" >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <Button Text="+" Grid.Column="0" Margin="15"/>
+            <Button Text="-" Grid.Column="2" Margin="15"/>
+        </Grid>
     </Grid>
 </ContentPage>
