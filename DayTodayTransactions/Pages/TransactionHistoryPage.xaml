@@ -1,157 +1,95 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="DayTodayTransactions.Pages.TransactionHistoryPage"
              xmlns:microcharts="clr-namespace:Microcharts.Maui;assembly=Microcharts.Maui"
              xmlns:coreControls="clr-namespace:Core.Controls.Controls;assembly=Core.Controls"
              xmlns:local="clr-namespace:DayTodayTransactions.ViewModels"
+             x:Class="DayTodayTransactions.Pages.TransactionHistoryPage"
              Title="Transaction History">
     <ContentPage.Resources>
         <ResourceDictionary>
             <local:InverseBooleanConverter x:Key="InverseBooleanConverter" />
         </ResourceDictionary>
     </ContentPage.Resources>
-    <VerticalStackLayout>
-        <!-- Filters Section -->
-        <!--<StackLayout Padding="10">
-            <Label Text="Filter by Date" />
-            <Entry x:Name="DateFilter" Placeholder="Enter Date (yyyy-mm-dd)" 
-               Text="{Binding FilterDate}" />
 
-            <Label Text="Filter by Category" />
-            <Entry x:Name="CategoryFilter" Placeholder="Enter Category" 
-               Text="{Binding FilterCategory}" />
+    <Grid RowDefinitions="Auto, *">
+        <!-- Top Bar -->
+        <Grid 
+              Padding="10"
+              Row="0"
+      ColumnDefinitions="*">
+            <!-- Top Bar Content -->
+            <HorizontalStackLayout HorizontalOptions="FillAndExpand" Spacing="10">
+                <!-- Title -->
+                <Label Text="Transaction History"
+               FontSize="18"
+               VerticalOptions="Center"
+               HorizontalOptions="Start" />
 
-            <Label Text="Filter by Type (Income/Expense)" />
-            <Entry x:Name="TypeFilter" Placeholder="Enter Type (Income/Expense)" 
-               Text="{Binding FilterType}" />
+                <!-- Spacer to push icons to the right -->
+                <Label HorizontalOptions="FillAndExpand" />
 
-            <Button Text="Apply Filters" Clicked="OnFilterChanged" />
-        </StackLayout>-->
+                <!-- Search Icon -->
+                <ImageButton Source="search_icon.png"
+                     HeightRequest="30"
+                     WidthRequest="30"
+                     BackgroundColor="Transparent"
+                     Command="{Binding OnSearchClickedCommand}" />
 
-        <!-- Display Calculated Balances -->
-        <!--<StackLayout Padding="10">
-            <Label Text="Total Income:" />
-            <Label Text="{Binding TotalIncome, StringFormat='${0:N2}'}" />
-
-            <Label Text="Total Expenses:" />
-            <Label Text="{Binding TotalExpenses, StringFormat='${0:N2}'}" />
-
-            <Label Text="Remaining Balance:" />
-            <Label Text="{Binding Balance, StringFormat='${0:N2}'}" />
-        </StackLayout>-->
-
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <!-- For Scrollable Content -->
-                <RowDefinition Height="*" />
-                <!-- For Scroll Message -->
-                <RowDefinition Height="Auto" />
-                <!-- For Save Button -->
-            </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="Auto"/>
-            </Grid.ColumnDefinitions>
-            
-            <ScrollView Grid.Row="1" Scrolled="OnScrollViewScrolled" Grid.ColumnSpan="3" >
-                <StackLayout>
-                    <coreControls:CardView Title="Transactions"  Padding="10">
-                        <StackLayout>
-                            <StackLayout Padding="10">
-                            <microcharts:ChartView x:Name="donutChart" 
-                                                   HeightRequest="500" 
-                                                   WidthRequest="300" 
-                                                   IsVisible="{Binding DoVisibleChart}" />
-                            </StackLayout>
-                            <Grid ColumnSpacing="10">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="Auto"/>
-
-                                </Grid.ColumnDefinitions>
-                                <Button Grid.Column="0" Text="☰"  FontSize="30" Command="{Binding ShowMenuCommand}" />
-                                <Button Grid.Column="1" Text="Transactions" Command="{Binding ShowContentCommand}" />
-                                <Button Grid.Column="2" Text="☰"  FontSize="30" Command="{Binding ShowMenuCommand}" />
-
-
-                            </Grid>
-
-                            <Grid IsVisible="{Binding DoVisibleChart, Converter={StaticResource InverseBooleanConverter}}">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="*" />
-                                </Grid.RowDefinitions>
-
-                                <CollectionView ItemsSource="{Binding ChartEntries}" Grid.Row="0"  >
-                                    <CollectionView.ItemsLayout>
-                                        <!-- Correct Grid layout with 2 columns -->
-                                        <GridItemsLayout Orientation="Vertical" Span="2" />
-                                    </CollectionView.ItemsLayout>
-
-                                    <CollectionView.ItemTemplate>
-                                        <DataTemplate>
-                                            <Border Padding="10" Margin="5" BackgroundColor="White">
-                                                <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center">
-                                                    <!-- Label for each entry -->
-                                                    <Label Text="{Binding Label}" FontAttributes="Bold" />
-                                                    <Label Text="{Binding ValueLabel}" FontSize="Small" />
-                                                </VerticalStackLayout>
-                                            </Border>
-                                        </DataTemplate>
-                                    </CollectionView.ItemTemplate>
-                                </CollectionView>
-                            </Grid>
-                        </StackLayout>
-                    </coreControls:CardView>
-                </StackLayout>
-            </ScrollView>
-            <!-- Overlay with dynamic scroll message -->
-            <!--<Label
-                  Grid.Row="2"
-                  Text="{Binding ScrollMessage}"
-                  VerticalOptions="End"
-                  HorizontalOptions="Center"
-                  FontSize="Small"
-                  Margin="0,0,0,10"
-                  Opacity="0.8"
-                  FontAttributes="Italic" />-->
-
-            <Button  Grid.Row="2" Grid.Column="0" Margin="25,0,0,0" Text="-"></Button>
-            <Button  Grid.Row="2" Grid.Column="2" Margin="0,0,25,0" Text="+"></Button>
+                <!-- More Icon -->
+                <ImageButton Source="more_icon.png"
+                     HeightRequest="30"
+                     WidthRequest="30"
+                     BackgroundColor="Transparent"
+                     Command="{Binding OnMoneyTransferClickedCommand}" />
+            </HorizontalStackLayout>
         </Grid>
-        <!--<VerticalStackLayout Padding="10">
-        --><!-- Accordion Header --><!--
-        <Button x:Name="ToggleAccordionButton" 
-                Text="Show Chart" 
-                Clicked="OnToggleAccordionClicked" />
-      
-            <VerticalStackLayout x:Name="ChartLayout" IsVisible="True" Grid.Row="1">
-                <microcharts:ChartView x:Name="donutChart" HeightRequest="500" />
-            </VerticalStackLayout>
-        </VerticalStackLayout>-->
-        <!-- Show Income vs Expenses Chart -->
-        <!--<StackLayout Padding="10">
-            <skia:SKCanvasView PaintSurface="OnPaintSurface" HeightRequest="300" />
-        </StackLayout>-->
 
 
-        <!-- List of Transactions -->
-        <!--<CollectionView ItemsSource="{Binding Transactions}">
-            <CollectionView.ItemTemplate>
-                <DataTemplate>
-                    <StackLayout Padding="10">
-                        <Label Text="{Binding Date}" />
-                        <Label Text="{Binding Category}" />
-                        <Label Text="{Binding Amount}" />
-                        <Label Text="{Binding Type}" />
-                        <Label Text="{Binding Reason}" />
+
+        <!-- Content Area -->
+        <ScrollView Grid.Row="1" Scrolled="OnScrollViewScrolled">
+            <StackLayout Padding="10">
+                <coreControls:CardView Title="Transactions">
+                    <StackLayout>
+                        <!-- Chart -->
+                        <microcharts:ChartView x:Name="donutChart" 
+                                               HeightRequest="500" 
+                                               WidthRequest="300" 
+                                               IsVisible="{Binding DoVisibleChart}" />
+
+                        <!-- Action Buttons -->
+                        <Grid ColumnSpacing="10" Padding="10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <Button Grid.Column="0" Text="☰" FontSize="30" Command="{Binding ShowMenuCommand}" />
+                            <Button Grid.Column="1" Text="Transactions" Command="{Binding ShowContentCommand}" />
+                            <Button Grid.Column="2" Text="☰" FontSize="30" Command="{Binding ShowMenuCommand}" />
+                        </Grid>
+
+                        <!-- Collection View -->
+                        <CollectionView ItemsSource="{Binding ChartEntries}"
+                                        IsVisible="{Binding DoVisibleChart, Converter={StaticResource InverseBooleanConverter}}">
+                            <CollectionView.ItemsLayout>
+                                <GridItemsLayout Orientation="Vertical" Span="2" />
+                            </CollectionView.ItemsLayout>
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Padding="10" Margin="5" BackgroundColor="White">
+                                        <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center">
+                                            <Label Text="{Binding Label}" FontAttributes="Bold" />
+                                            <Label Text="{Binding ValueLabel}" FontSize="Small" />
+                                        </VerticalStackLayout>
+                                    </Border>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
                     </StackLayout>
-                </DataTemplate>
-            </CollectionView.ItemTemplate>
-        </CollectionView>-->
-    </VerticalStackLayout>
+                </coreControls:CardView>
+            </StackLayout>
+        </ScrollView>
+    </Grid>
 </ContentPage>

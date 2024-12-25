@@ -11,5 +11,13 @@
         Title="Home"
         ContentTemplate="{DataTemplate local:MainPage}"
         Route="MainPage" />
+    <!-- Flyout Items -->
+    <!--<FlyoutItem Title="Home" Icon="home.svg" FlyoutDisplayOptions="AsSingleItem" Route="home">
+        <ShellContent Route="HomeMainPage" ContentTemplate="{DataTemplate local:MainPage}" />
+    </FlyoutItem>
 
+
+    <FlyoutItem Title="Sound Settings" Icon="sound_settings.svg" FlyoutDisplayOptions="AsSingleItem">
+        <ShellContent ContentTemplate="{DataTemplate local:SoundSettingsView}" Route="SoundSettingsView" />
+    </FlyoutItem>-->
 </Shell>

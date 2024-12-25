@@ -51,6 +51,16 @@ namespace DayTodayTransactions.ViewModels
             };
             LoadTransactions();
         }
+        [RelayCommand]
+        public void OnSearchClicked()
+        {
+
+        }
+        [RelayCommand]
+        public void OnMoneyTransferClicked()
+        {
+
+        }
 
         public List<Transaction> Transactions { get; set; }
         public string FilterDate { get; set; }
