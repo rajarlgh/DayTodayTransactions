@@ -12,7 +12,7 @@
         </ResourceDictionary>
     </ContentPage.Resources>
 
-    <Grid RowDefinitions="Auto, *, Auto">
+    <Grid RowDefinitions="Auto, *, Auto, Auto">
         <!-- Top Bar -->
         <Grid 
               Padding="10"
@@ -54,21 +54,11 @@
                     <StackLayout>
                         <!-- Chart -->
                         <microcharts:ChartView x:Name="donutChart" 
-                                               HeightRequest="500" 
-                                               WidthRequest="300" 
+                                               HeightRequest="370" 
+                                               WidthRequest="330" 
                                                IsVisible="{Binding DoVisibleChart}" />
 
-                        <!-- Action Buttons -->
-                        <Grid ColumnSpacing="10" Padding="10">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="Auto"/>
-                            </Grid.ColumnDefinitions>
-                            <Button Grid.Column="0" Text="☰" FontSize="30" Command="{Binding ShowMenuCommand}" />
-                            <Button Grid.Column="1" Text="Transactions" Command="{Binding ShowContentCommand}" />
-                            <Button Grid.Column="2" Text="☰" FontSize="30" Command="{Binding ShowMenuCommand}" />
-                        </Grid>
+                       
 
                         <!-- Collection View -->
                         <CollectionView ItemsSource="{Binding ChartEntries}"
@@ -91,14 +81,49 @@
                 </coreControls:CardView>
             </StackLayout>
         </ScrollView>
-        <Grid Grid.Row="2" Grid.ColumnSpan="3" >
+        <!-- Action Buttons -->
+        <Grid  Grid.Row="2" ColumnSpacing="10" Padding="10">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
-            <Button Text="+" Grid.Column="0" Margin="15"/>
-            <Button Text="-" Grid.Column="2" Margin="15"/>
+            <Button Grid.Column="0" Text="☰" FontSize="30" Command="{Binding ShowMenuCommand}" />
+            <Button Grid.Column="1" Text="Transactions" Command="{Binding ShowContentCommand}" />
+            <Button Grid.Column="2" Text="☰" FontSize="30" Command="{Binding ShowMenuCommand}" />
+        </Grid>
+        <Grid Grid.Row="3" Grid.ColumnSpan="3" >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <!-- Circular Button for "+" -->
+            <Button Text="+" 
+                Grid.Column="0" 
+                Margin="15" 
+                WidthRequest="100" 
+                HeightRequest="100" 
+                CornerRadius="50"
+                BorderColor="Green"
+                BorderWidth="7"
+                BackgroundColor="Transparent"
+                TextColor="Green"
+                FontSize="36" />
+
+            <!-- Circular Button for "-" -->
+            <Button Text="-" 
+                Grid.Column="2" 
+                Margin="15" 
+                WidthRequest="100" 
+                HeightRequest="100" 
+                CornerRadius="50"
+                BorderColor="Red"
+                BorderWidth="7"
+                BackgroundColor="Transparent"
+                TextColor="Red"
+                FontSize="36" />
+
         </Grid>
     </Grid>
 </ContentPage>
