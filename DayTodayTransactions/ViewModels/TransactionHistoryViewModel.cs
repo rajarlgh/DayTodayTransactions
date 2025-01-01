@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using DayTodayTransactions.Pages;
 using DayTodayTransactionsLibrary.Models;
 using Microcharts;
 using SkiaSharp;
@@ -62,9 +63,9 @@ namespace DayTodayTransactions.ViewModels
 
         }
         [RelayCommand]
-        public void OnAddMoneyClicked()
+        public async void onAddMoneyClicked()
         {
-
+            await Shell.Current.GoToAsync(nameof(AddTransactionPage));
         }
         public List<Transaction> Transactions { get; set; }
         public string FilterDate { get; set; }

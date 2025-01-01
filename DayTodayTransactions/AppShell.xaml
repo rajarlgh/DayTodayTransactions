@@ -5,12 +5,21 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:DayTodayTransactions"
     Shell.FlyoutBehavior="Flyout"
+     xmlns:pages="clr-namespace:DayTodayTransactions.Pages"
     Title="DayTodayTransactions">
 
     <ShellContent
         Title="Home"
-        ContentTemplate="{DataTemplate local:MainPage}"
-        Route="MainPage" />
+        ContentTemplate="{DataTemplate pages:TransactionHistoryPage}"
+        Route="TransactionHistoryPage" />
+
+    <!--<TabBar>
+         --><!--Tab for TransactionHistoryPage--><!--
+        <ShellContent Title="Transaction History" Route="TransactionHistoryPage" ContentTemplate="{DataTemplate pages:TransactionHistoryPage}">
+            
+        </ShellContent>
+    </TabBar>-->
+    
     <!-- Flyout Items -->
     <!--<FlyoutItem Title="Home" Icon="home.svg" FlyoutDisplayOptions="AsSingleItem" Route="home">
         <ShellContent Route="HomeMainPage" ContentTemplate="{DataTemplate local:MainPage}" />

@@ -112,7 +112,7 @@
                 BorderWidth="7"
                 BackgroundColor="Transparent"
                 TextColor="Green"
-                Command="{Binding OnSearchClickedaCommand}"
+                Command="{Binding onAddMoneyClickedCommand}"
                 FontSize="36" />
 
             <!-- Circular Button for "-" -->

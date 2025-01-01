@@ -1,4 +1,5 @@
 ﻿using DayTodayTransactions.Pages;
+using DayTodayTransactions.ViewModels;
 
 namespace DayTodayTransactions
 {
@@ -11,14 +12,12 @@ namespace DayTodayTransactions
             InitializeComponent();
             _serviceProvider = serviceProvider;
 
-            // Resolve the AddTransactionPage from the DI container
-            //MainPage = new NavigationPage(_serviceProvider.GetRequiredService<AddTransactionPage>());
-            MainPage = new NavigationPage(_serviceProvider.GetRequiredService<TransactionHistoryPage>());
+            // Register ViewModel with DI
+            DependencyService.Register<TransactionHistoryViewModel>();
+
+            // Register other services here if needed
+            MainPage = new AppShell(_serviceProvider);
         }
 
-        //protected override Window CreateWindow(IActivationState? activationState)
-        //{
-        //    return new Window(new AppShell());
-        //}
     }
 }
