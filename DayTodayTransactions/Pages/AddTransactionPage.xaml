@@ -12,6 +12,25 @@
                 </x:Array>
             </Picker.ItemsSource>
         </Picker>
+        <Picker Title="Category" SelectedItem="{Binding Category}">
+            <Picker.ItemsSource>
+                <x:Array Type="{x:Type x:String}">
+                    <x:String>Car</x:String>
+                    <x:String>Food</x:String>
+                    <x:String>Pet</x:String>
+                    <x:String>Health</x:String>
+                    <x:String>Cafe</x:String>
+                    <x:String>Bar</x:String>
+                    <x:String>Dental</x:String>
+                    <x:String>Home</x:String>
+                    <x:String>Mobile</x:String>
+                    <x:String>Cloths</x:String>
+                    <x:String>Sports</x:String>
+                    <x:String>Gift</x:String>
+                    <x:String>Fuel</x:String>
+                </x:Array>
+            </Picker.ItemsSource>
+        </Picker>
         <Entry Placeholder="Amount" Text="{Binding Amount}" Keyboard="Numeric"/>
         <Entry Placeholder="Reason" Text="{Binding Reason}"/>
      

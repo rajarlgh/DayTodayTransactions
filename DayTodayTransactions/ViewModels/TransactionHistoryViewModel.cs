@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using DayTodayTransactions.Pages;
+using DayTodayTransactionsLibrary.Interfaces;
 using DayTodayTransactionsLibrary.Models;
 using Microcharts;
 using SkiaSharp;
@@ -21,26 +22,49 @@ namespace DayTodayTransactions.ViewModels
         private bool doVisibleChartBreakUp = true;
 
         private readonly SQLiteAsyncConnection _database;
-
-        public TransactionHistoryViewModel(string dbPath)
+        private readonly ITransactionService _transactionService;
+        public TransactionHistoryViewModel(string dbPath, ITransactionService transactionService)
         {
             _database = new SQLiteAsyncConnection(dbPath);
-            chartEntries = new ObservableCollection<ChartEntry>
-            {
-                new ChartEntry(212) { Label = "Car", ValueLabel = "212", Color = SKColor.Parse("#00FF00") },
-                new ChartEntry(248) { Label = "Food", ValueLabel = "248", Color = SKColor.Parse("#FF5733") },
-                new ChartEntry(128) { Label = "Pet", ValueLabel = "128", Color = SKColor.Parse("#3498DB") },
-                new ChartEntry(514) { Label = "Health", ValueLabel = "514", Color = SKColor.Parse("#9B59B6") },
-                new ChartEntry(300) { Label = "Cafe", ValueLabel = "300", Color = SKColor.Parse("#1ABC9C") },
-                new ChartEntry(450) { Label = "Bar", ValueLabel = "450", Color = SKColor.Parse("#F1C40F") },
-                new ChartEntry(380) { Label = "Dental", ValueLabel = "380", Color = SKColor.Parse("#E74C3C") },
-                new ChartEntry(420) { Label = "Home", ValueLabel = "420", Color = SKColor.Parse("#34495E") },
-                new ChartEntry(310) { Label = "Mobile", ValueLabel = "310", Color = SKColor.Parse("#2ECC71") },
-                new ChartEntry(270) { Label = "Cloths", ValueLabel = "270", Color = SKColor.Parse("#E67E22") },
-                new ChartEntry(390) { Label = "Sports", ValueLabel = "390", Color = SKColor.Parse("#16A085") },
-                new ChartEntry(460) { Label = "Gift", ValueLabel = "460", Color = SKColor.Parse("#8E44AD") },
-                new ChartEntry(510) { Label = "Fuel", ValueLabel = "510", Color = SKColor.Parse("#BDC3C7") },
-            };
+          //  var t= transactionService.GetTransactionsAsync();
+
+            var transactions = transactionService.GetTransactionsAsync().Result;
+
+            // Group transactions by category and calculate the total amount for each category
+            var groupedData = transactions
+                .GroupBy(t => t.Category)
+                .Select(g => new
+                {
+                    Category = g.Key,
+                    TotalAmount = g.Sum(t => t.Amount)
+                });
+
+            // Map the grouped data to ChartEntry objects
+            chartEntries = new ObservableCollection<ChartEntry>(
+                groupedData.Select(data => new ChartEntry((float)data.TotalAmount)
+                {
+                    Label = data.Category,
+                    ValueLabel = data.TotalAmount.ToString("F0"), // Format as integer
+                    Color = GetCategoryColor(data.Category) // Assign a color based on the category
+                })
+            );
+
+            //chartEntries = new ObservableCollection<ChartEntry>
+            //{
+            //    new ChartEntry(212) { Label = "Car", ValueLabel = "212", Color = SKColor.Parse("#00FF00") },
+            //    new ChartEntry(248) { Label = "Food", ValueLabel = "248", Color = SKColor.Parse("#FF5733") },
+            //    new ChartEntry(128) { Label = "Pet", ValueLabel = "128", Color = SKColor.Parse("#3498DB") },
+            //    new ChartEntry(514) { Label = "Health", ValueLabel = "514", Color = SKColor.Parse("#9B59B6") },
+            //    new ChartEntry(300) { Label = "Cafe", ValueLabel = "300", Color = SKColor.Parse("#1ABC9C") },
+            //    new ChartEntry(450) { Label = "Bar", ValueLabel = "450", Color = SKColor.Parse("#F1C40F") },
+            //    new ChartEntry(380) { Label = "Dental", ValueLabel = "380", Color = SKColor.Parse("#E74C3C") },
+            //    new ChartEntry(420) { Label = "Home", ValueLabel = "420", Color = SKColor.Parse("#34495E") },
+            //    new ChartEntry(310) { Label = "Mobile", ValueLabel = "310", Color = SKColor.Parse("#2ECC71") },
+            //    new ChartEntry(270) { Label = "Cloths", ValueLabel = "270", Color = SKColor.Parse("#E67E22") },
+            //    new ChartEntry(390) { Label = "Sports", ValueLabel = "390", Color = SKColor.Parse("#16A085") },
+            //    new ChartEntry(460) { Label = "Gift", ValueLabel = "460", Color = SKColor.Parse("#8E44AD") },
+            //    new ChartEntry(510) { Label = "Fuel", ValueLabel = "510", Color = SKColor.Parse("#BDC3C7") },
+            //};
 
             chart = new DonutChart
             {
@@ -51,6 +75,30 @@ namespace DayTodayTransactions.ViewModels
                 LabelTextSize = 40
             };
             LoadTransactions();
+        }
+
+        /// <summary>
+        /// Assigns a unique color to each category.
+        /// </summary>
+        private SKColor GetCategoryColor(string category)
+        {
+            return category switch
+            {
+                "Car" => SKColor.Parse("#00FF00"),
+                "Food" => SKColor.Parse("#FF5733"),
+                "Pet" => SKColor.Parse("#3498DB"),
+                "Health" => SKColor.Parse("#9B59B6"),
+                "Cafe" => SKColor.Parse("#1ABC9C"),
+                "Bar" => SKColor.Parse("#F1C40F"),
+                "Dental" => SKColor.Parse("#E74C3C"),
+                "Home" => SKColor.Parse("#34495E"),
+                "Mobile" => SKColor.Parse("#2ECC71"),
+                "Cloths" => SKColor.Parse("#E67E22"),
+                "Sports" => SKColor.Parse("#16A085"),
+                "Gift" => SKColor.Parse("#8E44AD"),
+                "Fuel" => SKColor.Parse("#BDC3C7"),
+                _ => SKColor.Parse("#95A5A6") // Default color
+            };
         }
         [RelayCommand]
         public void OnSearchClickeda()

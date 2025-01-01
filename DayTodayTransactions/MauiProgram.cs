@@ -43,15 +43,16 @@ namespace DayTodayTransactions
 
         // Common function to register pages and ViewModels with a factory for ViewModel creation
         private static void RegisterPageWithViewModel<TViewModel, TPage>(MauiAppBuilder builder, string dbPath = null)
-            where TViewModel : class
-            where TPage : class
+        where TViewModel : class
+        where TPage : class
         {
-            // If dbPath is provided, use a factory to pass the dbPath to the ViewModel constructor
+            // If dbPath is provided, use a factory to pass both the dbPath and ITransactionService to the ViewModel constructor
             if (dbPath != null)
             {
                 builder.Services.AddSingleton<TViewModel>(provider =>
                 {
-                    return (TViewModel)Activator.CreateInstance(typeof(TViewModel), dbPath);
+                    var transactionService = provider.GetRequiredService<ITransactionService>();
+                    return (TViewModel)Activator.CreateInstance(typeof(TViewModel), dbPath, transactionService);
                 });
             }
             else
@@ -61,5 +62,6 @@ namespace DayTodayTransactions
 
             builder.Services.AddSingleton<TPage>();
         }
+
     }
 }
