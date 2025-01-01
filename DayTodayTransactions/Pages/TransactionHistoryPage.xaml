@@ -112,6 +112,7 @@
                 BorderWidth="7"
                 BackgroundColor="Transparent"
                 TextColor="Green"
+                Command="{Binding OnSearchClickedaCommand}"
                 FontSize="36" />
 
             <!-- Circular Button for "-" -->

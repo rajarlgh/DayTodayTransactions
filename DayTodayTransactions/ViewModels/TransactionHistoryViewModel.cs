@@ -25,21 +25,21 @@ namespace DayTodayTransactions.ViewModels
         {
             _database = new SQLiteAsyncConnection(dbPath);
             chartEntries = new ObservableCollection<ChartEntry>
-        {
-            new ChartEntry(212) { Label = "Car", ValueLabel = "212", Color = SKColor.Parse("#00FF00") },
-            new ChartEntry(248) { Label = "Food", ValueLabel = "248", Color = SKColor.Parse("#FF5733") },
-            new ChartEntry(128) { Label = "Pet", ValueLabel = "128", Color = SKColor.Parse("#3498DB") },
-            new ChartEntry(514) { Label = "Health", ValueLabel = "514", Color = SKColor.Parse("#9B59B6") },
-            new ChartEntry(300) { Label = "Cafe", ValueLabel = "300", Color = SKColor.Parse("#1ABC9C") },
-            new ChartEntry(450) { Label = "Bar", ValueLabel = "450", Color = SKColor.Parse("#F1C40F") },
-            new ChartEntry(380) { Label = "Dental", ValueLabel = "380", Color = SKColor.Parse("#E74C3C") },
-            new ChartEntry(420) { Label = "Home", ValueLabel = "420", Color = SKColor.Parse("#34495E") },
-            new ChartEntry(310) { Label = "Mobile", ValueLabel = "310", Color = SKColor.Parse("#2ECC71") },
-            new ChartEntry(270) { Label = "Cloths", ValueLabel = "270", Color = SKColor.Parse("#E67E22") },
-            new ChartEntry(390) { Label = "Sports", ValueLabel = "390", Color = SKColor.Parse("#16A085") },
-            new ChartEntry(460) { Label = "Gift", ValueLabel = "460", Color = SKColor.Parse("#8E44AD") },
-            new ChartEntry(510) { Label = "Fuel", ValueLabel = "510", Color = SKColor.Parse("#BDC3C7") },
-        };
+            {
+                new ChartEntry(212) { Label = "Car", ValueLabel = "212", Color = SKColor.Parse("#00FF00") },
+                new ChartEntry(248) { Label = "Food", ValueLabel = "248", Color = SKColor.Parse("#FF5733") },
+                new ChartEntry(128) { Label = "Pet", ValueLabel = "128", Color = SKColor.Parse("#3498DB") },
+                new ChartEntry(514) { Label = "Health", ValueLabel = "514", Color = SKColor.Parse("#9B59B6") },
+                new ChartEntry(300) { Label = "Cafe", ValueLabel = "300", Color = SKColor.Parse("#1ABC9C") },
+                new ChartEntry(450) { Label = "Bar", ValueLabel = "450", Color = SKColor.Parse("#F1C40F") },
+                new ChartEntry(380) { Label = "Dental", ValueLabel = "380", Color = SKColor.Parse("#E74C3C") },
+                new ChartEntry(420) { Label = "Home", ValueLabel = "420", Color = SKColor.Parse("#34495E") },
+                new ChartEntry(310) { Label = "Mobile", ValueLabel = "310", Color = SKColor.Parse("#2ECC71") },
+                new ChartEntry(270) { Label = "Cloths", ValueLabel = "270", Color = SKColor.Parse("#E67E22") },
+                new ChartEntry(390) { Label = "Sports", ValueLabel = "390", Color = SKColor.Parse("#16A085") },
+                new ChartEntry(460) { Label = "Gift", ValueLabel = "460", Color = SKColor.Parse("#8E44AD") },
+                new ChartEntry(510) { Label = "Fuel", ValueLabel = "510", Color = SKColor.Parse("#BDC3C7") },
+            };
 
             chart = new DonutChart
             {
@@ -52,7 +52,7 @@ namespace DayTodayTransactions.ViewModels
             LoadTransactions();
         }
         [RelayCommand]
-        public void OnSearchClicked()
+        public void OnSearchClickeda()
         {
 
         }
@@ -61,7 +61,11 @@ namespace DayTodayTransactions.ViewModels
         {
 
         }
+        [RelayCommand]
+        public void OnAddMoneyClicked()
+        {
 
+        }
         public List<Transaction> Transactions { get; set; }
         public string FilterDate { get; set; }
         public string FilterCategory { get; set; }
