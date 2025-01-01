@@ -126,6 +126,7 @@
                 BorderWidth="7"
                 BackgroundColor="Transparent"
                 TextColor="Red"
+                    Command="{Binding onWidthDrawMoneyClickedCommand}"
                 FontSize="36" />
 
         </Grid>

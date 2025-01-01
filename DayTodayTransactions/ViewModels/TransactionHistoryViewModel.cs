@@ -65,8 +65,17 @@ namespace DayTodayTransactions.ViewModels
         [RelayCommand]
         public async void onAddMoneyClicked()
         {
-            await Shell.Current.GoToAsync(nameof(AddTransactionPage));
+            // Pass parameters as query parameters in the URL
+            await Shell.Current.GoToAsync($"{nameof(AddTransactionPage)}?type=Income");
+
         }
+        [RelayCommand]
+        public async void onWidthDrawMoneyClicked()
+        {
+
+            await Shell.Current.GoToAsync($"{nameof(AddTransactionPage)}?type=Expense");
+        }
+
         public List<Transaction> Transactions { get; set; }
         public string FilterDate { get; set; }
         public string FilterCategory { get; set; }
