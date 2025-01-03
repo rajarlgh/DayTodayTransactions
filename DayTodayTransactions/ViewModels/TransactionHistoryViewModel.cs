@@ -37,9 +37,9 @@ namespace DayTodayTransactions.ViewModels
             //  var t= transactionService.GetTransactionsAsync();
             LoadTransactionsAndSetGrid(transactions);
         }
-        public void ShowBreakdownForCategory(string category)
+        public void ShowBreakdownForCategory(string category, string type)
         {
-            var breakdown = transactions.Where(t => t.Type == "Income" && t.Category == category)
+            var breakdown = transactions.Where(t => t.Type == type && t.Category == category)
                 .ToList();
 
             SelectedCategoryBreakdown = new ObservableCollection<Transaction>(breakdown);

@@ -1,8 +1,5 @@
 using DayTodayTransactions.ViewModels;
 using Microcharts;
-using Microcharts.Maui;
-using SkiaSharp;
-using SkiaSharp.Views.Maui;
 
 namespace DayTodayTransactions.Pages;
 
@@ -45,6 +42,8 @@ public partial class TransactionHistoryPage : ContentPage
 
     private void OnIncomeItemSelected(object sender, SelectionChangedEventArgs e)
     {
+        // Deselect the previously selected item in CollectionView2
+ 
         var selectedEntry = e.CurrentSelection.FirstOrDefault() as ChartEntry;
         if (selectedEntry != null)
         {
@@ -53,7 +52,23 @@ public partial class TransactionHistoryPage : ContentPage
 
             // Call the method in the ViewModel to fetch the breakdown
             var viewModel = BindingContext as TransactionHistoryViewModel;
-            viewModel?.ShowBreakdownForCategory(selectedCategory);
+            viewModel?.ShowBreakdownForCategory(selectedCategory, "Income");
+            collectionViewExpense.SelectedItem = null;
+        }
+    }
+
+    private void OnExpenseItemSelected(object sender, SelectionChangedEventArgs e)
+    {
+        var selectedEntry = e.CurrentSelection.FirstOrDefault() as ChartEntry;
+        if (selectedEntry != null)
+        {
+            // Assuming the Label is the Category name
+            string selectedCategory = selectedEntry.Label;
+
+            // Call the method in the ViewModel to fetch the breakdown
+            var viewModel = BindingContext as TransactionHistoryViewModel;
+            viewModel?.ShowBreakdownForCategory(selectedCategory, "Expense");
+            collectionViewIncome.SelectedItem = null;
         }
     }
 

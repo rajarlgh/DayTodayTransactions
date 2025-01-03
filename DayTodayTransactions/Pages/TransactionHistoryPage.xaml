@@ -62,7 +62,7 @@
                             <coreControls:CardView Title="Income">
                                 <VerticalStackLayout>
                                     <!-- Collection View -->
-                                    <CollectionView ItemsSource="{Binding IncomeChartEntries}"
+                                    <CollectionView x:Name="collectionViewIncome"  ItemsSource="{Binding IncomeChartEntries}"
                                         IsVisible="{Binding DoVisibleChart, Converter={StaticResource InverseBooleanConverter}}"
                                         SelectionMode="Single"
                                         SelectionChanged="OnIncomeItemSelected">        
@@ -90,11 +90,14 @@
                                         IsVisible="{Binding DoVisibleChart}" />
                                 </VerticalStackLayout>
                             </coreControls:CardView>
+                            
                             <coreControls:CardView Title="Expenses">
                                 <VerticalStackLayout>
                                     <!-- Collection View -->
-                                    <CollectionView ItemsSource="{Binding ExpenseChartEntries}"
-                                IsVisible="{Binding DoVisibleChart, Converter={StaticResource InverseBooleanConverter}}">
+                                    <CollectionView x:Name="collectionViewExpense" ItemsSource="{Binding ExpenseChartEntries}"
+                                         IsVisible="{Binding DoVisibleChart, Converter={StaticResource InverseBooleanConverter}}"
+                                         SelectionMode="Single"                                                    
+                                         SelectionChanged="OnExpenseItemSelected">      
                                         <CollectionView.ItemsLayout>
                                             <GridItemsLayout Orientation="Vertical" Span="2" />
                                         </CollectionView.ItemsLayout>
@@ -117,6 +120,7 @@
                                         IsVisible="{Binding DoVisibleChart}" />
                                 </VerticalStackLayout>
                             </coreControls:CardView>
+                            
                             <coreControls:CardView Title="Selected Transaction">
                                 <Grid RowSpacing="10" ColumnSpacing="20" BackgroundColor="AntiqueWhite">
                                     <!-- Row Definitions -->
@@ -161,7 +165,7 @@
                                                     <Label Text="{Binding Amount}" Grid.Row="0" Grid.Column="1" HorizontalOptions="Center" VerticalOptions="Center" />
 
                                                     <!-- Line after each row -->
-                                                    <BoxView Grid.Row="1" Grid.ColumnSpan="2" HeightRequest="1" BackgroundColor="Black" HorizontalOptions="FillAndExpand" />
+                                                    <BoxView Grid.Row="1" Grid.ColumnSpan="2" HeightRequest="1" BackgroundColor="Black"  />
                                                 </Grid>
                                             </DataTemplate>
                                         </CollectionView.ItemTemplate>
