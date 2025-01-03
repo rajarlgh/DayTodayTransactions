@@ -57,6 +57,7 @@
                     <StackLayout>
                         <!-- Chart -->
                         <microcharts:ChartView x:Name="donutChart" Margin="5"
+                                               Chart="{Binding Chart}"
                                                HeightRequest="370" 
                                                WidthRequest="330" 
                                                IsVisible="{Binding DoVisibleChart}" />

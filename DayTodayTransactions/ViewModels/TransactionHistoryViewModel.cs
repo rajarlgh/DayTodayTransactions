@@ -26,10 +26,14 @@ namespace DayTodayTransactions.ViewModels
         public TransactionHistoryViewModel(string dbPath, ITransactionService transactionService)
         {
             _database = new SQLiteAsyncConnection(dbPath);
-          //  var t= transactionService.GetTransactionsAsync();
-
             var transactions = transactionService.GetTransactionsAsync().Result;
+            var t = transactions.ToList<Transaction>();
+            //  var t= transactionService.GetTransactionsAsync();
+            LoadTransactionsAndSetGrid(transactions);
+        }
 
+        private void LoadTransactionsAndSetGrid(IList<Transaction> transactions)
+        {
             // Group transactions by category and calculate the total amount for each category
             var groupedData = transactions
                 .GroupBy(t => t.Category)
@@ -49,24 +53,10 @@ namespace DayTodayTransactions.ViewModels
                 })
             );
 
-            //chartEntries = new ObservableCollection<ChartEntry>
-            //{
-            //    new ChartEntry(212) { Label = "Car", ValueLabel = "212", Color = SKColor.Parse("#00FF00") },
-            //    new ChartEntry(248) { Label = "Food", ValueLabel = "248", Color = SKColor.Parse("#FF5733") },
-            //    new ChartEntry(128) { Label = "Pet", ValueLabel = "128", Color = SKColor.Parse("#3498DB") },
-            //    new ChartEntry(514) { Label = "Health", ValueLabel = "514", Color = SKColor.Parse("#9B59B6") },
-            //    new ChartEntry(300) { Label = "Cafe", ValueLabel = "300", Color = SKColor.Parse("#1ABC9C") },
-            //    new ChartEntry(450) { Label = "Bar", ValueLabel = "450", Color = SKColor.Parse("#F1C40F") },
-            //    new ChartEntry(380) { Label = "Dental", ValueLabel = "380", Color = SKColor.Parse("#E74C3C") },
-            //    new ChartEntry(420) { Label = "Home", ValueLabel = "420", Color = SKColor.Parse("#34495E") },
-            //    new ChartEntry(310) { Label = "Mobile", ValueLabel = "310", Color = SKColor.Parse("#2ECC71") },
-            //    new ChartEntry(270) { Label = "Cloths", ValueLabel = "270", Color = SKColor.Parse("#E67E22") },
-            //    new ChartEntry(390) { Label = "Sports", ValueLabel = "390", Color = SKColor.Parse("#16A085") },
-            //    new ChartEntry(460) { Label = "Gift", ValueLabel = "460", Color = SKColor.Parse("#8E44AD") },
-            //    new ChartEntry(510) { Label = "Fuel", ValueLabel = "510", Color = SKColor.Parse("#BDC3C7") },
-            //};
+            //LoadTransactions();
 
-            chart = new DonutChart
+            // Recreate the chart instance with new entries
+            Chart = new DonutChart
             {
                 Entries = ChartEntries,
                 LabelMode = LabelMode.LeftAndRight,
@@ -74,7 +64,33 @@ namespace DayTodayTransactions.ViewModels
                 Margin = 10,
                 LabelTextSize = 40
             };
-            LoadTransactions();
+            //Chart.Entries = ChartEntries;
+            //Chart.PropertyChanged += Chart_PropertyChanged;
+          
+            //Chart.LabelColor = SkiaSharp.SKColor.Parse("FFCCBB");
+        }
+
+        public async Task RefreshDataAsync()
+        {
+            // Fetch the latest transactions
+            var transactionsList = await _database.Table<Transaction>().ToListAsync();
+            var newTransactions = new ObservableCollection<Transaction>(transactionsList);
+            foreach (var transaction in newTransactions)
+            {
+                if (Transactions == null)
+                    Transactions = new ObservableCollection<Transaction>();
+                Transactions.Add(transaction);
+            }
+            LoadTransactionsAndSetGrid(newTransactions);
+
+            // Notify UI of changes
+            OnPropertyChanged(nameof(Transactions));
+            OnPropertyChanged(nameof(TotalIncome));
+            OnPropertyChanged(nameof(TotalExpenses));
+            OnPropertyChanged(nameof(Balance));
+            OnPropertyChanged(nameof(IncomeExpenseChart));
+            OnPropertyChanged(nameof(Chart));
+            OnPropertyChanged(nameof(ChartEntries));
         }
 
         /// <summary>
@@ -124,7 +140,9 @@ namespace DayTodayTransactions.ViewModels
             await Shell.Current.GoToAsync($"{nameof(AddTransactionPage)}?type=Expense");
         }
 
-        public List<Transaction> Transactions { get; set; }
+        [ObservableProperty]
+        private ObservableCollection<Transaction> transactions;
+
         public string FilterDate { get; set; }
         public string FilterCategory { get; set; }
         public string FilterType { get; set; }
@@ -145,14 +163,7 @@ namespace DayTodayTransactions.ViewModels
             OnPropertyChanged(nameof(DoVisibleChart));
 
         }
-        private async void LoadTransactions()
-        {
-            // Load all transactions from the database
-            Transactions = await _database.Table<Transaction>().ToListAsync();
-            CalculateBalances();
-            CreateIncomeExpenseChart();
-            OnPropertyChanged(nameof(Transactions));
-        }
+
 
         private void CalculateBalances()
         {
@@ -164,50 +175,7 @@ namespace DayTodayTransactions.ViewModels
             OnPropertyChanged(nameof(Balance));
         }
 
-        private void CreateIncomeExpenseChart()
-        {
-            //var entries = new[]
-            //{
 
-            //    new Microcharts.ChartEntry((float)TotalIncome)
-            //    {
-            //        Label = "Income",
-            //        ValueLabel = TotalIncome.ToString("C"),
-            //        Color = SKColor.Parse("#00FF00")
-            //    },
-            //    new Microcharts.ChartEntry((float)TotalExpenses)
-            //    {
-            //        Label = "Expenses",
-            //        ValueLabel = TotalExpenses.ToString("C"),
-            //        Color = SKColor.Parse("#FF0000")
-            //    }
-            //};
-            var entries = new[]
-            {
-            new ChartEntry(212) { Label = "Car", ValueLabel = "212", Color = SKColor.Parse("#00FF00") }, // Green
-            new ChartEntry(248) { Label = "Food", ValueLabel = "248", Color = SKColor.Parse("#FF5733") }, // Orange
-            new ChartEntry(128) { Label = "Pet", ValueLabel = "128", Color = SKColor.Parse("#3498DB") }, // Blue
-            new ChartEntry(514) { Label = "Health", ValueLabel = "514", Color = SKColor.Parse("#9B59B6") }, // Purple
-            new ChartEntry(300) { Label = "Cafe", ValueLabel = "300", Color = SKColor.Parse("#1ABC9C") }, // Teal
-            new ChartEntry(450) { Label = "Bar", ValueLabel = "450", Color = SKColor.Parse("#F1C40F") }, // Yellow
-            new ChartEntry(380) { Label = "Dental", ValueLabel = "380", Color = SKColor.Parse("#E74C3C") }, // Red
-            new ChartEntry(420) { Label = "Home", ValueLabel = "420", Color = SKColor.Parse("#34495E") }, // Dark Blue
-            new ChartEntry(310) { Label = "Mobile", ValueLabel = "310", Color = SKColor.Parse("#2ECC71") }, // Light Green
-            new ChartEntry(270) { Label = "Cloths", ValueLabel = "270", Color = SKColor.Parse("#E67E22") }, // Amber
-            new ChartEntry(390) { Label = "Sports", ValueLabel = "390", Color = SKColor.Parse("#16A085") }, // Emerald Green
-            new ChartEntry(460) { Label = "Gift", ValueLabel = "460", Color = SKColor.Parse("#8E44AD") }, // Violet
-            new ChartEntry(510) { Label = "Fuel", ValueLabel = "510", Color = SKColor.Parse("#BDC3C7") }, // Light Gray
-};
-            IncomeExpenseChart = 
-            new DonutChart
-            {
-                Entries = entries,
-                LabelMode = LabelMode.RightOnly,
-                Margin = 10,
-                LabelTextSize = 40 // Adjust font size for better readability
-            };
-            OnPropertyChanged(nameof(IncomeExpenseChart));
-        }
 
         // Filter transactions by the given criteria
         public void FilterTransactions()
@@ -231,7 +199,8 @@ namespace DayTodayTransactions.ViewModels
             }
 
             // Execute the query and update the Transactions list
-            Transactions = filteredTransactions.ToListAsync().Result;
+            Transactions = new ObservableCollection<Transaction>(filteredTransactions.ToListAsync().Result);
+
             CalculateBalances();
             OnPropertyChanged(nameof(Transactions));
         }

@@ -29,4 +29,14 @@ public partial class TransactionHistoryPage : ContentPage
             viewModel.UpdateScrollMessage(e.ScrollY, scrollView.ContentSize.Height, scrollView.Height);
         }
     }
+    protected override async void OnAppearing()
+    {
+        base.OnAppearing();
+        
+        if (BindingContext is TransactionHistoryViewModel viewModel)
+        {
+            await viewModel.RefreshDataAsync();
+            donutChart.Chart = _viewModel.Chart;
+        }
+    }
 }

@@ -42,6 +42,17 @@ namespace DayTodayTransactions.ViewModels
             };
 
             await _transactionService.AddTransactionAsync(transaction);
+
+            // Reset properties to default values
+            Amount = 0;
+            Reason = string.Empty;
+            Type = null; // Reset to null if no default type
+            Category = null; // Reset to null if no default category
+            Date = DateTime.Now;
+
+            // Show success message
+            await Application.Current.MainPage.DisplayAlert("Success", "Transaction saved successfully.", "OK");
+
         }
     }
 
