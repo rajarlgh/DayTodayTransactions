@@ -4,7 +4,6 @@ using DayTodayTransactionsLibrary.Interfaces;
 using DayTodayTransactionsService;
 using Microcharts.Maui;
 using Microsoft.Extensions.Logging;
-using SkiaSharp.Views.Maui.Controls.Hosting;
 
 namespace DayTodayTransactions
 {
