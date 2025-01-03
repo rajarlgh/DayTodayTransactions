@@ -145,6 +145,8 @@
                                                 <Grid Padding="15" RowSpacing="10" ColumnSpacing="20" BackgroundColor="AliceBlue">
                                                     <Grid.RowDefinitions>
                                                         <RowDefinition Height="Auto"/>
+                                                        <RowDefinition Height="1" />
+                                                        <!-- Row for the line -->
                                                     </Grid.RowDefinitions>
 
                                                     <Grid.ColumnDefinitions>
@@ -157,10 +159,14 @@
 
                                                     <!-- Amount column -->
                                                     <Label Text="{Binding Amount}" Grid.Row="0" Grid.Column="1" HorizontalOptions="Center" VerticalOptions="Center" />
+
+                                                    <!-- Line after each row -->
+                                                    <BoxView Grid.Row="1" Grid.ColumnSpan="2" HeightRequest="1" BackgroundColor="Black" HorizontalOptions="FillAndExpand" />
                                                 </Grid>
                                             </DataTemplate>
                                         </CollectionView.ItemTemplate>
                                     </CollectionView>
+
                                 </Grid>
                             </coreControls:CardView>
 
