@@ -29,3 +29,11 @@
 /Core.Controls/obj
 /DayTodayTransactions/.vs/ProjectEvaluation
 /DayTodayTransactionsService/bin/Debug/net9.0-windows10.0.19041.0/DayTodayTransactionsService.deps.json
+/DayTodayTransactionsLibrary/obj/DayTodayTransactionsLibrary.csproj.nuget.dgspec.json
+/DayTodayTransactionsLibrary/obj/DayTodayTransactionsLibrary.csproj.nuget.g.targets
+/DayTodayTransactionsLibrary/obj/Debug/net9.0/DayTodayTransactionsLibrary.assets.cache
+/DayTodayTransactionsLibrary/obj/Debug/net9.0/DayTodayTransactionsLibrary.csproj.AssemblyReference.cache
+/DayTodayTransactionsLibrary/obj/Debug/net9.0/DayTodayTransactionsLibrary.csproj.CoreCompileInputs.cache
+/DayTodayTransactionsLibrary/obj/Debug/net9.0/DayTodayTransactionsLibrary.csproj.FileListAbsolute.txt
+/DayTodayTransactionsLibrary/obj/project.assets.json
+/DayTodayTransactionsLibrary/obj/project.nuget.cache
