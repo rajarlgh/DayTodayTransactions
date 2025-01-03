@@ -24,6 +24,8 @@ namespace DayTodayTransactions.ViewModels
         private bool doVisibleChart  = false;
         [ObservableProperty]
         private bool doVisibleChartBreakUp = true;
+        [ObservableProperty]
+        private ObservableCollection<Transaction> selectedCategoryBreakdown;
 
         private readonly SQLiteAsyncConnection _database;
         private readonly ITransactionService _transactionService;
@@ -35,7 +37,13 @@ namespace DayTodayTransactions.ViewModels
             //  var t= transactionService.GetTransactionsAsync();
             LoadTransactionsAndSetGrid(transactions);
         }
+        public void ShowBreakdownForCategory(string category)
+        {
+            var breakdown = transactions.Where(t => t.Type == "Income" && t.Category == category)
+                .ToList();
 
+            SelectedCategoryBreakdown = new ObservableCollection<Transaction>(breakdown);
+        }
         private void LoadTransactionsAndSetGrid(IList<Transaction> transactions)
         {
             // Group transactions by category and calculate the total amount for each category

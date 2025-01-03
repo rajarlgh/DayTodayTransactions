@@ -63,7 +63,9 @@
                                 <VerticalStackLayout>
                                     <!-- Collection View -->
                                     <CollectionView ItemsSource="{Binding IncomeChartEntries}"
-                                        IsVisible="{Binding DoVisibleChart, Converter={StaticResource InverseBooleanConverter}}">
+                                        IsVisible="{Binding DoVisibleChart, Converter={StaticResource InverseBooleanConverter}}"
+                                        SelectionMode="Single"
+                                        SelectionChanged="OnIncomeItemSelected">        
                                         <CollectionView.ItemsLayout>
                                             <GridItemsLayout Orientation="Vertical" Span="2" />
                                         </CollectionView.ItemsLayout>
@@ -78,6 +80,7 @@
                                             </DataTemplate>
                                         </CollectionView.ItemTemplate>
                                     </CollectionView>
+
 
                                     <!-- Chart -->
                                     <microcharts:ChartView x:Name="donutIncomeChart" Margin="5"
@@ -114,7 +117,55 @@
                                         IsVisible="{Binding DoVisibleChart}" />
                                 </VerticalStackLayout>
                             </coreControls:CardView>
-                    </StackLayout>
+                            <coreControls:CardView Title="Selected Transaction">
+                                <Grid RowSpacing="10" ColumnSpacing="20" BackgroundColor="AntiqueWhite">
+                                    <!-- Row Definitions -->
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="*"/>
+                                        <!-- Allow this row to take remaining space -->
+                                    </Grid.RowDefinitions>
+
+                                    <!-- Column Definitions -->
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <!-- Description column -->
+                                        <ColumnDefinition Width="*" />
+                                        <!-- Amount column -->
+                                    </Grid.ColumnDefinitions>
+
+                                    <!-- Headers for the columns -->
+                                    <Label Text="Reason" FontAttributes="Bold" HorizontalOptions="Center" Grid.Row="0" Grid.Column="0" />
+                                    <Label Text="Amount" FontAttributes="Bold" HorizontalOptions="Center" Grid.Row="0" Grid.Column="1" />
+
+                                    <!-- Bind items from SelectedCategoryBreakdown to Grid rows -->
+                                    <CollectionView ItemsSource="{Binding SelectedCategoryBreakdown}" Grid.Row="1" Grid.ColumnSpan="2">
+                                        <CollectionView.ItemTemplate>
+                                            <DataTemplate>
+                                                <Grid Padding="15" RowSpacing="10" ColumnSpacing="20" BackgroundColor="AliceBlue">
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition Height="Auto"/>
+                                                    </Grid.RowDefinitions>
+
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                    </Grid.ColumnDefinitions>
+
+                                                    <!-- Description column -->
+                                                    <Label Text="{Binding Reason}" Grid.Row="0" Grid.Column="0" HorizontalOptions="Center" VerticalOptions="Center" />
+
+                                                    <!-- Amount column -->
+                                                    <Label Text="{Binding Amount}" Grid.Row="0" Grid.Column="1" HorizontalOptions="Center" VerticalOptions="Center" />
+                                                </Grid>
+                                            </DataTemplate>
+                                        </CollectionView.ItemTemplate>
+                                    </CollectionView>
+                                </Grid>
+                            </coreControls:CardView>
+
+                        </StackLayout>
+                        
                     </ScrollView>
                 </coreControls:CardView>
             </StackLayout>

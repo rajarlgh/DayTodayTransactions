@@ -42,4 +42,19 @@ public partial class TransactionHistoryPage : ContentPage
             donutExpenseChart.Chart = _viewModel.ExpenseChart;
         }
     }
+
+    private void OnIncomeItemSelected(object sender, SelectionChangedEventArgs e)
+    {
+        var selectedEntry = e.CurrentSelection.FirstOrDefault() as ChartEntry;
+        if (selectedEntry != null)
+        {
+            // Assuming the Label is the Category name
+            string selectedCategory = selectedEntry.Label;
+
+            // Call the method in the ViewModel to fetch the breakdown
+            var viewModel = BindingContext as TransactionHistoryViewModel;
+            viewModel?.ShowBreakdownForCategory(selectedCategory);
+        }
+    }
+
 }
