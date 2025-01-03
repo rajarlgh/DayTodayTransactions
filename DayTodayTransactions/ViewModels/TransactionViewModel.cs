@@ -46,8 +46,8 @@ namespace DayTodayTransactions.ViewModels
             // Reset properties to default values
             Amount = 0;
             Reason = string.Empty;
-            Type = null; // Reset to null if no default type
-            Category = null; // Reset to null if no default category
+            //Type = null; // Reset to null if no default type
+            //Category = null; // Reset to null if no default category
             Date = DateTime.Now;
 
             // Show success message

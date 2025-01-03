@@ -54,34 +54,68 @@
         <ScrollView Grid.Row="1" Scrolled="OnScrollViewScrolled" Grid.ColumnSpan="3">
             <StackLayout Padding="10">
                 <coreControls:CardView Title="Transactions">
-                    <StackLayout>
-                        <!-- Chart -->
-                        <microcharts:ChartView x:Name="donutChart" Margin="5"
-                                               Chart="{Binding Chart}"
-                                               HeightRequest="370" 
-                                               WidthRequest="330" 
-                                               IsVisible="{Binding DoVisibleChart}" />
+                    <ScrollView Grid.Row="1" Scrolled="OnScrollViewScrolled" Grid.ColumnSpan="3">
+                        <StackLayout>
 
-                       
 
-                        <!-- Collection View -->
-                        <CollectionView ItemsSource="{Binding ChartEntries}"
+
+                            <coreControls:CardView Title="Income">
+                                <VerticalStackLayout>
+                                    <!-- Collection View -->
+                                    <CollectionView ItemsSource="{Binding IncomeChartEntries}"
                                         IsVisible="{Binding DoVisibleChart, Converter={StaticResource InverseBooleanConverter}}">
-                            <CollectionView.ItemsLayout>
-                                <GridItemsLayout Orientation="Vertical" Span="2" />
-                            </CollectionView.ItemsLayout>
-                            <CollectionView.ItemTemplate>
-                                <DataTemplate>
-                                    <Border Padding="10" Margin="5" BackgroundColor="White">
-                                        <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center">
-                                            <Label Text="{Binding Label}" FontAttributes="Bold" />
-                                            <Label Text="{Binding ValueLabel}" FontSize="Small" />
-                                        </VerticalStackLayout>
-                                    </Border>
-                                </DataTemplate>
-                            </CollectionView.ItemTemplate>
-                        </CollectionView>
+                                        <CollectionView.ItemsLayout>
+                                            <GridItemsLayout Orientation="Vertical" Span="2" />
+                                        </CollectionView.ItemsLayout>
+                                        <CollectionView.ItemTemplate>
+                                            <DataTemplate>
+                                                <Border Padding="10" Margin="5" BackgroundColor="White">
+                                                    <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center">
+                                                        <Label Text="{Binding Label}" FontAttributes="Bold" />
+                                                        <Label Text="{Binding ValueLabel}" FontSize="Small" />
+                                                    </VerticalStackLayout>
+                                                </Border>
+                                            </DataTemplate>
+                                        </CollectionView.ItemTemplate>
+                                    </CollectionView>
+
+                                    <!-- Chart -->
+                                    <microcharts:ChartView x:Name="donutIncomeChart" Margin="5"
+                                        Chart="{Binding IncomeChart}"
+                                        HeightRequest="300" 
+                                        WidthRequest="300" 
+                                        IsVisible="{Binding DoVisibleChart}" />
+                                </VerticalStackLayout>
+                            </coreControls:CardView>
+                            <coreControls:CardView Title="Expenses">
+                                <VerticalStackLayout>
+                                    <!-- Collection View -->
+                                    <CollectionView ItemsSource="{Binding ExpenseChartEntries}"
+                                IsVisible="{Binding DoVisibleChart, Converter={StaticResource InverseBooleanConverter}}">
+                                        <CollectionView.ItemsLayout>
+                                            <GridItemsLayout Orientation="Vertical" Span="2" />
+                                        </CollectionView.ItemsLayout>
+                                        <CollectionView.ItemTemplate>
+                                            <DataTemplate>
+                                                <Border Padding="10" Margin="5" BackgroundColor="White">
+                                                    <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center">
+                                                        <Label Text="{Binding Label}" FontAttributes="Bold" />
+                                                        <Label Text="{Binding ValueLabel}" FontSize="Small" />
+                                                    </VerticalStackLayout>
+                                                </Border>
+                                            </DataTemplate>
+                                        </CollectionView.ItemTemplate>
+                                    </CollectionView>
+                                    <!-- Chart -->
+                                    <microcharts:ChartView x:Name="donutExpenseChart" Margin="5"
+                                        Chart="{Binding IncomeChart}"
+                                        HeightRequest="300" 
+                                        WidthRequest="300" 
+                                        IsVisible="{Binding DoVisibleChart}" />
+                                </VerticalStackLayout>
+                            </coreControls:CardView>
                     </StackLayout>
+                    </ScrollView>
                 </coreControls:CardView>
             </StackLayout>
         </ScrollView>
@@ -93,9 +127,12 @@
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
             <Button Grid.Column="0" Text="☰" FontSize="30" Margin="15,15,0,0" Command="{Binding ShowMenuCommand}" />
+           
             <Button Grid.Column="1" Text="Transactions" Margin="15,15,15,0" Command="{Binding ShowContentCommand}" />
             <Button Grid.Column="2" Text="☰" FontSize="30"  Margin="0,15,15,0" Command="{Binding ShowMenuCommand}" />
+            
         </Grid>
+        <Button Text="{Binding Balance}"/>
         <Grid Grid.Row="3" Grid.ColumnSpan="3" >
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>

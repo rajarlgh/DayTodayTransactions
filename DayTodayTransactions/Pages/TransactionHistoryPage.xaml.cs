@@ -15,9 +15,11 @@ public partial class TransactionHistoryPage : ContentPage
         InitializeComponent();
         _viewModel = viewModel;
         this.BindingContext = _viewModel;
-        donutChart.Chart = _viewModel.Chart;
+        donutIncomeChart.Chart = _viewModel.IncomeChart;
+        donutExpenseChart.Chart = _viewModel.ExpenseChart;
+
     }
-   
+
     private async void OnFilterChanged(object sender, EventArgs e)
     {
         _viewModel.FilterTransactions();
@@ -36,7 +38,8 @@ public partial class TransactionHistoryPage : ContentPage
         if (BindingContext is TransactionHistoryViewModel viewModel)
         {
             await viewModel.RefreshDataAsync();
-            donutChart.Chart = _viewModel.Chart;
+            donutIncomeChart.Chart = _viewModel.IncomeChart;
+            donutExpenseChart.Chart = _viewModel.ExpenseChart;
         }
     }
 }

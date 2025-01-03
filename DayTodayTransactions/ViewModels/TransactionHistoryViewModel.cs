@@ -13,9 +13,13 @@ namespace DayTodayTransactions.ViewModels
     public partial class TransactionHistoryViewModel : ObservableObject
     {
         [ObservableProperty]
-        private ObservableCollection<ChartEntry> chartEntries;
+        private ObservableCollection<ChartEntry> incomeChartEntries;
         [ObservableProperty]
-        private DonutChart chart;
+        private ObservableCollection<ChartEntry> expenseChartEntries;
+        [ObservableProperty]
+        private DonutChart incomeChart;
+        [ObservableProperty]
+        private DonutChart expenseChart;
         [ObservableProperty]
         private bool doVisibleChart  = false;
         [ObservableProperty]
@@ -43,9 +47,17 @@ namespace DayTodayTransactions.ViewModels
                     TotalAmount = g.Sum(t => t.Amount)
                 });
 
+            var incomeGroupedData = transactions.Where(r=> r.Type=="Income")
+               .GroupBy(t => t.Category)
+               .Select(g => new
+               {
+                   Category = g.Key,
+                   TotalAmount = g.Sum(t => t.Amount)
+               });
+
             // Map the grouped data to ChartEntry objects
-            chartEntries = new ObservableCollection<ChartEntry>(
-                groupedData.Select(data => new ChartEntry((float)data.TotalAmount)
+            IncomeChartEntries = new ObservableCollection<ChartEntry>(
+                incomeGroupedData.Select(data => new ChartEntry((float)data.TotalAmount)
                 {
                     Label = data.Category,
                     ValueLabel = data.TotalAmount.ToString("F0"), // Format as integer
@@ -53,20 +65,47 @@ namespace DayTodayTransactions.ViewModels
                 })
             );
 
+            var expenseGroupedData = transactions.Where(r => r.Type == "Expense")
+              .GroupBy(t => t.Category)
+              .Select(g => new
+              {
+                  Category = g.Key,
+                  TotalAmount = g.Sum(t => t.Amount)
+              });
+            // Map the grouped data to ChartEntry objects
+            ExpenseChartEntries = new ObservableCollection<ChartEntry>(
+                expenseGroupedData.Select(data => new ChartEntry((float)data.TotalAmount)
+                {
+                    Label = data.Category,
+                    ValueLabel = data.TotalAmount.ToString("F0"), // Format as integer
+                    Color = GetCategoryColor(data.Category) // Assign a color based on the category
+                })
+            );
             //LoadTransactions();
 
             // Recreate the chart instance with new entries
-            Chart = new DonutChart
+            IncomeChart = new DonutChart
             {
-                Entries = ChartEntries,
+                Entries = IncomeChartEntries,
                 LabelMode = LabelMode.LeftAndRight,
                 IsAnimated = true,
                 Margin = 10,
                 LabelTextSize = 40
             };
+
+            // Recreate the chart instance with new entries
+            ExpenseChart = new DonutChart
+            {
+                Entries = ExpenseChartEntries,
+                LabelMode = LabelMode.LeftAndRight,
+                IsAnimated = true,
+                Margin = 10,
+                LabelTextSize = 40
+            };
+
             //Chart.Entries = ChartEntries;
             //Chart.PropertyChanged += Chart_PropertyChanged;
-          
+
             //Chart.LabelColor = SkiaSharp.SKColor.Parse("FFCCBB");
         }
 
@@ -74,23 +113,25 @@ namespace DayTodayTransactions.ViewModels
         {
             // Fetch the latest transactions
             var transactionsList = await _database.Table<Transaction>().ToListAsync();
-            var newTransactions = new ObservableCollection<Transaction>(transactionsList);
-            foreach (var transaction in newTransactions)
-            {
-                if (Transactions == null)
-                    Transactions = new ObservableCollection<Transaction>();
-                Transactions.Add(transaction);
-            }
-            LoadTransactionsAndSetGrid(newTransactions);
-
+            Transactions = new ObservableCollection<Transaction>(transactionsList);
+            //foreach (var transaction in newTransactions)
+            //{
+            //    if (Transactions == null)
+            //        Transactions = new ObservableCollection<Transaction>();
+            //    Transactions.Add(transaction);
+            //}
+            LoadTransactionsAndSetGrid(Transactions);
+            CalculateBalances();
             // Notify UI of changes
             OnPropertyChanged(nameof(Transactions));
             OnPropertyChanged(nameof(TotalIncome));
             OnPropertyChanged(nameof(TotalExpenses));
             OnPropertyChanged(nameof(Balance));
             OnPropertyChanged(nameof(IncomeExpenseChart));
-            OnPropertyChanged(nameof(Chart));
-            OnPropertyChanged(nameof(ChartEntries));
+            OnPropertyChanged(nameof(IncomeChart));
+            OnPropertyChanged(nameof(IncomeChartEntries));
+            OnPropertyChanged(nameof(ExpenseChart));
+            OnPropertyChanged(nameof(ExpenseChartEntries));
         }
 
         /// <summary>
@@ -167,12 +208,15 @@ namespace DayTodayTransactions.ViewModels
 
         private void CalculateBalances()
         {
-            TotalIncome = Transactions.Where(t => t.Type == "Income").Sum(t => t.Amount);
-            TotalExpenses = Transactions.Where(t => t.Type == "Expense").Sum(t => t.Amount);
-            Balance = TotalIncome - TotalExpenses;
-            OnPropertyChanged(nameof(TotalIncome));
-            OnPropertyChanged(nameof(TotalExpenses));
-            OnPropertyChanged(nameof(Balance));
+            if (Transactions != null)
+            {
+                TotalIncome = Transactions.Where(t => t.Type == "Income").Sum(t => t.Amount);
+                TotalExpenses = Transactions.Where(t => t.Type == "Expense").Sum(t => t.Amount);
+                Balance = TotalIncome - TotalExpenses;
+                OnPropertyChanged(nameof(TotalIncome));
+                OnPropertyChanged(nameof(TotalExpenses));
+                OnPropertyChanged(nameof(Balance));
+            }
         }
 
 
