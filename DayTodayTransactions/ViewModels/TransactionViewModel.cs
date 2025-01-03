@@ -29,6 +29,11 @@ namespace DayTodayTransactions.ViewModels
         [ObservableProperty]
         private DateTime date = DateTime.Now;
 
+        public void LoadData()
+        {
+
+        }
+
         [RelayCommand]
         public async Task AddTransactionAsynca()
         {

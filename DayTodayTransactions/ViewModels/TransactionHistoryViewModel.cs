@@ -213,6 +213,25 @@ namespace DayTodayTransactions.ViewModels
 
         }
 
+        [RelayCommand]
+        public async Task EditTransactionDetailsAsync(Transaction transaction)
+        {
+            // Navigate to the transaction page, passing the selected transaction
+            var transactionViewModel = new TransactionViewModel(_transactionService)
+            {
+                Amount = transaction.Amount,
+                Reason = transaction.Reason,
+                Type = transaction.Type,
+                Category = transaction.Category,
+                Date = transaction.Date
+            };
+
+            // Pass the TransactionViewModel to the transaction page
+            await Shell.Current.GoToAsync($"{nameof(AddTransactionPage)}?type={transaction.Type}", true, new Dictionary<string, object>
+            {
+                { "TransactionViewModel", transactionViewModel }
+            });
+        }   
 
         private void CalculateBalances()
         {

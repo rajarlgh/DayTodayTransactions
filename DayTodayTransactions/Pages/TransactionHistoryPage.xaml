@@ -142,35 +142,43 @@
                                     <Label Text="Reason" FontAttributes="Bold" HorizontalOptions="Center" Grid.Row="0" Grid.Column="0" />
                                     <Label Text="Amount" FontAttributes="Bold" HorizontalOptions="Center" Grid.Row="0" Grid.Column="1" />
 
-                                    <!-- Bind items from SelectedCategoryBreakdown to Grid rows -->
                                     <CollectionView ItemsSource="{Binding SelectedCategoryBreakdown}" Grid.Row="1" Grid.ColumnSpan="2">
-                                        <CollectionView.ItemTemplate>
-                                            <DataTemplate>
-                                                <Grid Padding="15" RowSpacing="10" ColumnSpacing="20" BackgroundColor="AliceBlue">
-                                                    <Grid.RowDefinitions>
-                                                        <RowDefinition Height="Auto"/>
-                                                        <RowDefinition Height="1" />
-                                                        <!-- Row for the line -->
-                                                    </Grid.RowDefinitions>
+                                    <CollectionView.ItemTemplate>
+                                        <DataTemplate>
+                                            <Grid Padding="15" RowSpacing="10" ColumnSpacing="20" BackgroundColor="AliceBlue">
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="Auto"/>
+                                                    <RowDefinition Height="1" />
+                                                </Grid.RowDefinitions>
 
-                                                    <Grid.ColumnDefinitions>
-                                                        <ColumnDefinition Width="*"/>
-                                                        <ColumnDefinition Width="*"/>
-                                                    </Grid.ColumnDefinitions>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                </Grid.ColumnDefinitions>
 
-                                                    <!-- Description column -->
-                                                    <Label Text="{Binding Reason}" Grid.Row="0" Grid.Column="0" HorizontalOptions="Center" VerticalOptions="Center" />
+                                                <!-- Description column -->
+                                                <Label Text="{Binding Reason}" Grid.Row="0" Grid.Column="0" HorizontalOptions="Center" VerticalOptions="Center" />
 
-                                                    <!-- Amount column -->
-                                                    <Label Text="{Binding Amount}" Grid.Row="0" Grid.Column="1" HorizontalOptions="Center" VerticalOptions="Center" />
+                                                <!-- Amount column -->
+                                                <Label Text="{Binding Amount}" Grid.Row="0" Grid.Column="1" HorizontalOptions="Center" VerticalOptions="Center" />
+
+                                                <!-- Edit Button -->
+                                                    <!--<Button Text="Edit" Grid.Row="0" Grid.Column="2" Command="{Binding BindingContext.EditTransactionDetailsCommand, Source={RelativeSource AncestorType={x:Type local:TransactionHistoryViewModel}}}" CommandParameter="{Binding}" HorizontalOptions="End" VerticalOptions="Center" />-->
+                                                    <Button Text="Edit" 
+                                                        Grid.Row="0" 
+                                                        Grid.Column="2" 
+                                                        Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.EditTransactionDetailsCommand}" 
+                                                        CommandParameter="{Binding}" 
+                                                        HorizontalOptions="End" 
+                                                        VerticalOptions="Center" />
+
 
                                                     <!-- Line after each row -->
-                                                    <BoxView Grid.Row="1" Grid.ColumnSpan="2" HeightRequest="1" BackgroundColor="Black"  />
-                                                </Grid>
-                                            </DataTemplate>
-                                        </CollectionView.ItemTemplate>
-                                    </CollectionView>
-
+                                                <BoxView Grid.Row="1" Grid.ColumnSpan="2" HeightRequest="1" BackgroundColor="Black"  />
+                                            </Grid>
+                                        </DataTemplate>
+                                    </CollectionView.ItemTemplate>
+                                </CollectionView>
                                 </Grid>
                             </coreControls:CardView>
 
