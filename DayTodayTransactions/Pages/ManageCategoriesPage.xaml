@@ -9,13 +9,23 @@
         <CollectionView ItemsSource="{Binding Categories}" SelectionMode="None">
             <CollectionView.ItemTemplate>
                 <DataTemplate>
-                    <HorizontalStackLayout Spacing="10">
-                        <Label Text="{Binding .}" VerticalOptions="Center" />
-                        <Button Text="Remove" Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ManageCategoriesViewModel}}, Path=RemoveCategoryCommand}" CommandParameter="{Binding .}" />
-                    </HorizontalStackLayout>
+                    <Grid Padding="10" ColumnDefinitions="*, Auto" RowSpacing="5">
+                        <!-- Category Label -->
+                        <Label Text="{Binding .}" 
+                       VerticalOptions="Center" 
+                       Grid.Column="0" />
+
+                        <!-- Remove Button -->
+                        <Button Text="Remove" 
+                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ManageCategoriesViewModel}}, Path=RemoveCategoryCommand}" 
+                        CommandParameter="{Binding .}" 
+                        HorizontalOptions="End" 
+                        Grid.Column="1" />
+                    </Grid>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
+
 
         <!-- Add new category -->
         <Entry Placeholder="New Category" Text="{Binding NewCategory}" />
