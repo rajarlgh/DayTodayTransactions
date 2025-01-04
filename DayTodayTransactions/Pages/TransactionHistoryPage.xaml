@@ -71,7 +71,7 @@
                                         </CollectionView.ItemsLayout>
                                         <CollectionView.ItemTemplate>
                                             <DataTemplate>
-                                                <Border Padding="10" Margin="5" BackgroundColor="White">
+                                                <Border Padding="10" Margin="5" BackgroundColor="Transparent">
                                                     <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center">
                                                         <Label Text="{Binding Label}" FontAttributes="Bold" />
                                                         <Label Text="{Binding ValueLabel}" FontSize="Small" />
@@ -103,7 +103,7 @@
                                         </CollectionView.ItemsLayout>
                                         <CollectionView.ItemTemplate>
                                             <DataTemplate>
-                                                <Border Padding="10" Margin="5" BackgroundColor="White">
+                                                <Border Padding="10" Margin="5" BackgroundColor="Transparent">
                                                     <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center">
                                                         <Label Text="{Binding Label}" FontAttributes="Bold" />
                                                         <Label Text="{Binding ValueLabel}" FontSize="Small" />
@@ -113,7 +113,7 @@
                                         </CollectionView.ItemTemplate>
                                     </CollectionView>
                                     <!-- Chart -->
-                                    <microcharts:ChartView x:Name="donutExpenseChart" Margin="5"
+                                    <microcharts:ChartView x:Name="donutExpenseChart" Margin="0,5,0,0"
                                         Chart="{Binding IncomeChart}"
                                         HeightRequest="300" 
                                         WidthRequest="300" 
@@ -121,65 +121,65 @@
                                 </VerticalStackLayout>
                             </coreControls:CardView>
                             
-                            <coreControls:CardView Title="Selected Transaction">
-                                <Grid RowSpacing="10" ColumnSpacing="20" BackgroundColor="AntiqueWhite">
-                                    <!-- Row Definitions -->
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="*"/>
-                                        <!-- Allow this row to take remaining space -->
-                                    </Grid.RowDefinitions>
+                            <coreControls:CardView Title="Selected Transaction" Margin="0,0,0,10">
 
-                                    <!-- Column Definitions -->
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*" />
-                                        <!-- Description column -->
-                                        <ColumnDefinition Width="*" />
-                                        <!-- Amount column -->
-                                    </Grid.ColumnDefinitions>
 
-                                    <!-- Headers for the columns -->
-                                    <Label Text="Reason" FontAttributes="Bold" HorizontalOptions="Center" Grid.Row="0" Grid.Column="0" />
-                                    <Label Text="Amount" FontAttributes="Bold" HorizontalOptions="Center" Grid.Row="0" Grid.Column="1" />
+                                    <CollectionView ItemsSource="{Binding SelectedCategoryBreakdown}" Grid.Row="1" Grid.ColumnSpan="3"
+                                                    BackgroundColor="Transparent">
+                                        <CollectionView.ItemTemplate>
+                                            <DataTemplate>
+                                                <Grid BackgroundColor="Transparent" RowSpacing="20">
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition Height="*"/>
+                                                        <RowDefinition Height="*" />
+                                                        <RowDefinition Height="*" />
 
-                                    <CollectionView ItemsSource="{Binding SelectedCategoryBreakdown}" Grid.Row="1" Grid.ColumnSpan="2">
-                                    <CollectionView.ItemTemplate>
-                                        <DataTemplate>
-                                            <Grid Padding="15" RowSpacing="10" ColumnSpacing="20" BackgroundColor="AliceBlue">
-                                                <Grid.RowDefinitions>
-                                                    <RowDefinition Height="Auto"/>
-                                                    <RowDefinition Height="1" />
-                                                </Grid.RowDefinitions>
+                                                    </Grid.RowDefinitions>
 
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="*"/>
-                                                    <ColumnDefinition Width="*"/>
-                                                </Grid.ColumnDefinitions>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <!-- Background for Column 1 -->
+                                                    <!--<BoxView BackgroundColor="LightPink" Grid.ColumnSpan="3" Grid.Column="0" />-->
+
+                                                    <!-- Background for Column 2 --><!--
+                                                    <BoxView BackgroundColor="LightGreen" Grid.RowSpan="2" Grid.Column="1" />
+
+                                                    --><!-- Background for Column 3 --><!--
+                                                    <BoxView BackgroundColor="LightYellow" Grid.RowSpan="2" Grid.Column="2" />-->
+
+                                                <!-- Headers for the columns -->
+                                                <Label Text="Reason" FontAttributes="Bold" HorizontalOptions="Start" Grid.Row="0" Grid.Column="0" />
+                                                <Label Text="Amount" FontAttributes="Bold" HorizontalOptions="Start" Grid.Row="0" Grid.Column="1" />
+                                                <Label Text="Action" FontAttributes="Bold" HorizontalOptions="Start" Grid.Row="0" Grid.Column="2" />
+
 
                                                 <!-- Description column -->
-                                                <Label Text="{Binding Reason}" Grid.Row="0" Grid.Column="0" HorizontalOptions="Center" VerticalOptions="Center" />
+                                                    <Label Text="{Binding Reason}" Grid.Row="1" Grid.Column="0" HorizontalOptions="Start" VerticalOptions="Center" />
 
-                                                <!-- Amount column -->
-                                                <Label Text="{Binding Amount}" Grid.Row="0" Grid.Column="1" HorizontalOptions="Center" VerticalOptions="Center" />
+                                                    <!-- Amount column -->
+                                                    <Label Text="{Binding Amount}" Grid.Row="1" Grid.Column="1" HorizontalOptions="Start" VerticalOptions="Center" />
 
-                                                <!-- Edit Button -->
+                                                    
+                                                    <!-- Edit Button -->
                                                     <!--<Button Text="Edit" Grid.Row="0" Grid.Column="2" Command="{Binding BindingContext.EditTransactionDetailsCommand, Source={RelativeSource AncestorType={x:Type local:TransactionHistoryViewModel}}}" CommandParameter="{Binding}" HorizontalOptions="End" VerticalOptions="Center" />-->
                                                     <Button Text="Edit" 
-                                                        Grid.Row="0" 
+                                                        Grid.Row="1" 
                                                         Grid.Column="2" 
                                                         Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.EditTransactionDetailsCommand}" 
                                                         CommandParameter="{Binding}" 
-                                                        HorizontalOptions="End" 
+                                                        HorizontalOptions="Start" 
                                                         VerticalOptions="Center" />
 
 
                                                     <!-- Line after each row -->
-                                                <BoxView Grid.Row="1" Grid.ColumnSpan="2" HeightRequest="1" BackgroundColor="Black"  />
-                                            </Grid>
-                                        </DataTemplate>
-                                    </CollectionView.ItemTemplate>
-                                </CollectionView>
-                                </Grid>
+                                                    <BoxView Grid.Row="2" Grid.ColumnSpan="3" HeightRequest="1" BackgroundColor="Black"  />
+                                                </Grid>
+                                            </DataTemplate>
+                                        </CollectionView.ItemTemplate>
+                                    </CollectionView>
                             </coreControls:CardView>
 
                         </StackLayout>
