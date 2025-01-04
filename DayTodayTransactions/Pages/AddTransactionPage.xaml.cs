@@ -1,6 +1,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using DayTodayTransactions.ViewModels;
 using DayTodayTransactionsLibrary.Models;
+using System.Collections.ObjectModel;
 
 namespace DayTodayTransactions.Pages;
 [QueryProperty(nameof(Type), "type")]  // Bind the 'type' query parameter to this property
@@ -52,11 +53,18 @@ public partial class AddTransactionPage : ContentPage
         {
             if (Transaction != null)
             {
+                _transactionViewModel.LoadCategories(Transaction.Category);
+
                 // Populate fields
                 _transactionViewModel = transactionViewModel;
                 _transactionViewModel.LoadData();
                 _transactionViewModel.Id = Transaction.Id;
-                _transactionViewModel.Category = Transaction.Category;
+                if (_transactionViewModel.Category == null)
+                    _transactionViewModel.Category = new Category();
+                _transactionViewModel.Category.Name = (Transaction.Category.Name);
+                if (_transactionViewModel.SelectedCategory == null)
+                    _transactionViewModel.SelectedCategory = new Category();
+                _transactionViewModel.SelectedCategory = (Transaction.Category);
                 _transactionViewModel.Type = Transaction.Type;
                 _transactionViewModel.Amount = Transaction.Amount;
                 _transactionViewModel.Reason = Transaction.Reason;

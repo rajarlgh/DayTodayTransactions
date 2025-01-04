@@ -5,133 +5,113 @@ using DayTodayTransactionsLibrary.Interfaces;
 using DayTodayTransactionsLibrary.Models;
 using System.Collections.ObjectModel;
 
-namespace DayTodayTransactions.ViewModels
+public partial class TransactionViewModel : ObservableObject
 {
-    public partial class TransactionViewModel : ObservableObject
+    private readonly ITransactionService _transactionService;
+    private readonly ICategoryService _categoryService;
+
+    public TransactionViewModel(ITransactionService transactionService, ICategoryService categoryService)
     {
-        private readonly ITransactionService _transactionService;
+        _transactionService = transactionService;
+        _categoryService = categoryService;
+        LoadCategories(null);
+    }
+    public void LoadData()
+    {
+        this.TransactionText = "Edit Transaction";
+    }
+    [ObservableProperty]
+    private int id;
 
-        public TransactionViewModel(ITransactionService transactionService)
+    [ObservableProperty]
+    private decimal amount;
+
+    [ObservableProperty]
+    private string reason = string.Empty;
+
+    [ObservableProperty]
+    private string type = string.Empty; // Income or Expense
+
+    [ObservableProperty]
+    private string transactionText = "Add Transaction";
+
+    [ObservableProperty]
+    private ObservableCollection<Category> listOfCategories;
+
+    [ObservableProperty]
+    private Category category;
+
+    [ObservableProperty]
+    private Category selectedCategory;
+
+    [ObservableProperty]
+    private DateTime date = DateTime.Now;
+
+
+    partial void OnSelectedCategoryChanged(Category value)
+    {
+        if (value != null && value.Name == "Add New Category")
         {
-            _transactionService = transactionService;
-            LoadCategories();
+            // Navigate to the Manage Categories page
+            Shell.Current.GoToAsync(nameof(ManageCategoriesPage));
+
+            // Reset SelectedCategory to avoid accidental re-selection
+            SelectedCategory = null;
         }
-        public void LoadData()
+    }
+
+    [RelayCommand]
+    public async Task AddTransactionAsync()
+    {
+        var transaction = new Transaction
         {
-            this.TransactionText = "Edit Transaction";
+            Id = Id,
+            Amount = Amount,
+            Reason = Reason,
+            Type = Type,
+            Category = Category, // Use the name of the selected category
+            
+            Date = DateTime.Now
+        };
+
+        try
+        {
+            if (transaction.Id == 0)
+                await _transactionService.AddTransactionAsync(transaction);
+            else
+                await _transactionService.UpdateTransactionAsync(transaction);
+
+            // Reset form properties
+            ResetTransactionForm();
+
+            // Show success message
+            await Application.Current.MainPage.DisplayAlert("Success", "Transaction saved successfully.", "OK");
         }
-        // Transaction properties
-        [ObservableProperty]
-        private int id;
-
-        [ObservableProperty]
-        private decimal amount;
-
-        [ObservableProperty]
-        private string reason = string.Empty;
-
-        [ObservableProperty]
-        private string type = string.Empty; // Income or Expense
-
-        [ObservableProperty]
-        private string category = string.Empty;
-
-        [ObservableProperty]
-        private DateTime date = DateTime.Now;
-
-        [ObservableProperty]
-        private string transactionText = "Add Transaction";
-
-        // Categories and SelectedCategory
-        [ObservableProperty]
-        private ObservableCollection<string> categories;
-
-        [ObservableProperty]
-        private string selectedCategory;
-
-        partial void OnSelectedCategoryChanged(string value)
+        catch (Exception ex)
         {
-            if (value == "Add New Category")
-            {
-                // Navigate to the Manage Categories page
-                Shell.Current.GoToAsync(nameof(ManageCategoriesPage));
-
-                // Reset SelectedCategory to avoid accidental re-selection
-                SelectedCategory = null;
-            }
+            // Handle exception (log or display an error message)
+            await Application.Current.MainPage.DisplayAlert("Error", ex.Message, "OK");
         }
+    }
 
-        [RelayCommand]
-        public async Task AddTransactionAsync()
+    private void ResetTransactionForm()
+    {
+        Amount = 0;
+        Reason = string.Empty;
+        SelectedCategory = null;
+    }
+
+    public async void LoadCategories(Category selectedCategory)
+    {
+        var categories = await _categoryService.GetCategoriesAsync();
+        ListOfCategories = new ObservableCollection<Category>(categories);
+
+        // Add a special entry for adding new categories
+        ListOfCategories.Add(new Category { Id = -1, Name = "Add New Category" });
+
+        if (selectedCategory != null)
         {
-            var transaction = new Transaction
-            {
-                Id = Id,
-                Amount = Amount,
-                Reason = Reason,
-                Type = Type,
-                Category = Category,
-                Date = Date
-            };
-
-            try
-            {
-                if (transaction.Id == 0)
-                    await _transactionService.AddTransactionAsync(transaction);
-                else
-                    await _transactionService.UpdateTransactionAsync(transaction);
-
-                // Reset form properties
-                ResetTransactionForm();
-
-                // Show success message
-                await Application.Current.MainPage.DisplayAlert("Success", "Transaction saved successfully.", "OK");
-            }
-            catch (Exception ex)
-            {
-                // Handle exception (log or display an error message)
-                await Application.Current.MainPage.DisplayAlert("Error", ex.Message, "OK");
-            }
-        }
-
-        private void ResetTransactionForm()
-        {
-            Amount = 0;
-            Reason = string.Empty;
-            Category = string.Empty;
-            Date = DateTime.Now;
-        }
-
-        private void LoadCategories()
-        {
-            Categories = new ObservableCollection<string>
-            {
-                "Car",
-                "Food",
-                "Pet",
-                "Health",
-                "Cafe",
-                "Bar",
-                "Dental",
-                "Home",
-                "Mobile",
-                "Cloths",
-                "Sports",
-                "Gift",
-                "Fuel",
-                "Add New Category" // Special entry for adding new categories
-            };
-        }
-
-        [RelayCommand]
-        public void AddCategory()
-        {
-            // Add a new category dynamically (replace with input from the user if needed)
-            string newCategory = "Travel"; // Example: Replace with user input logic
-            if (!Categories.Contains(newCategory))
-            {
-                Categories.Insert(Categories.Count - 1, newCategory); // Add before 'Add New Category'
-            }
+            SelectedCategory = selectedCategory;
         }
     }
 }

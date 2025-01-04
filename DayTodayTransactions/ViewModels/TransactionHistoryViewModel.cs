@@ -37,18 +37,21 @@ namespace DayTodayTransactions.ViewModels
             //  var t= transactionService.GetTransactionsAsync();
             LoadTransactionsAndSetGrid(transactions);
         }
-        public void ShowBreakdownForCategory(string category, string type)
+
+        public void ShowBreakdownForCategory(Category category, string type)
         {
-            var breakdown = transactions.Where(t => t.Type == type && t.Category == category)
+            var breakdown = transactions.Where(t => t.Type == type && t.Category.Name  ==  category.Name)
                 .ToList();
 
             SelectedCategoryBreakdown = new ObservableCollection<Transaction>(breakdown);
+
+            
         }
         private void LoadTransactionsAndSetGrid(IList<Transaction> transactions)
         {
             // Group transactions by category and calculate the total amount for each category
             var groupedData = transactions
-                .GroupBy(t => t.Category)
+                .GroupBy(t => t.Category.Name)
                 .Select(g => new
                 {
                     Category = g.Key,
@@ -56,7 +59,7 @@ namespace DayTodayTransactions.ViewModels
                 });
 
             var incomeGroupedData = transactions.Where(r=> r.Type=="Income")
-               .GroupBy(t => t.Category)
+               .GroupBy(t => t.Category.Name)
                .Select(g => new
                {
                    Category = g.Key,
@@ -74,7 +77,7 @@ namespace DayTodayTransactions.ViewModels
             );
 
             var expenseGroupedData = transactions.Where(r => r.Type == "Expense")
-              .GroupBy(t => t.Category)
+              .GroupBy(t => t.Category.Name)
               .Select(g => new
               {
                   Category = g.Key,
@@ -247,7 +250,7 @@ namespace DayTodayTransactions.ViewModels
 
             if (!string.IsNullOrEmpty(FilterCategory))
             {
-                filteredTransactions = filteredTransactions.Where(t => t.Category.Contains(FilterCategory));
+                filteredTransactions = filteredTransactions.Where(t => t.Category.Name ==(FilterCategory));
             }
 
             if (!string.IsNullOrEmpty(FilterType))

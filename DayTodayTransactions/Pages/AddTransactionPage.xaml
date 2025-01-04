@@ -12,15 +12,19 @@
                 </x:Array>
             </Picker.ItemsSource>
         </Picker>
-        <Picker Title="Category" SelectedItem="{Binding SelectedCategory}">
-            <Picker.ItemsSource>
-                <Binding Path="Categories" />
-            </Picker.ItemsSource>
+        
+        <Picker Title="Category" 
+        ItemsSource="{Binding ListOfCategories}" 
+        SelectedItem="{Binding SelectedCategory}">
+            <Picker.ItemDisplayBinding>
+                <Binding Path="Name" />
+            </Picker.ItemDisplayBinding>
         </Picker>
+
         <Entry Placeholder="Amount" Text="{Binding Amount}" Keyboard="Numeric"/>
         <Entry Placeholder="Reason" Text="{Binding Reason}"/>
      
         <DatePicker Date="{Binding Date}" />
-        <Button Text="Save Transaction" Command="{Binding AddTransactionAsyncaCommand}" />
+        <Button Text="Save Transaction" Command="{Binding AddTransactionCommand}" />
     </VerticalStackLayout>
 </ContentPage>

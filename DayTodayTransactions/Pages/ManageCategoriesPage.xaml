@@ -6,25 +6,27 @@
              Title="Manage Categories">
     <VerticalStackLayout Padding="10">
         <!-- List of categories -->
-        <CollectionView ItemsSource="{Binding Categories}" SelectionMode="None">
+        <CollectionView ItemsSource="{Binding ListOfCategories}" SelectionMode="None">
             <CollectionView.ItemTemplate>
                 <DataTemplate>
                     <Grid Padding="10" ColumnDefinitions="*, Auto" RowSpacing="5">
                         <!-- Category Label -->
-                        <Label Text="{Binding .}" 
+                        <Label Text="{Binding Name}" 
                        VerticalOptions="Center" 
                        Grid.Column="0" />
 
                         <!-- Remove Button -->
                         <Button Text="Remove" 
-                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ManageCategoriesViewModel}}, Path=RemoveCategoryCommand}" 
-                        CommandParameter="{Binding .}" 
-                        HorizontalOptions="End" 
-                        Grid.Column="1" />
+                            Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ManageCategoriesViewModel}}, Path=RemoveCategoryAsyncCommand}" 
+                            CommandParameter="{Binding}" 
+                            HorizontalOptions="End" 
+                            Grid.Column="1" />
+
                     </Grid>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
+
 
 
         <!-- Add new category -->

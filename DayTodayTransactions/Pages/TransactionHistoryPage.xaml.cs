@@ -1,4 +1,5 @@
 using DayTodayTransactions.ViewModels;
+using DayTodayTransactionsLibrary.Models;
 using Microcharts;
 
 namespace DayTodayTransactions.Pages;
@@ -17,7 +18,7 @@ public partial class TransactionHistoryPage : ContentPage
 
     }
 
-    public string SelectedCategory{ get; set; }
+    public Category SelectedCategory { get; set; } = new Category();
     public string CategoryType { get; set; }
 
     private async void OnFilterChanged(object sender, EventArgs e)
@@ -53,7 +54,7 @@ public partial class TransactionHistoryPage : ContentPage
         if (selectedEntry != null)
         {
             // Assuming the Label is the Category name
-            this.SelectedCategory = selectedEntry.Label;
+            this.SelectedCategory.Name = selectedEntry.Label;
 
             // Call the method in the ViewModel to fetch the breakdown
             var viewModel = BindingContext as TransactionHistoryViewModel;
@@ -69,7 +70,7 @@ public partial class TransactionHistoryPage : ContentPage
         if (selectedEntry != null)
         {
             // Assuming the Label is the Category name
-            this.SelectedCategory = selectedEntry.Label;
+            this.SelectedCategory.Name = selectedEntry.Label;
 
             // Call the method in the ViewModel to fetch the breakdown
             var viewModel = BindingContext as TransactionHistoryViewModel;
