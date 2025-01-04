@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using DayTodayTransactionsLibrary.Interfaces;
 using DayTodayTransactionsLibrary.Models;
+using System.Collections.ObjectModel;
 
 namespace DayTodayTransactions.ViewModels
 {
@@ -12,6 +13,7 @@ namespace DayTodayTransactions.ViewModels
         public TransactionViewModel(ITransactionService transactionService)
         {
             _transactionService = transactionService;
+            this.GetCategory();
         }
 
 
@@ -76,6 +78,36 @@ namespace DayTodayTransactions.ViewModels
             // Show success message
             await Application.Current.MainPage.DisplayAlert("Success", "Transaction saved successfully.", "OK");
 
+        }
+        [ObservableProperty]
+        private ObservableCollection<string> categories;
+        private void GetCategory()
+        {
+            Categories = new ObservableCollection<string>
+            {
+                "Car",
+                "Food",
+                "Pet",
+                "Health",
+                "Cafe",
+                "Bar",
+                "Dental",
+                "Home",
+                "Mobile",
+                "Cloths",
+                "Sports",
+                "Gift",
+                "Fuel"
+            };
+
+            // Example: Dynamically add a new category
+            Categories.Add("Travel");
+        }
+        [RelayCommand]
+        private void AddCategory()
+        {
+            // Example: Add a new category (you can replace this with user input logic)
+            Categories.Add("NewCategory");
         }
     }
 
