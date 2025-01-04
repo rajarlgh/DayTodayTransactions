@@ -12,7 +12,7 @@
                 </x:Array>
             </Picker.ItemsSource>
         </Picker>
-        <Picker Title="Category" SelectedItem="{Binding Category}">
+        <Picker Title="Category" SelectedItem="{Binding SelectedCategory}">
             <Picker.ItemsSource>
                 <Binding Path="Categories" />
             </Picker.ItemsSource>

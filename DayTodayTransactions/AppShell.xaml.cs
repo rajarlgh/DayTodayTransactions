@@ -15,6 +15,7 @@ namespace DayTodayTransactions
             // Register your routes here
             Routing.RegisterRoute(nameof(AddTransactionPage), typeof(AddTransactionPage));
             Routing.RegisterRoute(nameof(TransactionHistoryPage), typeof(TransactionHistoryPage));
+            Routing.RegisterRoute(nameof(ManageCategoriesPage), typeof(ManageCategoriesPage));
         }
     }
 }

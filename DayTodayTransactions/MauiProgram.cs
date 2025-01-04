@@ -33,7 +33,7 @@ namespace DayTodayTransactions
             // Register pages and their ViewModels with the required dbPath
             RegisterPageWithViewModel<TransactionViewModel, AddTransactionPage>(builder);
             RegisterPageWithViewModel<TransactionHistoryViewModel, TransactionHistoryPage>(builder, dbPath);
-
+            RegisterPageWithViewModel<ManageCategoriesViewModel, ManageCategoriesPage>(builder);
             // Update to use the App constructor that accepts IServiceProvider
             builder.Services.AddSingleton<App>();
 

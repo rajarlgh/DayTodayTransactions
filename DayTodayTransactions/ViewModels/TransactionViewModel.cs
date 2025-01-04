@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using DayTodayTransactions.Pages;
 using DayTodayTransactionsLibrary.Interfaces;
 using DayTodayTransactionsLibrary.Models;
 using System.Collections.ObjectModel;
@@ -13,10 +14,13 @@ namespace DayTodayTransactions.ViewModels
         public TransactionViewModel(ITransactionService transactionService)
         {
             _transactionService = transactionService;
-            this.GetCategory();
+            LoadCategories();
         }
-
-
+        public void LoadData()
+        {
+            this.TransactionText = "Edit Transaction";
+        }
+        // Transaction properties
         [ObservableProperty]
         private int id;
 
@@ -24,7 +28,7 @@ namespace DayTodayTransactions.ViewModels
         private decimal amount;
 
         [ObservableProperty]
-        private string reason=string.Empty;
+        private string reason = string.Empty;
 
         [ObservableProperty]
         private string type = string.Empty; // Income or Expense
@@ -35,16 +39,30 @@ namespace DayTodayTransactions.ViewModels
         [ObservableProperty]
         private DateTime date = DateTime.Now;
 
-        public void LoadData()
-        {
-            this.TransactionText = "Edit Transaction";
-        }
-
         [ObservableProperty]
         private string transactionText = "Add Transaction";
 
+        // Categories and SelectedCategory
+        [ObservableProperty]
+        private ObservableCollection<string> categories;
+
+        [ObservableProperty]
+        private string selectedCategory;
+
+        partial void OnSelectedCategoryChanged(string value)
+        {
+            if (value == "Add New Category")
+            {
+                // Navigate to the Manage Categories page
+                Shell.Current.GoToAsync(nameof(ManageCategoriesPage));
+
+                // Reset SelectedCategory to avoid accidental re-selection
+                SelectedCategory = null;
+            }
+        }
+
         [RelayCommand]
-        public async Task AddTransactionAsynca()
+        public async Task AddTransactionAsync()
         {
             var transaction = new Transaction
             {
@@ -62,26 +80,29 @@ namespace DayTodayTransactions.ViewModels
                     await _transactionService.AddTransactionAsync(transaction);
                 else
                     await _transactionService.UpdateTransactionAsync(transaction);
+
+                // Reset form properties
+                ResetTransactionForm();
+
+                // Show success message
+                await Application.Current.MainPage.DisplayAlert("Success", "Transaction saved successfully.", "OK");
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-
-
+                // Handle exception (log or display an error message)
+                await Application.Current.MainPage.DisplayAlert("Error", ex.Message, "OK");
             }
-            // Reset properties to default values
+        }
+
+        private void ResetTransactionForm()
+        {
             Amount = 0;
             Reason = string.Empty;
-            //Type = null; // Reset to null if no default type
-            //Category = null; // Reset to null if no default category
+            Category = string.Empty;
             Date = DateTime.Now;
-
-            // Show success message
-            await Application.Current.MainPage.DisplayAlert("Success", "Transaction saved successfully.", "OK");
-
         }
-        [ObservableProperty]
-        private ObservableCollection<string> categories;
-        private void GetCategory()
+
+        private void LoadCategories()
         {
             Categories = new ObservableCollection<string>
             {
@@ -97,18 +118,20 @@ namespace DayTodayTransactions.ViewModels
                 "Cloths",
                 "Sports",
                 "Gift",
-                "Fuel"
+                "Fuel",
+                "Add New Category" // Special entry for adding new categories
             };
-
-            // Example: Dynamically add a new category
-            Categories.Add("Travel");
         }
+
         [RelayCommand]
-        private void AddCategory()
+        public void AddCategory()
         {
-            // Example: Add a new category (you can replace this with user input logic)
-            Categories.Add("NewCategory");
+            // Add a new category dynamically (replace with input from the user if needed)
+            string newCategory = "Travel"; // Example: Replace with user input logic
+            if (!Categories.Contains(newCategory))
+            {
+                Categories.Insert(Categories.Count - 1, newCategory); // Add before 'Add New Category'
+            }
         }
     }
-
 }
