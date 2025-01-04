@@ -17,6 +17,9 @@ public partial class TransactionHistoryPage : ContentPage
 
     }
 
+    public string SelectedCategory{ get; set; }
+    public string CategoryType { get; set; }
+
     private async void OnFilterChanged(object sender, EventArgs e)
     {
         _viewModel.FilterTransactions();
@@ -35,6 +38,8 @@ public partial class TransactionHistoryPage : ContentPage
         if (BindingContext is TransactionHistoryViewModel viewModel)
         {
             await viewModel.RefreshDataAsync();
+
+            viewModel?.ShowBreakdownForCategory(this.SelectedCategory, this.CategoryType);
             donutIncomeChart.Chart = _viewModel.IncomeChart;
             donutExpenseChart.Chart = _viewModel.ExpenseChart;
         }
@@ -48,11 +53,12 @@ public partial class TransactionHistoryPage : ContentPage
         if (selectedEntry != null)
         {
             // Assuming the Label is the Category name
-            string selectedCategory = selectedEntry.Label;
+            this.SelectedCategory = selectedEntry.Label;
 
             // Call the method in the ViewModel to fetch the breakdown
             var viewModel = BindingContext as TransactionHistoryViewModel;
-            viewModel?.ShowBreakdownForCategory(selectedCategory, "Income");
+            this.CategoryType = "Income";
+            viewModel?.ShowBreakdownForCategory(this.SelectedCategory, this.CategoryType);
             collectionViewExpense.SelectedItem = null;
         }
     }
@@ -63,11 +69,12 @@ public partial class TransactionHistoryPage : ContentPage
         if (selectedEntry != null)
         {
             // Assuming the Label is the Category name
-            string selectedCategory = selectedEntry.Label;
+            this.SelectedCategory = selectedEntry.Label;
 
             // Call the method in the ViewModel to fetch the breakdown
             var viewModel = BindingContext as TransactionHistoryViewModel;
-            viewModel?.ShowBreakdownForCategory(selectedCategory, "Expense");
+            this.CategoryType = "Expense";
+            viewModel?.ShowBreakdownForCategory(this.SelectedCategory, this.CategoryType);
             collectionViewIncome.SelectedItem = null;
         }
     }

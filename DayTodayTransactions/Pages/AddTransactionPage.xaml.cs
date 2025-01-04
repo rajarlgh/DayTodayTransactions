@@ -1,12 +1,16 @@
+using CommunityToolkit.Mvvm.ComponentModel;
 using DayTodayTransactions.ViewModels;
+using DayTodayTransactionsLibrary.Models;
 
 namespace DayTodayTransactions.Pages;
 [QueryProperty(nameof(Type), "type")]  // Bind the 'type' query parameter to this property
 [QueryProperty(nameof(TransactionViewModel), "TransactionViewModel")]
+[QueryProperty(nameof(Transaction), "Transaction")]
+
 public partial class AddTransactionPage : ContentPage
 {
     private  TransactionViewModel _transactionViewModel;
-
+    private Transaction _transaction;
     public AddTransactionPage(TransactionViewModel viewModel)
     {
         InitializeComponent();
@@ -29,25 +33,14 @@ public partial class AddTransactionPage : ContentPage
             BindingContext = _transactionViewModel;
         }
     }
-    protected override void OnNavigatedTo(Microsoft.Maui.Controls.NavigatedToEventArgs args)
+
+    public Transaction Transaction
     {
-        base.OnNavigatedTo(args);
-
-        //// Retrieve the passed data
-        //if (Shell.Current?.Navigation?.NavigationStack.LastOrDefault()?.BindingContext is TransactionViewModel transactionViewModel)
-        //{
-        //    // Populate the ViewModel
-        //    _transactionViewModel.Amount = transactionViewModel.Amount;
-        //    _transactionViewModel.Reason = transactionViewModel.Reason;
-        //    _transactionViewModel.Type = transactionViewModel.Type;
-        //    _transactionViewModel.Category = transactionViewModel.Category;
-        //    _transactionViewModel.Date = transactionViewModel.Date;
-
-        //    // Update the BindingContext
-        //    BindingContext = _transactionViewModel;
-        //}
+        get => _transaction;
+        set => _transaction = value;
     }
 
+    
 
 
     // Handle receiving the transaction details for editing
@@ -55,16 +48,21 @@ public partial class AddTransactionPage : ContentPage
     {
         base.OnAppearing();
 
-        //if (BindingContext is TransactionViewModel transactionViewModel)
-        //{
-        //    _transactionViewModel = transactionViewModel;
+        if (BindingContext is TransactionViewModel transactionViewModel)
+        {
+            if (Transaction != null)
+            {
+                // Populate fields
+                _transactionViewModel = transactionViewModel;
+                _transactionViewModel.LoadData();
+                _transactionViewModel.Id = Transaction.Id;
+                _transactionViewModel.Category = Transaction.Category;
+                _transactionViewModel.Type = Transaction.Type;
+                _transactionViewModel.Amount = Transaction.Amount;
+                _transactionViewModel.Reason = Transaction.Reason;
+                _transactionViewModel.Date = Transaction.Date;
 
-        //    // Populate fields
-        //    AmountEntry.Text = _transactionViewModel.Amount.ToString();
-        //    ReasonEntry.Text = _transactionViewModel.Reason;
-        //    TypePicker.SelectedItem = _transactionViewModel.Type;
-        //    CategoryPicker.SelectedItem = _transactionViewModel.Category;
-        //    DatePicker.Date = _transactionViewModel.Date;
-        //}
+            }
+        }
     }
 }
