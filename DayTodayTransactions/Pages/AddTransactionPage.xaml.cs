@@ -64,6 +64,9 @@ public partial class AddTransactionPage : ContentPage
                 transactionViewModel.Reason = Transaction.Reason;
                 transactionViewModel.Date = Transaction.Date;
             }
+            else
+                await transactionViewModel.LoadCategoriesAsync(null);
+
         }
     }
 

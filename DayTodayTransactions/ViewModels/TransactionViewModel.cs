@@ -14,7 +14,6 @@ public partial class TransactionViewModel : ObservableObject
     {
         _transactionService = transactionService;
         _categoryService = categoryService;
-       
     }
     public void LoadData()
     {
