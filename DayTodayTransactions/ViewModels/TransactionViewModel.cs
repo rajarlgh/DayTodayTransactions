@@ -14,11 +14,12 @@ public partial class TransactionViewModel : ObservableObject
     {
         _transactionService = transactionService;
         _categoryService = categoryService;
-        LoadCategories(null);
+       
     }
     public void LoadData()
     {
         this.TransactionText = "Edit Transaction";
+
     }
     [ObservableProperty]
     private int id;
@@ -38,8 +39,8 @@ public partial class TransactionViewModel : ObservableObject
     [ObservableProperty]
     private ObservableCollection<Category> listOfCategories;
 
-    [ObservableProperty]
-    private Category category;
+    //[ObservableProperty]
+    //private Category category;
 
     [ObservableProperty]
     private Category selectedCategory;
@@ -52,13 +53,10 @@ public partial class TransactionViewModel : ObservableObject
     {
         if (value != null && value.Name == "Add New Category")
         {
-            // Navigate to the Manage Categories page
             Shell.Current.GoToAsync(nameof(ManageCategoriesPage));
-
-            // Reset SelectedCategory to avoid accidental re-selection
-            SelectedCategory = null;
         }
     }
+
 
     [RelayCommand]
     public async Task AddTransactionAsync()
@@ -69,7 +67,7 @@ public partial class TransactionViewModel : ObservableObject
             Amount = Amount,
             Reason = Reason,
             Type = Type,
-            Category = Category, // Use the name of the selected category
+            Category = SelectedCategory, // Use the name of the selected category
             
             Date = DateTime.Now
         };
@@ -101,7 +99,7 @@ public partial class TransactionViewModel : ObservableObject
         SelectedCategory = null;
     }
 
-    public async void LoadCategories(Category selectedCategory)
+    public async Task LoadCategoriesAsync(Category selectedCategory)
     {
         var categories = await _categoryService.GetCategoriesAsync();
         ListOfCategories = new ObservableCollection<Category>(categories);
@@ -109,9 +107,11 @@ public partial class TransactionViewModel : ObservableObject
         // Add a special entry for adding new categories
         ListOfCategories.Add(new Category { Id = -1, Name = "Add New Category" });
 
+        // Set the selected category after loading
         if (selectedCategory != null)
         {
-            SelectedCategory = selectedCategory;
+            SelectedCategory = ListOfCategories.FirstOrDefault(c => c.Id == selectedCategory.Id);
         }
     }
+
 }

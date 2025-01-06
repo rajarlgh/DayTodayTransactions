@@ -41,11 +41,11 @@ public partial class AddTransactionPage : ContentPage
         set => _transaction = value;
     }
 
-    
+
 
 
     // Handle receiving the transaction details for editing
-    protected override void OnAppearing()
+    protected override async void OnAppearing()
     {
         base.OnAppearing();
 
@@ -53,24 +53,18 @@ public partial class AddTransactionPage : ContentPage
         {
             if (Transaction != null)
             {
-                _transactionViewModel.LoadCategories(Transaction.Category);
+                // Load categories and set the selected category
+                await transactionViewModel.LoadCategoriesAsync(Transaction.Category);
 
-                // Populate fields
-                _transactionViewModel = transactionViewModel;
-                _transactionViewModel.LoadData();
-                _transactionViewModel.Id = Transaction.Id;
-                if (_transactionViewModel.Category == null)
-                    _transactionViewModel.Category = new Category();
-                _transactionViewModel.Category.Name = (Transaction.Category.Name);
-                if (_transactionViewModel.SelectedCategory == null)
-                    _transactionViewModel.SelectedCategory = new Category();
-                _transactionViewModel.SelectedCategory = (Transaction.Category);
-                _transactionViewModel.Type = Transaction.Type;
-                _transactionViewModel.Amount = Transaction.Amount;
-                _transactionViewModel.Reason = Transaction.Reason;
-                _transactionViewModel.Date = Transaction.Date;
-
+                // Update other fields
+                transactionViewModel.TransactionText = "Edit Transaction";
+                transactionViewModel.Id = Transaction.Id;
+                transactionViewModel.Type = Transaction.Type;
+                transactionViewModel.Amount = Transaction.Amount;
+                transactionViewModel.Reason = Transaction.Reason;
+                transactionViewModel.Date = Transaction.Date;
             }
         }
     }
+
 }
