@@ -47,6 +47,20 @@ namespace DayTodayTransactions.ViewModels
 
             
         }
+
+        private DonutChart CreateChart(ObservableCollection<ChartEntry> entries)
+        {
+            return new DonutChart
+            {
+                Entries = entries,
+                LabelMode = LabelMode.LeftAndRight,
+                IsAnimated = true,
+                Margin = 10,
+                LabelTextSize = 40
+            };
+        }
+
+        
         private void LoadTransactionsAndSetGrid(IList<Transaction> transactions)
         {
             // Group transactions by category and calculate the total amount for each category
@@ -95,24 +109,28 @@ namespace DayTodayTransactions.ViewModels
             //LoadTransactions();
 
             // Recreate the chart instance with new entries
-            IncomeChart = new DonutChart
-            {
-                Entries = IncomeChartEntries,
-                LabelMode = LabelMode.LeftAndRight,
-                IsAnimated = true,
-                Margin = 10,
-                LabelTextSize = 40
-            };
+            //IncomeChart = new DonutChart
+            //{
+            //    Entries = IncomeChartEntries,
+            //    LabelMode = LabelMode.LeftAndRight,
+            //    IsAnimated = true,
+            //    Margin = 10,
+            //    LabelTextSize = 40
+            //};
+
+            // Replace chart creation calls:
+            IncomeChart = CreateChart(IncomeChartEntries);
+            ExpenseChart = CreateChart(ExpenseChartEntries);
 
             // Recreate the chart instance with new entries
-            ExpenseChart = new DonutChart
-            {
-                Entries = ExpenseChartEntries,
-                LabelMode = LabelMode.LeftAndRight,
-                IsAnimated = true,
-                Margin = 10,
-                LabelTextSize = 40
-            };
+            //ExpenseChart = new DonutChart
+            //{
+            //    Entries = ExpenseChartEntries,
+            //    LabelMode = LabelMode.LeftAndRight,
+            //    IsAnimated = true,
+            //    Margin = 10,
+            //    LabelTextSize = 40
+            //};
 
         }
 
