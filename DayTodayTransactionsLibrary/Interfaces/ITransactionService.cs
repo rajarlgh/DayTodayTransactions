@@ -1,6 +1,4 @@
-﻿using DayTodayTransactionsLibrary.Models;
-
-namespace DayTodayTransactionsLibrary.Interfaces
+﻿namespace DayTodayTransactionsLibrary.Interfaces
 {
     public interface ITransactionService
     {

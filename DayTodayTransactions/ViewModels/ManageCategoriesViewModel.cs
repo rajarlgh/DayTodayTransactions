@@ -4,8 +4,8 @@ using DayTodayTransactionsLibrary.Interfaces;
 using DayTodayTransactionsLibrary.Models;
 using System.Collections.ObjectModel;
 
-namespace DayTodayTransactions.ViewModels
-{
+    namespace DayTodayTransactions.ViewModels
+    {
     public partial class ManageCategoriesViewModel : ObservableObject
     {
         [ObservableProperty]

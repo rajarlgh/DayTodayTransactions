@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="DayTodayTransactions.Pages.ManageAccountsPage"
+             xmlns:vm="clr-namespace:DayTodayTransactions.ViewModels"
+             Title="Manage Accounts">
+    <VerticalStackLayout Padding="10" Spacing="10">
+
+        <!-- List of Accounts -->
+        <CollectionView ItemsSource="{Binding Accounts}" SelectionMode="None">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Grid Padding="10" ColumnDefinitions="*, Auto, Auto" RowSpacing="5">
+                        <!-- Account Name -->
+                        <Label Text="{Binding Name}" VerticalOptions="Center" Grid.Column="0" />
+
+                        <!-- Edit Button -->
+                        <Button Text="Edit"
+                                Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ManageAccountsViewModel}}, Path=EditAccountCommand}"
+                                CommandParameter="{Binding .}"
+                                HorizontalOptions="End" 
+                                Grid.Column="1" />
+
+                        <!-- Delete Button -->
+                        <Button Text="Delete"
+                                Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ManageAccountsViewModel}}, Path=DeleteAccountCommand}"
+                                CommandParameter="{Binding .}"
+                                HorizontalOptions="End" 
+                                Grid.Column="2" />
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <!-- Add New Account -->
+        <Entry Placeholder="New Account Name" Text="{Binding NewAccountName}" />
+        <Button Text="Add Account" Command="{Binding AddOrUpdateAccountCommand}" />
+
+    </VerticalStackLayout>
+</ContentPage>

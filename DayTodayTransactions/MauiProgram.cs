@@ -29,12 +29,14 @@ namespace DayTodayTransactions
             // Dependency Injection Registration
             var dbPath = Path.Combine(FileSystem.AppDataDirectory, "expenses.db");
             builder.Services.AddSingleton<ITransactionService>(new TransactionService(dbPath));
+            builder.Services.AddSingleton<IAccountService>(new AccountService(dbPath));
             builder.Services.AddSingleton<ICategoryService>(new CategoryService(dbPath));
 
             // Register pages and their ViewModels with the required dbPath
             RegisterPageWithViewModel<TransactionViewModel, AddTransactionPage>(builder);
             RegisterPageWithViewModel<TransactionHistoryViewModel, TransactionHistoryPage>(builder, dbPath);
             RegisterPageWithViewModel<ManageCategoriesViewModel, ManageCategoriesPage>(builder);
+            RegisterPageWithViewModel<ManageAccountsViewModel, ManageAccountsPage>(builder);
             // Update to use the App constructor that accepts IServiceProvider
             builder.Services.AddSingleton<App>();
 

@@ -56,6 +56,9 @@ public partial class AddTransactionPage : ContentPage
                 // Load categories and set the selected category
                 await transactionViewModel.LoadCategoriesAsync(Transaction.Category);
 
+                // Load categories and set the selected category
+                await transactionViewModel.LoadAccountsAsync(Transaction.AccountId);
+
                 // Update other fields
                 transactionViewModel.TransactionText = "Edit Transaction";
                 transactionViewModel.Id = Transaction.Id;
@@ -65,7 +68,10 @@ public partial class AddTransactionPage : ContentPage
                 transactionViewModel.Date = Transaction.Date;
             }
             else
+            {
                 await transactionViewModel.LoadCategoriesAsync(null);
+                await transactionViewModel.LoadAccountsAsync(0);
+            }
 
         }
     }

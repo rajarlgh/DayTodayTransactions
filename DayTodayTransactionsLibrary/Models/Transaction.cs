@@ -20,4 +20,6 @@ public class Transaction
     }
 
     public DateTime Date { get; set; }
+
+    public int AccountId { get; set; } // Foreign key linking to Account
 }
