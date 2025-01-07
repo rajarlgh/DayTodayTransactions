@@ -3,30 +3,23 @@
     x:Class="DayTodayTransactions.AppShell"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:local="clr-namespace:DayTodayTransactions"
-    Shell.FlyoutBehavior="Flyout"
-     xmlns:pages="clr-namespace:DayTodayTransactions.Pages"
+    xmlns:pages="clr-namespace:DayTodayTransactions.Pages"
+    FlyoutBehavior="Flyout"
     Title="DayTodayTransactions">
 
-    <ShellContent
-        Title="Home"
-        ContentTemplate="{DataTemplate pages:TransactionHistoryPage}"
-        Route="TransactionHistoryPage" />
-
-    <!--<TabBar>
-         --><!--Tab for TransactionHistoryPage--><!--
-        <ShellContent Title="Transaction History" Route="TransactionHistoryPage" ContentTemplate="{DataTemplate pages:TransactionHistoryPage}">
-            
-        </ShellContent>
-    </TabBar>-->
-    
-    <!-- Flyout Items -->
-    <!--<FlyoutItem Title="Home" Icon="home.svg" FlyoutDisplayOptions="AsSingleItem" Route="home">
-        <ShellContent Route="HomeMainPage" ContentTemplate="{DataTemplate local:MainPage}" />
+    <!-- Flyout menu items -->
+    <FlyoutItem Title="Transactions" Icon="transactions_icon.png">
+        <ShellContent
+            Title="Transaction History"
+            ContentTemplate="{DataTemplate pages:TransactionHistoryPage}"
+            Route="TransactionHistoryPage" />
     </FlyoutItem>
 
-
-    <FlyoutItem Title="Sound Settings" Icon="sound_settings.svg" FlyoutDisplayOptions="AsSingleItem">
-        <ShellContent ContentTemplate="{DataTemplate local:SoundSettingsView}" Route="SoundSettingsView" />
-    </FlyoutItem>-->
+    <MenuFlyoutItem Text="Day" Command="{Binding FilterByDayCommand}" />
+    <MenuFlyoutItem Text="Week" Command="{Binding FilterByWeekCommand}" />
+    <MenuFlyoutItem Text="Month" Command="{Binding FilterByMonthCommand}" />
+    <MenuFlyoutItem Text="Year" Command="{Binding FilterByYearCommand}" />
+    <MenuFlyoutItem Text="All" Command="{Binding FilterByAllCommand}" />
+    <MenuFlyoutItem Text="Interval" Command="{Binding FilterByIntervalCommand}" />
+    <MenuFlyoutItem Text="Choose Date" Command="{Binding ChooseDateCommand}" />
 </Shell>

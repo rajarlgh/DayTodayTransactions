@@ -17,6 +17,9 @@ namespace DayTodayTransactions.ViewModels
         [ObservableProperty]
         private ObservableCollection<ChartEntry> expenseChartEntries;
         [ObservableProperty]
+        private ObservableCollection<Transaction> transactions;
+        private ObservableCollection<Transaction> allTransactions;
+        [ObservableProperty]
         private DonutChart incomeChart;
         [ObservableProperty]
         private DonutChart expenseChart;
@@ -39,8 +42,9 @@ namespace DayTodayTransactions.ViewModels
             var transactions = transactionService.GetTransactionsAsync().Result;
             var t = transactions.ToList<Transaction>();
             //  var t= transactionService.GetTransactionsAsync();
-            LoadTransactionsAndSetGrid(transactions);
-            Task.Run(async () => await LoadAccountsAsync(0));
+            //LoadTransactionsAndSetGrid(transactions);
+            //Task.Run(async () => await LoadAccountsAsync(0));
+            //RefreshDataAsync();
         }
 
         // Mark the property as observable
@@ -53,6 +57,17 @@ namespace DayTodayTransactions.ViewModels
 
         partial void OnSelectedAccountChanged(Account value)
         {
+            if (SelectedAccount != null)
+            {
+              var  trans = allTransactions.Where(r => r.AccountId == SelectedAccount.Id).ToList();
+              Transactions = new ObservableCollection<Transaction>(trans);
+              IncomeChart = null;
+              ExpenseChart = null;
+              OnPropertyChanged(nameof(IncomeChart));
+              OnPropertyChanged(nameof(ExpenseChart));
+            }
+            LoadTransactionsAndSetGrid(Transactions);
+            CalculateBalances();
             if (value != null && value.Name == "Add New Account")
             {
                 Shell.Current.GoToAsync(nameof(ManageAccountsPage));
@@ -79,8 +94,6 @@ namespace DayTodayTransactions.ViewModels
                 .ToList();
 
             SelectedCategoryBreakdown = new ObservableCollection<Transaction>(breakdown);
-
-            
         }
 
         private DonutChart CreateChart(ObservableCollection<ChartEntry> entries)
@@ -155,7 +168,10 @@ namespace DayTodayTransactions.ViewModels
 
             // Replace chart creation calls:
             IncomeChart = CreateChart(IncomeChartEntries);
+            OnPropertyChanged(nameof(IncomeChart)); // Notify explicitly
             ExpenseChart = CreateChart(ExpenseChartEntries);
+            OnPropertyChanged(nameof(ExpenseChart)); // Notify explicitly
+
 
             // Recreate the chart instance with new entries
             //ExpenseChart = new DonutChart
@@ -194,6 +210,7 @@ namespace DayTodayTransactions.ViewModels
             OnPropertyChanged(nameof(ExpenseChart));
             OnPropertyChanged(nameof(ExpenseChartEntries));
             OnPropertyChanged(nameof(ListOfAccounts));
+            allTransactions = this.Transactions;
         }
 
         /// <summary>
@@ -260,8 +277,7 @@ namespace DayTodayTransactions.ViewModels
             await Shell.Current.GoToAsync($"{nameof(AddTransactionPage)}?type=Expense");
         }
 
-        [ObservableProperty]
-        private ObservableCollection<Transaction> transactions;
+
 
         public string FilterDate { get; set; }
         public string FilterCategory { get; set; }
