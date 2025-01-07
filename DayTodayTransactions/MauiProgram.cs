@@ -54,7 +54,9 @@ namespace DayTodayTransactions
                 builder.Services.AddSingleton<TViewModel>(provider =>
                 {
                     var transactionService = provider.GetRequiredService<ITransactionService>();
-                    return (TViewModel)Activator.CreateInstance(typeof(TViewModel), dbPath, transactionService);
+                    var accountService = provider.GetRequiredService<IAccountService>();
+
+                    return (TViewModel)Activator.CreateInstance(typeof(TViewModel), dbPath, transactionService, accountService);
                 });
             }
             else

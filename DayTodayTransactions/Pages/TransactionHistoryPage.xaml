@@ -12,8 +12,9 @@
         </ResourceDictionary>
     </ContentPage.Resources>
 
-    <Grid RowDefinitions="Auto, *, Auto, Auto">
+    <Grid RowDefinitions="Auto, Auto, Auto, *, Auto, Auto">
         <!-- Top Bar -->
+        
         <Grid 
               Padding="10"
               Row="0"
@@ -48,10 +49,31 @@
                      Command="{Binding OnMoneyTransferClickedCommand}" />
         </Grid>
 
-
-
+        <!--<Button Text="{Binding Balance}"/>-->
+  
+        <HorizontalStackLayout Grid.Row="2" HorizontalOptions="End" >
+            <!-- Account Picker -->
+            <Picker Title="Account" 
+                 HorizontalOptions="Start"
+                 ItemsSource="{Binding ListOfAccounts}" 
+                 SelectedItem="{Binding SelectedAccount}">  
+                <Picker.ItemDisplayBinding>
+                    <Binding Path="Name" />
+                </Picker.ItemDisplayBinding>
+            </Picker>
+            <Label  Text="Balance :" Margin="10"
+                    FontSize="15" 
+                    FontAttributes="Bold" 
+                    HorizontalOptions="End"
+                    VerticalOptions="Center" />
+            <Label Text="{Binding Balance}" Margin="10"
+                   FontSize="15" 
+                   FontAttributes="Bold" 
+                   HorizontalOptions="End"
+                   VerticalOptions="Center" />
+        </HorizontalStackLayout>
         <!-- Content Area -->
-        <ScrollView Grid.Row="1" Scrolled="OnScrollViewScrolled" Grid.ColumnSpan="3">
+        <ScrollView Grid.Row="3" Scrolled="OnScrollViewScrolled" Grid.ColumnSpan="3">
             <StackLayout Padding="10">
                 <coreControls:CardView Title="Transactions">
                     <ScrollView Grid.Row="1" Scrolled="OnScrollViewScrolled" Grid.ColumnSpan="3">
@@ -189,7 +211,7 @@
             </StackLayout>
         </ScrollView>
         <!-- Action Buttons -->
-        <Grid  Grid.Row="2" ColumnSpacing="10" Padding="10">
+        <Grid  Grid.Row="4" ColumnSpacing="10" Padding="10">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
@@ -201,8 +223,8 @@
             <Button Grid.Column="2" Text="☰" FontSize="30"  Margin="0,15,15,0" Command="{Binding ShowMenuCommand}" />
             
         </Grid>
-        <Button Text="{Binding Balance}"/>
-        <Grid Grid.Row="3" Grid.ColumnSpan="3" >
+
+        <Grid Grid.Row="5" Grid.ColumnSpan="3" >
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>

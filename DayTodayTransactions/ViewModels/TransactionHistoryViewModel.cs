@@ -29,14 +29,49 @@ namespace DayTodayTransactions.ViewModels
 
         private readonly SQLiteAsyncConnection _database;
         private readonly ITransactionService _transactionService;
-        public TransactionHistoryViewModel(string dbPath, ITransactionService transactionService)
+        private readonly IAccountService _accountService;
+
+        public TransactionHistoryViewModel(string dbPath, ITransactionService transactionService, IAccountService accountService)
         {
+            this._accountService = accountService;
+
             _database = new SQLiteAsyncConnection(dbPath);
             var transactions = transactionService.GetTransactionsAsync().Result;
             var t = transactions.ToList<Transaction>();
             //  var t= transactionService.GetTransactionsAsync();
             LoadTransactionsAndSetGrid(transactions);
+            Task.Run(async () => await LoadAccountsAsync(0));
         }
+
+        // Mark the property as observable
+        [ObservableProperty]
+        private Account selectedAccount;
+
+        // Mark the property as observable
+        [ObservableProperty]
+        private ObservableCollection<Account> listOfAccounts;
+
+        partial void OnSelectedAccountChanged(Account value)
+        {
+            if (value != null && value.Name == "Add New Account")
+            {
+                Shell.Current.GoToAsync(nameof(ManageAccountsPage));
+            }
+        }
+
+        public async Task LoadAccountsAsync(int accountId)
+        {
+            var accounts = await _accountService.GetAccountsAsync();
+            listOfAccounts = new ObservableCollection<Account>(accounts);
+            listOfAccounts.Add(new Account { Id = -1, Name = "Add New Account" });
+
+            var selectedAccount = accounts.FirstOrDefault(r => r.Id == accountId);
+            if (selectedAccount != null)
+            {
+                SelectedAccount = listOfAccounts.FirstOrDefault(a => a.Id == selectedAccount.Id);
+            }
+        }
+
 
         public void ShowBreakdownForCategory(Category category, string type)
         {
@@ -147,6 +182,7 @@ namespace DayTodayTransactions.ViewModels
             //}
             LoadTransactionsAndSetGrid(Transactions);
             CalculateBalances();
+            await LoadAccountsAsync(0);
             // Notify UI of changes
             OnPropertyChanged(nameof(Transactions));
             OnPropertyChanged(nameof(TotalIncome));
@@ -157,6 +193,7 @@ namespace DayTodayTransactions.ViewModels
             OnPropertyChanged(nameof(IncomeChartEntries));
             OnPropertyChanged(nameof(ExpenseChart));
             OnPropertyChanged(nameof(ExpenseChartEntries));
+            OnPropertyChanged(nameof(ListOfAccounts));
         }
 
         /// <summary>
