@@ -19,8 +19,8 @@ namespace DayTodayTransactions.Pages
             InitializeComponent();
             _viewModel = viewModel;
             this.BindingContext = _viewModel;
-            donutIncomeChart.Chart = _viewModel.IncomeChart;
-            donutExpenseChart.Chart = _viewModel.ExpenseChart;
+            //donutIncomeChart.Chart = _viewModel.IncomeChart;
+            //donutExpenseChart.Chart = _viewModel.ExpenseChart;
         }
 
         public Category SelectedCategory { get; set; } = new Category();
@@ -49,8 +49,8 @@ namespace DayTodayTransactions.Pages
             {
                 await viewModel.RefreshDataAsync();
                 viewModel?.ShowBreakdownForCategory(this.SelectedCategory, this.CategoryType);
-                donutIncomeChart.Chart = _viewModel.IncomeChart;
-                donutExpenseChart.Chart = _viewModel.ExpenseChart;
+                //donutIncomeChart.Chart = _viewModel.IncomeChart;
+                //donutExpenseChart.Chart = _viewModel.ExpenseChart;
             }
         }
 

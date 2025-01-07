@@ -39,8 +39,8 @@ namespace DayTodayTransactions.ViewModels
             this._accountService = accountService;
 
             _database = new SQLiteAsyncConnection(dbPath);
-            var transactions = transactionService.GetTransactionsAsync().Result;
-            var t = transactions.ToList<Transaction>();
+            //var transactions = transactionService.GetTransactionsAsync().Result;
+            //var t = transactions.ToList<Transaction>();
             //  var t= transactionService.GetTransactionsAsync();
             //LoadTransactionsAndSetGrid(transactions);
             //Task.Run(async () => await LoadAccountsAsync(0));
@@ -63,8 +63,8 @@ namespace DayTodayTransactions.ViewModels
               Transactions = new ObservableCollection<Transaction>(trans);
               IncomeChart = null;
               ExpenseChart = null;
-              OnPropertyChanged(nameof(IncomeChart));
-              OnPropertyChanged(nameof(ExpenseChart));
+              //OnPropertyChanged(nameof(IncomeChart));
+              //OnPropertyChanged(nameof(ExpenseChart));
             }
             LoadTransactionsAndSetGrid(Transactions);
             CalculateBalances();
@@ -72,6 +72,7 @@ namespace DayTodayTransactions.ViewModels
             {
                 Shell.Current.GoToAsync(nameof(ManageAccountsPage));
             }
+            //this.RefreshDataAsync();
         }
 
         public async Task LoadAccountsAsync(int accountId)
@@ -137,6 +138,7 @@ namespace DayTodayTransactions.ViewModels
                     Color = GetCategoryColor(data.Category) // Assign a color based on the category
                 })
             );
+            OnPropertyChanged(nameof(IncomeChartEntries));
 
             var expenseGroupedData = transactions.Where(r => r.Type == "Expense")
               .GroupBy(t => t.Category.Name)
@@ -154,6 +156,8 @@ namespace DayTodayTransactions.ViewModels
                     Color = GetCategoryColor(data.Category) // Assign a color based on the category
                 })
             );
+            OnPropertyChanged(nameof(ExpenseChartEntries));
+
             //LoadTransactions();
 
             // Recreate the chart instance with new entries
@@ -167,11 +171,14 @@ namespace DayTodayTransactions.ViewModels
             //};
 
             // Replace chart creation calls:
+            // Calculate chart entries...
             IncomeChart = CreateChart(IncomeChartEntries);
-            OnPropertyChanged(nameof(IncomeChart)); // Notify explicitly
             ExpenseChart = CreateChart(ExpenseChartEntries);
-            OnPropertyChanged(nameof(ExpenseChart)); // Notify explicitly
 
+
+            // Notify property changes
+            //OnPropertyChanged(nameof(IncomeChart));
+            //OnPropertyChanged(nameof(ExpenseChart));
 
             // Recreate the chart instance with new entries
             //ExpenseChart = new DonutChart
@@ -190,6 +197,8 @@ namespace DayTodayTransactions.ViewModels
             // Fetch the latest transactions
             var transactionsList = await _database.Table<Transaction>().ToListAsync();
             Transactions = new ObservableCollection<Transaction>(transactionsList);
+            allTransactions = this.Transactions;
+
             //foreach (var transaction in newTransactions)
             //{
             //    if (Transactions == null)
@@ -204,13 +213,11 @@ namespace DayTodayTransactions.ViewModels
             OnPropertyChanged(nameof(TotalIncome));
             OnPropertyChanged(nameof(TotalExpenses));
             OnPropertyChanged(nameof(Balance));
-            OnPropertyChanged(nameof(IncomeExpenseChart));
-            OnPropertyChanged(nameof(IncomeChart));
+            /*OnPropertyChanged(nameof(IncomeChart))*/;
             OnPropertyChanged(nameof(IncomeChartEntries));
-            OnPropertyChanged(nameof(ExpenseChart));
+            //OnPropertyChanged(nameof(ExpenseChart));
             OnPropertyChanged(nameof(ExpenseChartEntries));
             OnPropertyChanged(nameof(ListOfAccounts));
-            allTransactions = this.Transactions;
         }
 
         /// <summary>
@@ -287,7 +294,6 @@ namespace DayTodayTransactions.ViewModels
         public decimal TotalExpenses { get; set; }
         public decimal Balance { get; set; }
 
-        public Chart IncomeExpenseChart { get; set; }
 
         [RelayCommand]
         public void ShowContent()
@@ -297,6 +303,22 @@ namespace DayTodayTransactions.ViewModels
             doVisibleChartBreakUp = !this.doVisibleChartBreakUp;
             OnPropertyChanged(nameof(DoVisibleChartBreakUp));
             OnPropertyChanged(nameof(DoVisibleChart));
+
+        }
+
+        [RelayCommand]
+        public void ShowMenu()
+        {
+            IncomeChartEntries = new ObservableCollection<ChartEntry>();
+            ExpenseChartEntries = new ObservableCollection<ChartEntry>();
+
+            IncomeChart = new DonutChart();
+            ExpenseChart = new DonutChart();
+            OnPropertyChanged(nameof(ExpenseChartEntries));
+            OnPropertyChanged(nameof(IncomeChartEntries));
+
+            //OnPropertyChanged(nameof(IncomeChart));
+            //OnPropertyChanged(nameof(ExpenseChart));
 
         }
 

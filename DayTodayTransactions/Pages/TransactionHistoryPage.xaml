@@ -103,13 +103,22 @@
                                         </CollectionView.ItemTemplate>
                                     </CollectionView>
 
+                                    <VerticalStackLayout Padding="20" IsVisible="{Binding DoVisibleChart}">
+                                        <Label Text="Income Chart" 
+                                               FontSize="24" 
+                                               HorizontalOptions="Center" />
 
-                                    <!-- Chart -->
+                                        <!-- Use the custom BindableChartView control -->
+                                        <coreControls:BindableChartView Entries="{Binding IncomeChartEntries}" 
+                                                HeightRequest="200" 
+                                                HorizontalOptions="Fill" />     
+                                    </VerticalStackLayout>
+                                    <!-- Chart --><!--
                                     <microcharts:ChartView x:Name="donutIncomeChart" Margin="5"
                                         Chart="{Binding IncomeChart}"
                                         HeightRequest="300" 
                                         WidthRequest="300" 
-                                        IsVisible="{Binding DoVisibleChart}" />
+                                        IsVisible="{Binding DoVisibleChart}" />-->
                                 </VerticalStackLayout>
                             </coreControls:CardView>
                             
@@ -135,11 +144,22 @@
                                         </CollectionView.ItemTemplate>
                                     </CollectionView>
                                     <!-- Chart -->
-                                    <microcharts:ChartView x:Name="donutExpenseChart" Margin="0,5,0,0"
+                                    <VerticalStackLayout Padding="20" IsVisible="{Binding DoVisibleChart}">
+                                        <Label Text="Expense Chart" 
+                                            FontSize="24" 
+                                            HorizontalOptions="Center" />
+
+                                        <!-- Use the custom BindableChartView control -->
+                                        <coreControls:BindableChartView Entries="{Binding ExpenseChartEntries}" 
+                                            HeightRequest="200" 
+                                            HorizontalOptions="Fill" 
+                                            />
+                                    </VerticalStackLayout>
+                                    <!--<microcharts:ChartView x:Name="donutExpenseChart" Margin="0,5,0,0"
                                         Chart="{Binding IncomeChart}"
                                         HeightRequest="300" 
                                         WidthRequest="300" 
-                                        IsVisible="{Binding DoVisibleChart}" />
+                                        IsVisible="{Binding DoVisibleChart}" />-->
                                 </VerticalStackLayout>
                             </coreControls:CardView>
                             
