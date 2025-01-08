@@ -281,7 +281,8 @@ namespace DayTodayTransactions.ViewModels
         public async void onWidthDrawMoneyClicked()
         {
 
-            await Shell.Current.GoToAsync($"{nameof(AddTransactionPage)}?type=Expense");
+             await Shell.Current.GoToAsync($"{nameof(AddTransactionPage)}?type=Expense");
+            //await Shell.Current.GoToAsync($"{nameof(ExcelUploaderPage)}?type=Expense");
         }
 
 

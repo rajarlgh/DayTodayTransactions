@@ -12,14 +12,14 @@
         </ResourceDictionary>
     </ContentPage.Resources>
 
-    <Grid RowDefinitions="Auto, Auto, Auto, *, Auto, Auto" Margin="0,-30,0,0">
+    <Grid RowDefinitions=" Auto, Auto, Auto, Auto" Margin="10">
         <!-- Top Bar -->
 
        
 
         <!--<Button Text="{Binding Balance}"/>-->
   
-        <HorizontalStackLayout Grid.Row="2" HorizontalOptions="End" >
+        <HorizontalStackLayout Grid.Row="0" HorizontalOptions="End" >
             <!-- Account Picker -->
             <Picker Title="Account" 
                  HorizontalOptions="Start"
@@ -41,8 +41,8 @@
                    VerticalOptions="Center" />
         </HorizontalStackLayout>
         <!-- Content Area -->
-        <ScrollView Grid.Row="3" Scrolled="OnScrollViewScrolled" Grid.ColumnSpan="3">
-            <StackLayout Padding="10">
+        <ScrollView Grid.Row="1" Scrolled="OnScrollViewScrolled" Grid.ColumnSpan="3">
+            <StackLayout Padding="0">
                 <coreControls:CardView Title="Transactions">
                     <ScrollView Grid.Row="1" Scrolled="OnScrollViewScrolled" Grid.ColumnSpan="3">
                         <StackLayout>
@@ -199,7 +199,7 @@
             </StackLayout>
         </ScrollView>
         <!-- Action Buttons -->
-        <Grid  Grid.Row="4" ColumnSpacing="10" Padding="10">
+        <Grid  Grid.Row="2" ColumnSpacing="10" Padding="0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
@@ -212,7 +212,7 @@
             
         </Grid>
 
-        <Grid Grid.Row="5" Grid.ColumnSpan="3" >
+        <Grid Grid.Row="3" Grid.ColumnSpan="3" >
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
@@ -221,7 +221,6 @@
             <!-- Circular Button for "+" -->
             <Button Text="+" 
                 Grid.Column="0" 
-                Margin="15" 
                 WidthRequest="100" 
                 HeightRequest="100" 
                 CornerRadius="50"
@@ -235,7 +234,6 @@
             <!-- Circular Button for "-" -->
             <Button Text="-" 
                 Grid.Column="2" 
-                Margin="15" 
                 WidthRequest="100" 
                 HeightRequest="100" 
                 CornerRadius="50"

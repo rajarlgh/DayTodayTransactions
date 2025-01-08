@@ -37,6 +37,7 @@ namespace DayTodayTransactions
             RegisterPageWithViewModel<TransactionHistoryViewModel, TransactionHistoryPage>(builder, dbPath);
             RegisterPageWithViewModel<ManageCategoriesViewModel, ManageCategoriesPage>(builder);
             RegisterPageWithViewModel<ManageAccountsViewModel, ManageAccountsPage>(builder);
+            RegisterPageWithViewModel<ExcelUploaderViewModel, ExcelUploaderPage>(builder);
             // Update to use the App constructor that accepts IServiceProvider
             builder.Services.AddSingleton<App>();
 

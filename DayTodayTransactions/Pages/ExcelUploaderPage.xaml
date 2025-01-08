@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="DayTodayTransactions.Pages.ExcelUploaderPage"
+             Title="Excel Uploader">
+    <VerticalStackLayout Padding="10" Spacing="20">
+
+        <!-- File Path Display and Buttons -->
+        <HorizontalStackLayout>
+            <Entry Text="{Binding SelectedFilePath}" Placeholder="Select an Excel file" IsReadOnly="True" HorizontalOptions="FillAndExpand" />
+            <Button Text="Browse" Command="{Binding BrowseCommand}" />
+        </HorizontalStackLayout>
+
+        <Button Text="Upload" Command="{Binding UploadCommand}" IsEnabled="{Binding CanUpload}" />
+
+        <!-- DataGrid for displaying transactions -->
+        <CollectionView ItemsSource="{Binding Transactions}" ItemsLayout="VerticalList">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Frame BorderColor="LightGray" Padding="10" Margin="5">
+                        <VerticalStackLayout>
+                            <Label Text="{Binding Date}" FontAttributes="Bold" />
+                            <Label Text="{Binding Amount, StringFormat='Amount: {0:C}'}" />
+                            <Label Text="{Binding Reason}" />
+                            <Label Text="{Binding Category.Name}" />
+                        </VerticalStackLayout>
+                    </Frame>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </VerticalStackLayout>
+</ContentPage>
