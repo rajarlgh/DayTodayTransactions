@@ -12,42 +12,10 @@
         </ResourceDictionary>
     </ContentPage.Resources>
 
-    <Grid RowDefinitions="Auto, Auto, Auto, *, Auto, Auto">
+    <Grid RowDefinitions="Auto, Auto, Auto, *, Auto, Auto" Margin="0,-30,0,0">
         <!-- Top Bar -->
-        
-        <Grid 
-              Padding="10"
-              Row="0"
-              ColumnDefinitions="Auto,*, Auto, Auto" Grid.ColumnSpan="3">
-            <!-- Top Bar Content -->
-            <!-- Search Icon -->
-            <ImageButton Source="search_icon.png" Grid.Column="0"
-                 HeightRequest="30"
-                 WidthRequest="30"
-                 BackgroundColor="Transparent"
-                 Command="{Binding OnSearchClickedCommand}" />
-            <!-- Title -->
-            <Label Text="Day Today Transactions" Grid.Column="1"
-               FontSize="18"
-               VerticalOptions="Center"
-               HorizontalOptions="Start" />
 
-                <!-- Spacer to push icons to the right -->
-
-                <!-- Search Icon -->
-            <ImageButton Source="search_icon.png" Grid.Column="2"
-                     HeightRequest="30"
-                     WidthRequest="30"
-                     BackgroundColor="Transparent"
-                     Command="{Binding OnSearchClickedCommand}" />
-
-                <!-- More Icon -->
-            <ImageButton Source="more_icon.png" Grid.Column="3"
-                     HeightRequest="30"
-                     WidthRequest="30"
-                     BackgroundColor="Transparent"
-                     Command="{Binding OnMoneyTransferClickedCommand}" />
-        </Grid>
+       
 
         <!--<Button Text="{Binding Balance}"/>-->
   
