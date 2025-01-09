@@ -79,13 +79,16 @@ namespace DayTodayTransactions.ViewModels
         {
             var accounts = await _accountService.GetAccountsAsync();
             listOfAccounts = new ObservableCollection<Account>(accounts);
-            listOfAccounts.Add(new Account { Id = -1, Name = "Add New Account" });
+            listOfAccounts.Add(new Account { Id = -1, Name = "All" });
+            listOfAccounts.Add(new Account { Id = -2, Name = "Add New Account" });
 
             var selectedAccount = accounts.FirstOrDefault(r => r.Id == accountId);
             if (selectedAccount != null)
             {
                 SelectedAccount = listOfAccounts.FirstOrDefault(a => a.Id == selectedAccount.Id);
             }
+            else
+                SelectedAccount = listOfAccounts.FirstOrDefault(a => a.Id == -1);
         }
 
 
