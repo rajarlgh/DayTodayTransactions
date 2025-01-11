@@ -50,7 +50,7 @@
                                                 SelectionMode="Single"
                                                 SelectionChanged="OnIncomeItemSelected">
                                     <CollectionView.ItemsLayout>
-                                        <GridItemsLayout Orientation="Vertical" Span="2" />
+                                        <GridItemsLayout Orientation="Horizontal" Span="2" />
                                     </CollectionView.ItemsLayout>
                                     <CollectionView.ItemTemplate>
                                         <DataTemplate>
@@ -86,7 +86,7 @@
                                                 SelectionMode="Single"
                                                 SelectionChanged="OnExpenseItemSelected">
                                     <CollectionView.ItemsLayout>
-                                        <GridItemsLayout Orientation="Vertical" Span="2" />
+                                        <GridItemsLayout Orientation="Horizontal" Span="2" />
                                     </CollectionView.ItemsLayout>
                                     <CollectionView.ItemTemplate>
                                         <DataTemplate>

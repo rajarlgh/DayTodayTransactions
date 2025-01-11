@@ -44,6 +44,7 @@ namespace DayTodayTransactions.ViewModels
             //  var t= transactionService.GetTransactionsAsync();
             //LoadTransactionsAndSetGrid(transactions);
             //Task.Run(async () => await LoadAccountsAsync(0));
+            
             //RefreshDataAsync();
         }
 
@@ -57,14 +58,18 @@ namespace DayTodayTransactions.ViewModels
 
         partial void OnSelectedAccountChanged(Account value)
         {
-            if (SelectedAccount != null)
+            if (value != null && value.Id != -1) /*All - Selected in Account dropdown.*/
             {
-              var  trans = allTransactions.Where(r => r.AccountId == SelectedAccount.Id).ToList();
+              var  trans = allTransactions.Where(r => r.AccountId == value.Id).ToList();
               Transactions = new ObservableCollection<Transaction>(trans);
-              IncomeChart = null;
-              ExpenseChart = null;
+              //IncomeChart = null;
+              //ExpenseChart = null;
               //OnPropertyChanged(nameof(IncomeChart));
               //OnPropertyChanged(nameof(ExpenseChart));
+            }
+            else
+            {
+                Transactions = new ObservableCollection<Transaction>(allTransactions);
             }
             LoadTransactionsAndSetGrid(Transactions);
             CalculateBalances();
@@ -72,6 +77,7 @@ namespace DayTodayTransactions.ViewModels
             {
                 Shell.Current.GoToAsync(nameof(ManageAccountsPage));
             }
+            SelectedCategoryBreakdown = null;
             //this.RefreshDataAsync();
         }
 
@@ -81,14 +87,16 @@ namespace DayTodayTransactions.ViewModels
             listOfAccounts = new ObservableCollection<Account>(accounts);
             listOfAccounts.Add(new Account { Id = -1, Name = "All" });
             listOfAccounts.Add(new Account { Id = -2, Name = "Add New Account" });
-
+            OnPropertyChanged(nameof(ListOfAccounts));
             var selectedAccount = accounts.FirstOrDefault(r => r.Id == accountId);
             if (selectedAccount != null)
             {
                 SelectedAccount = listOfAccounts.FirstOrDefault(a => a.Id == selectedAccount.Id);
             }
-            //else
-            //    SelectedAccount = listOfAccounts.FirstOrDefault(a => a.Id == -1);
+            else
+                SelectedAccount = listOfAccounts.FirstOrDefault(a => a.Id == -1);
+            OnPropertyChanged(nameof(SelectedAccount));
+           
         }
 
 
@@ -124,7 +132,7 @@ namespace DayTodayTransactions.ViewModels
                     TotalAmount = g.Sum(t => t.Amount)
                 });
 
-            var incomeGroupedData = transactions.Where(r=> r.Type=="Income")
+            var incomeGroupedData = transactions.Where(r=> r.Type=="Income" && r.Category != null)
                .GroupBy(t => t.Category.Name)
                .Select(g => new
                {
@@ -132,16 +140,18 @@ namespace DayTodayTransactions.ViewModels
                    TotalAmount = g.Sum(t => t.Amount)
                });
 
-            // Map the grouped data to ChartEntry objects
-            IncomeChartEntries = new ObservableCollection<ChartEntry>(
-                incomeGroupedData.Select(data => new ChartEntry((float)data.TotalAmount)
-                {
-                    Label = data.Category,
-                    ValueLabel = data.TotalAmount.ToString("F0"), // Format as integer
-                    Color = GetCategoryColor(data.Category) // Assign a color based on the category
-                })
-            );
+            if (incomeGroupedData!= null)
+                // Map the grouped data to ChartEntry objects
+                IncomeChartEntries = new ObservableCollection<ChartEntry>(
+                    incomeGroupedData.Select(data => new ChartEntry((float)data.TotalAmount)
+                    {
+                        Label = data.Category,
+                        ValueLabel = data.TotalAmount.ToString("F0"), // Format as integer
+                        Color = GetCategoryColor(data.Category) // Assign a color based on the category
+                    })
+                );
             OnPropertyChanged(nameof(IncomeChartEntries));
+
 
             var expenseGroupedData = transactions.Where(r => r.Type == "Expense")
               .GroupBy(t => t.Category.Name)
@@ -220,7 +230,7 @@ namespace DayTodayTransactions.ViewModels
             OnPropertyChanged(nameof(IncomeChartEntries));
             //OnPropertyChanged(nameof(ExpenseChart));
             OnPropertyChanged(nameof(ExpenseChartEntries));
-            OnPropertyChanged(nameof(ListOfAccounts));
+            OnPropertyChanged(nameof(SelectedAccount));
         }
 
         /// <summary>
