@@ -67,7 +67,7 @@ namespace DayTodayTransactions.Pages
                 var viewModel = BindingContext as TransactionHistoryViewModel;
                 this.CategoryType = "Income";
                 viewModel?.ShowBreakdownForCategory(this.SelectedCategory, this.CategoryType);
-                collectionViewExpense.SelectedItem = null;
+                collectionViewExpense.SelectedItems = null;
             }
         }
 

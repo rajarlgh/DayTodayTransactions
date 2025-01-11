@@ -87,8 +87,8 @@ namespace DayTodayTransactions.ViewModels
             {
                 SelectedAccount = listOfAccounts.FirstOrDefault(a => a.Id == selectedAccount.Id);
             }
-            else
-                SelectedAccount = listOfAccounts.FirstOrDefault(a => a.Id == -1);
+            //else
+            //    SelectedAccount = listOfAccounts.FirstOrDefault(a => a.Id == -1);
         }
 
 
