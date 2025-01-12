@@ -294,10 +294,14 @@ namespace DayTodayTransactions.ViewModels
         public async void onWidthDrawMoneyClicked()
         {
 
-             await Shell.Current.GoToAsync($"{nameof(AddTransactionPage)}?type=Expense");
             //await Shell.Current.GoToAsync($"{nameof(ExcelUploaderPage)}?type=Expense");
         }
+        [RelayCommand]
+        public async void onDownloadClicked()
+        {
 
+            await Shell.Current.GoToAsync($"{nameof(ExcelUploaderPage)}?type=Expense");
+        }
 
 
         public string FilterDate { get; set; }

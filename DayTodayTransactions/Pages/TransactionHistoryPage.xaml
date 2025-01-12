@@ -175,7 +175,17 @@
                     TextColor="Green"
                     Command="{Binding onAddMoneyClickedCommand}"
                     FontSize="36" />
-
+            <Button Text="Download" 
+                    Grid.Column="1" 
+                    WidthRequest="100" 
+                    HeightRequest="100" 
+                    CornerRadius="50"
+                    BorderColor="Orange"
+                    BorderWidth="7"
+                    BackgroundColor="Transparent"
+                    TextColor="Red"
+                    Command="{Binding onDownloadClickedCommand}"
+                    FontSize="10" />
             <Button Text="-" 
                     Grid.Column="2" 
                     WidthRequest="100" 
