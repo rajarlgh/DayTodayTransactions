@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using DayTodayTransactionsLibrary.Models;
 using ExcelDataReader;
+using Microsoft.Maui.Controls.PlatformConfiguration;
 using System.Collections.ObjectModel;
 using System.Globalization;
 
@@ -22,7 +23,21 @@ namespace DayTodayTransactions.ViewModels
             CanUpload = false; // Upload button is disabled initially
         }
 
-        [RelayCommand]
+
+    public void ExportDatabase()
+    {
+        // Source path for the database in app-specific storage
+        var sourcePath = Path.Combine(FileSystem.AppDataDirectory, "expenses.db");
+
+        // Destination path in the public "Downloads" folder
+        var destinationPath = Path.Combine(Android.OS.Environment.GetExternalStoragePublicDirectory(Android.OS.Environment.DirectoryDownloads).AbsolutePath, "expenses.db");
+
+        // Copy the file to the destination
+        File.Copy(sourcePath, destinationPath, true);
+    }
+
+
+    [RelayCommand]
         private async Task BrowseAsync()
         {
             try

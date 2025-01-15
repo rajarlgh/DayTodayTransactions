@@ -293,14 +293,31 @@ namespace DayTodayTransactions.ViewModels
         [RelayCommand]
         public async void onWidthDrawMoneyClicked()
         {
-
-            //await Shell.Current.GoToAsync($"{nameof(ExcelUploaderPage)}?type=Expense");
+            await Shell.Current.GoToAsync($"{nameof(AddTransactionPage)}?type=Expense");
         }
+        [RelayCommand]
+        public async void onUploadPdfClicked()
+        {
+            await Shell.Current.GoToAsync($"{nameof(ExcelUploaderPage)}?type=Expense");
+        }
+
+        public void ExportDatabase()
+        {
+            // Source path for the database in app-specific storage
+            var sourcePath = Path.Combine(FileSystem.AppDataDirectory, "expenses.db");
+
+            // Destination path in the public "Downloads" folder
+            var destinationPath = Path.Combine(Android.OS.Environment.GetExternalStoragePublicDirectory(Android.OS.Environment.DirectoryDownloads).AbsolutePath, "expenses.db");
+
+            // Copy the file to the destination
+            File.Copy(sourcePath, destinationPath, true);
+        }
+
         [RelayCommand]
         public async void onDownloadClicked()
         {
 
-            await Shell.Current.GoToAsync($"{nameof(ExcelUploaderPage)}?type=Expense");
+            this.ExportDatabase();
         }
 
 

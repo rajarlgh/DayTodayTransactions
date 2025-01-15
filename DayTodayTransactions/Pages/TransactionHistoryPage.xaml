@@ -12,7 +12,7 @@
         </ResourceDictionary>
     </ContentPage.Resources>
 
-    <Grid RowDefinitions="Auto, *, Auto, Auto" Margin="10">
+    <Grid RowDefinitions="Auto, *, Auto, Auto" >
         <!-- Top Bar -->
         <Grid Grid.Row="0" ColumnDefinitions="*, Auto, Auto" Margin="0,0,0,10">
             <!-- Account Picker -->
@@ -163,7 +163,7 @@
         </Grid>
 
         <!-- Add/Withdraw Buttons -->
-        <Grid Grid.Row="3" ColumnDefinitions="Auto, *, Auto">
+        <Grid Grid.Row="3" ColumnDefinitions="Auto, Auto, Auto, Auto">
             <Button Text="+" 
                     Grid.Column="0" 
                     WidthRequest="100" 
@@ -175,19 +175,31 @@
                     TextColor="Green"
                     Command="{Binding onAddMoneyClickedCommand}"
                     FontSize="36" />
-            <Button Text="Download" 
+            <Button Text="Upload Pdf" 
                     Grid.Column="1" 
-                    WidthRequest="100" 
-                    HeightRequest="100" 
-                    CornerRadius="50"
+                    WidthRequest="75" 
+                    HeightRequest="75" 
+                    CornerRadius="25"
                     BorderColor="Orange"
+                    BorderWidth="7"
+                    BackgroundColor="Transparent"
+                    TextColor="Red"
+                    Command="{Binding onUploadPdfClickedCommand}"
+                    FontSize="10" />
+            
+            <Button Text="Download" 
+                    Grid.Column="2" 
+                    WidthRequest="75" 
+                    HeightRequest="75" 
+                    CornerRadius="25"
+                    BorderColor="Blue"
                     BorderWidth="7"
                     BackgroundColor="Transparent"
                     TextColor="Red"
                     Command="{Binding onDownloadClickedCommand}"
                     FontSize="10" />
             <Button Text="-" 
-                    Grid.Column="2" 
+                    Grid.Column="3" 
                     WidthRequest="100" 
                     HeightRequest="100" 
                     CornerRadius="50"
