@@ -24,7 +24,7 @@ public partial class TransactionViewModel : ObservableObject
     }
 
     [ObservableProperty]
-    private int id;
+    private int? id;
 
     [ObservableProperty]
     private decimal amount;
@@ -81,7 +81,7 @@ public partial class TransactionViewModel : ObservableObject
         }
     }
 
-    public async Task LoadAccountsAsync(int accountId )
+    public async Task LoadAccountsAsync(int? accountId )
     {
 
         var accounts = await _accountService.GetAccountsAsync();

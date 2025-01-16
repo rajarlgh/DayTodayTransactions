@@ -24,7 +24,7 @@ namespace DayTodayTransactionsService
             return _database.InsertAsync(account);
         }
 
-        public Task DeleteAccountAsync(int id)
+        public Task DeleteAccountAsync(int? id)
         {
             return _database.DeleteAsync<Account>(id);
         }

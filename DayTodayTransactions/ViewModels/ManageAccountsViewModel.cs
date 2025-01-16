@@ -17,7 +17,7 @@ namespace DayTodayTransactions.ViewModels
         private string newAccountName;
 
         [ObservableProperty]
-        private int accountId;
+        private int? accountId;
 
         public ManageAccountsViewModel(IAccountService accountService)
         {

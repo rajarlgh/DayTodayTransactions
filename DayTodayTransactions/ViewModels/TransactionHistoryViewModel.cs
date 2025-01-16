@@ -1,5 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+#if ANDROID
+using AndroidOS = Android.OS;
+#endif
 using DayTodayTransactions.Pages;
 using DayTodayTransactionsLibrary.Interfaces;
 using DayTodayTransactionsLibrary.Models;
@@ -305,12 +308,13 @@ namespace DayTodayTransactions.ViewModels
         {
             // Source path for the database in app-specific storage
             var sourcePath = Path.Combine(FileSystem.AppDataDirectory, "expenses.db");
-
+#if ANDROID
             // Destination path in the public "Downloads" folder
-            var destinationPath = Path.Combine(Android.OS.Environment.GetExternalStoragePublicDirectory(Android.OS.Environment.DirectoryDownloads).AbsolutePath, "expenses.db");
+            var destinationPath = Path.Combine(AndroidOS.Environment.GetExternalStoragePublicDirectory(Android.OS.Environment.DirectoryDownloads).AbsolutePath, "expenses.db");
 
             // Copy the file to the destination
             File.Copy(sourcePath, destinationPath, true);
+#endif
         }
 
         [RelayCommand]
@@ -318,6 +322,29 @@ namespace DayTodayTransactions.ViewModels
         {
 
             this.ExportDatabase();
+            /*
+             * 
+             * public void ExportDatabase()
+                    {
+                        // Source path for the database in app-specific storage
+                        var sourcePath = Path.Combine(FileSystem.AppDataDirectory, "expenses.db");
+
+                        // Destination path in app-specific external storage
+                        var destinationPath = Path.Combine(Android.App.Application.Context.GetExternalFilesDir(null).AbsolutePath, "expenses.db");
+
+                        // Copy the file to the destination
+                        File.Copy(sourcePath, destinationPath, true);
+                    }
+
+
+                    /storage/emulated/0/Android/data/com.companyname.daytodaytransactions/files/expenses.db
+
+                    adb pull /storage/emulated/0/Download/expenses.db D:\T1\DTTdb
+
+
+                    C:\Users\z0043c3n>adb pull /storage/emulated/0/Download/expenses.db D:\T1\DTTdb
+
+             * */
         }
 
 

@@ -1,6 +1,8 @@
 ﻿using Android.App;
 using Android.Content.PM;
 using Android.OS;
+using AndroidX.Core.App;
+using AndroidX.Core.Content;
 
 namespace DayTodayTransactions
 {
@@ -10,8 +12,8 @@ namespace DayTodayTransactions
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
-            Platform.Init(this, savedInstanceState);
             RequestStoragePermissions();
+            EnsurePermissionsAsync();
         }
 
         private void RequestStoragePermissions()
@@ -22,6 +24,13 @@ namespace DayTodayTransactions
                 {
                     RequestPermissions(new[] { Android.Manifest.Permission.ReadExternalStorage }, 1);
                 }
+            }
+        }
+        public async Task EnsurePermissionsAsync()
+        {
+            if (ContextCompat.CheckSelfPermission(Android.App.Application.Context, Android.Manifest.Permission.WriteExternalStorage) != Android.Content.PM.Permission.Granted)
+            {
+                ActivityCompat.RequestPermissions(Platform.CurrentActivity, new[] { Android.Manifest.Permission.WriteExternalStorage }, 1);
             }
         }
     }

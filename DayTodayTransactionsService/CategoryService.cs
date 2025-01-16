@@ -26,7 +26,7 @@ namespace DayTodayTransactionsService
             return _database.InsertAsync(category);
         }
 
-        public Task DeleteCategoryAsync(int id)
+        public Task DeleteCategoryAsync(int? id)
         {
             return _database.DeleteAsync<Category>(id);
         }

@@ -6,7 +6,7 @@ namespace DayTodayTransactionsLibrary.Interfaces
     {
         Task<List<Account>> GetAccountsAsync();
         Task AddAccountAsync(Account account);
-        Task DeleteAccountAsync(int id);
+        Task DeleteAccountAsync(int? id);
         Task UpdateAccountAsync(Account account);
     }
 }

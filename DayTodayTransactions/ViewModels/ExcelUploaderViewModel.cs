@@ -26,14 +26,16 @@ namespace DayTodayTransactions.ViewModels
 
     public void ExportDatabase()
     {
-        // Source path for the database in app-specific storage
-        var sourcePath = Path.Combine(FileSystem.AppDataDirectory, "expenses.db");
+#if ANDROID
+            // Source path for the database in app-specific storage
+            var sourcePath = Path.Combine(FileSystem.AppDataDirectory, "expenses.db");
 
         // Destination path in the public "Downloads" folder
         var destinationPath = Path.Combine(Android.OS.Environment.GetExternalStoragePublicDirectory(Android.OS.Environment.DirectoryDownloads).AbsolutePath, "expenses.db");
 
         // Copy the file to the destination
         File.Copy(sourcePath, destinationPath, true);
+#endif
     }
 
 

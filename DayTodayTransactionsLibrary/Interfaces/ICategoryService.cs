@@ -11,7 +11,7 @@ namespace DayTodayTransactionsLibrary.Interfaces
     {
         Task<List<Category>> GetCategoriesAsync();
         Task AddCategoryAsync(Category category);
-        Task DeleteCategoryAsync(int id);
+        Task DeleteCategoryAsync(int? id);
         Task UpdateCategoryAsync(Category category);
     }
 }

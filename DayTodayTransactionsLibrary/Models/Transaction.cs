@@ -5,7 +5,7 @@ using SQLite;
 public class Transaction
 {
     [PrimaryKey, AutoIncrement]
-    public int Id { get; set; }
+    public int? Id { get; set; }
     public decimal Amount { get; set; }
     public string Reason { get; set; }
     public string Type { get; set; } // "Income" or "Expense"
@@ -21,5 +21,5 @@ public class Transaction
 
     public DateTime Date { get; set; }
 
-    public int AccountId { get; set; } // Foreign key linking to Account
+    public int? AccountId { get; set; } // Foreign key linking to Account
 }
