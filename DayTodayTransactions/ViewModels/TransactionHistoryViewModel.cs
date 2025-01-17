@@ -457,15 +457,48 @@ namespace DayTodayTransactions.ViewModels
             FilterDate = $"From {startOfYear.ToString("yyyy-MM-dd")} to {endOfYear.ToString("yyyy-MM-dd")}";
             FilterTransactionsByRange(startOfYear, endOfYear);
         }
+        public async Task<Dictionary<string, int>> GetRecordCountsByMonthFromDatabaseAsync()
+        {
+            var query = @"
+        
+                SELECT  
+                    strftime('%Y-%m-%d', FormattedDate) AS Day,  
+                    COUNT(*) AS RecordCount 
+                FROM 
+                    (SELECT datetime((Date / 10000000) - 62135596800, 'unixepoch') AS FormattedDate, * 
+                     FROM [Transaction]) AS T1
+                WHERE 
+                    T1.FormattedDate >= '2025-01-01 00:00:00'
+                GROUP BY 
+                    strftime('%Y-%m-%d', FormattedDate)
+                ORDER BY 
+                    Day;
+                ";
+
+            // Use QueryAsync to execute the query
+            var result = await _database.QueryAsync<(string Month, int RecordCount)>(query);
+
+            // Convert the result to a dictionary
+            return result.ToDictionary(x => x.Month, x => x.RecordCount);
+        }
+
 
         public void FilterTransactionsByRange(DateTime startDate, DateTime endDate)
         {
             var filteredTransactions = _database.Table<Transaction>();
+            var t =  filteredTransactions.ToListAsync().Result;
+            // Get record counts grouped by month from the database
+            var dbMonthlyCounts = GetRecordCountsByMonthFromDatabaseAsync().Result;
 
-            filteredTransactions = filteredTransactions.Where(t => t.Date >= startDate && t.Date <= endDate);
+            if (selectedAccount != null && selectedAccount.Id>0)
+            filteredTransactions = filteredTransactions.Where(t => t.Date >= startDate && t.Date <= endDate && t.AccountId == selectedAccount.Id);
+            else
+                filteredTransactions = filteredTransactions.Where(t => t.Date >= startDate && t.Date <= endDate);
+            var data = filteredTransactions.ToListAsync().Result;
+            allTransactions = new ObservableCollection<Transaction>(data);
 
             // Execute the query and update the Transactions list
-            Transactions = new ObservableCollection<Transaction>(filteredTransactions.ToListAsync().Result);
+            Transactions = new ObservableCollection<Transaction>(data);
 
             CalculateBalances();
             OnPropertyChanged(nameof(Transactions));
@@ -522,7 +555,7 @@ namespace DayTodayTransactions.ViewModels
             {
                 // Execute the query asynchronously and update the Transactions list
                 var transactionList = await filteredTransactions.ToListAsync();
-
+                allTransactions = new ObservableCollection<Transaction>(transactionList);
                 // Update the ObservableCollection with the filtered results
                 Transactions = new ObservableCollection<Transaction>(transactionList);
 
