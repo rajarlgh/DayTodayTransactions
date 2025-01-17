@@ -13,11 +13,12 @@ namespace DayTodayTransactions
             _serviceProvider = serviceProvider;
 
             // Register ViewModel with DI
-            DependencyService.Register<TransactionHistoryViewModel>();
+            // DependencyService.Register<TransactionHistoryViewModel>(); // No need to register with DependencyService
 
             // Register other services here if needed
-            MainPage = new AppShell(_serviceProvider);
-        }
 
+            // Resolve TransactionHistoryViewModel and pass it to AppShell
+            MainPage = new AppShell(_serviceProvider, _serviceProvider.GetRequiredService<TransactionHistoryViewModel>());
+        }
     }
 }

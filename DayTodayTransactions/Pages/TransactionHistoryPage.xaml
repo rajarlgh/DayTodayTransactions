@@ -12,32 +12,78 @@
         </ResourceDictionary>
     </ContentPage.Resources>
 
-    <Grid RowDefinitions="Auto, *, Auto, Auto" >
+    <Grid RowDefinitions="Auto, Auto, Auto, *, Auto, Auto" >
         <!-- Top Bar -->
-        <Grid Grid.Row="0" ColumnDefinitions="*, Auto, Auto" Margin="0,0,0,10">
-            <!-- Account Picker -->
-            <Picker Title="Account" 
+        <Grid Grid.Row="0" ColumnDefinitions="Auto, Auto, *, *" Margin="0,0,0,0">
+
+            <Button Text="Upload Pdf" 
+                   Grid.Column="0" 
+                   WidthRequest="100" 
+                   HeightRequest="50" 
+                   CornerRadius="25"
+                   BorderColor="Orange"
+                   BorderWidth="7"
+                   BackgroundColor="Transparent"
+                   TextColor="Red"
+                   Command="{Binding onUploadPdfClickedCommand}"
+                   FontSize="10" />
+
+            <Button Text="Download" 
+                   Grid.Column="1" 
+                   WidthRequest="100" 
+                   HeightRequest="50" 
+                   CornerRadius="25"
+                   BorderColor="Blue"
+                   BorderWidth="5"
+                   BackgroundColor="Transparent"
+                   TextColor="Red"
+                   Command="{Binding onDownloadClickedCommand}"
+                   FontSize="10" />
+            
+            <Label Text="Balance :" 
+                Grid.Column="2" 
+                FontSize="15" 
+                FontAttributes="Bold" 
+                HorizontalTextAlignment="End" 
+                   VerticalTextAlignment="Center"/>
+            <Label Text="{Binding Balance}" 
+                Grid.Column="3" 
+                FontSize="15" 
+                FontAttributes="Bold" 
+                VerticalTextAlignment="Center" />
+        </Grid>
+        <coreControls:CardView Title="Filters" Grid.Row="1" Margin="5,0,5,5">
+            <StackLayout>
+                <!-- Top Bar -->
+                <Grid Grid.Row="0" ColumnDefinitions="*, Auto, Auto" Margin="0,0,0,10">
+                    <!-- Account Picker -->
+                    <Picker Title="Account" 
                     Grid.Column="0"
                     ItemsSource="{Binding ListOfAccounts}" 
                     SelectedItem="{Binding SelectedAccount}">
-                <Picker.ItemDisplayBinding>
-                    <Binding Path="Name" />
-                </Picker.ItemDisplayBinding>
-            </Picker>
-            <Label Text="Balance :" 
-                   Grid.Column="1" 
-                   FontSize="15" 
-                   FontAttributes="Bold" 
-                   VerticalTextAlignment="Center" />
-            <Label Text="{Binding Balance}" 
-                   Grid.Column="2" 
-                   FontSize="15" 
-                   FontAttributes="Bold" 
-                   VerticalTextAlignment="Center" />
-        </Grid>
+                        <Picker.ItemDisplayBinding>
+                            <Binding Path="Name" />
+                        </Picker.ItemDisplayBinding>
+                    </Picker>
+                   
+                </Grid>
+                <!-- Filters Section with Horizontal Scroll -->
+                <!-- Filters Section with Title -->
 
+                <ScrollView Orientation="Horizontal" Padding="10">
+                    <HorizontalStackLayout Spacing="10">
+                        <Button Text="Day" Command="{Binding FilterByDayCommand}" />
+                        <Button Text="Week" Command="{Binding FilterByWeekCommand}" />
+                        <Button Text="Month" Command="{Binding FilterByMonthCommand}" />
+                        <Button Text="Year" Command="{Binding FilterByYearCommand}" />
+                        <Button Text="Interval" Command="{Binding FilterByIntervalCommand}" />
+                        <Button Text="Choose Date" Command="{Binding ChooseDateCommand}" />
+                    </HorizontalStackLayout>
+                </ScrollView>
+            </StackLayout>
+        </coreControls:CardView>
         <!-- Content Area -->
-        <ScrollView Grid.Row="1">
+        <ScrollView Grid.Row="3">
             <Grid RowDefinitions="*" Padding="0">
                 <coreControls:CardView Title="Transactions">
                     <Grid RowDefinitions="Auto, Auto, Auto" ColumnDefinitions="*" Margin="0,0,0,10">
@@ -99,7 +145,7 @@
                                                 </Grid>
                                             </Border>
                                         </DataTemplate>
-                                    </CollectionView.ItemTemplate>f
+                                    </CollectionView.ItemTemplate>
                                 </CollectionView>
 
                                 <Grid IsVisible="{Binding DoVisibleChart}" Padding="20" Grid.Row="1">
@@ -158,48 +204,20 @@
         </ScrollView>
 
         <!-- Action Buttons -->
-        <Grid Grid.Row="2" ColumnDefinitions="Auto, *, Auto" Padding="0">
-            <Button Grid.Column="0" Text="☰" FontSize="30" Command="{Binding ShowMenuCommand}" />
-            <Button Grid.Column="1" Text="Transactions" Command="{Binding ShowContentCommand}" />
-            <Button Grid.Column="2" Text="☰" FontSize="30" Command="{Binding ShowMenuCommand}" />
-        </Grid>
-
-        <!-- Add/Withdraw Buttons -->
-        <Grid Grid.Row="3" ColumnDefinitions="Auto, Auto, Auto, Auto">
+        <Grid Grid.Row="4" ColumnDefinitions="Auto, *, Auto" Padding="0">
+            <!--<Button Grid.Column="0" Text="☰" FontSize="30" Command="{Binding ShowMenuCommand}" />-->
             <Button Text="+" 
-                    Grid.Column="0" 
-                    WidthRequest="100" 
-                    HeightRequest="100" 
-                    CornerRadius="50"
-                    BorderColor="Green"
-                    BorderWidth="7"
-                    BackgroundColor="Transparent"
-                    TextColor="Green"
-                    Command="{Binding onAddMoneyClickedCommand}"
-                    FontSize="36" />
-            <Button Text="Upload Pdf" 
-                    Grid.Column="1" 
-                    WidthRequest="75" 
-                    HeightRequest="75" 
-                    CornerRadius="25"
-                    BorderColor="Orange"
-                    BorderWidth="7"
-                    BackgroundColor="Transparent"
-                    TextColor="Red"
-                    Command="{Binding onUploadPdfClickedCommand}"
-                    FontSize="10" />
-            
-            <Button Text="Download" 
-                    Grid.Column="2" 
-                    WidthRequest="75" 
-                    HeightRequest="75" 
-                    CornerRadius="25"
-                    BorderColor="Blue"
-                    BorderWidth="7"
-                    BackgroundColor="Transparent"
-                    TextColor="Red"
-                    Command="{Binding onDownloadClickedCommand}"
-                    FontSize="10" />
+                   Grid.Column="0" 
+                   WidthRequest="100" 
+                   HeightRequest="100" 
+                   CornerRadius="50"
+                   BorderColor="Green"
+                   BorderWidth="7"
+                   BackgroundColor="Transparent"
+                   TextColor="Green"
+                   Command="{Binding onAddMoneyClickedCommand}"
+                   FontSize="36" />
+            <Button Grid.Column="1" Text="Transactions" Command="{Binding ShowContentCommand}" />
             <Button Text="-" 
                     Grid.Column="3" 
                     WidthRequest="100" 
@@ -211,6 +229,56 @@
                     TextColor="Red"
                     Command="{Binding onWidthDrawMoneyClickedCommand}"
                     FontSize="36" />
+            <!--<Button Grid.Column="2" Text="☰" FontSize="30" Command="{Binding ShowMenuCommand}" />-->
+        </Grid>
+
+        <!-- Add/Withdraw Buttons -->
+        <Grid Grid.Row="5" ColumnDefinitions="Auto, Auto, Auto, Auto">
+            <!--<Button Text="+" 
+                    Grid.Column="0" 
+                    WidthRequest="100" 
+                    HeightRequest="100" 
+                    CornerRadius="50"
+                    BorderColor="Green"
+                    BorderWidth="7"
+                    BackgroundColor="Transparent"
+                    TextColor="Green"
+                    Command="{Binding onAddMoneyClickedCommand}"
+                    FontSize="36" />-->
+            <!--<Button Text="Upload Pdf" 
+                    Grid.Column="1" 
+                    WidthRequest="100" 
+                    HeightRequest="50" 
+                    CornerRadius="25"
+                    BorderColor="Orange"
+                    BorderWidth="7"
+                    BackgroundColor="Transparent"
+                    TextColor="Red"
+                    Command="{Binding onUploadPdfClickedCommand}"
+                    FontSize="10" />
+            
+            <Button Text="Download" 
+                    Grid.Column="2" 
+                    WidthRequest="100" 
+                    HeightRequest="50" 
+                    CornerRadius="25"
+                    BorderColor="Blue"
+                    BorderWidth="5"
+                    BackgroundColor="Transparent"
+                    TextColor="Red"
+                    Command="{Binding onDownloadClickedCommand}"
+                    FontSize="10" />-->
+            <!--<Button Text="-" 
+                    Grid.Column="3" 
+                    WidthRequest="100" 
+                    HeightRequest="100" 
+                    CornerRadius="50"
+                    BorderColor="Red"
+                    BorderWidth="7"
+                    BackgroundColor="Transparent"
+                    TextColor="Red"
+                    Command="{Binding onWidthDrawMoneyClickedCommand}"
+                    FontSize="36" />-->
         </Grid>
     </Grid>
 </ContentPage>

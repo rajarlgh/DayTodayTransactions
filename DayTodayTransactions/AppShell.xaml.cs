@@ -1,15 +1,19 @@
 ﻿using DayTodayTransactions.Pages;
+using DayTodayTransactions.ViewModels;
 
 namespace DayTodayTransactions
 {
     public partial class AppShell : Shell
     {
         private readonly IServiceProvider _serviceProvider;
-
+        private readonly TransactionHistoryViewModel _viewModel;
         // Constructor accepting IServiceProvider
-        public AppShell(IServiceProvider serviceProvider)
+        public AppShell(IServiceProvider serviceProvider, TransactionHistoryViewModel viewModel)
         {
             InitializeComponent();
+            _viewModel = viewModel;
+            this.BindingContext = _viewModel;
+
             _serviceProvider = serviceProvider;
 
             // Register your routes here

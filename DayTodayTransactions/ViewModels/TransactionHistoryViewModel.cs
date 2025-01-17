@@ -10,6 +10,7 @@ using Microcharts;
 using SkiaSharp;
 using SQLite;
 using System.Collections.ObjectModel;
+using DayTodayTransactions.Extensions;
 
 namespace DayTodayTransactions.ViewModels
 {
@@ -224,18 +225,24 @@ namespace DayTodayTransactions.ViewModels
             LoadTransactionsAndSetGrid(Transactions);
             CalculateBalances();
             await LoadAccountsAsync(0);
+            this.notifyChanges();
+
+        }
+
+        private void notifyChanges()
+        {
             // Notify UI of changes
             OnPropertyChanged(nameof(Transactions));
             OnPropertyChanged(nameof(TotalIncome));
             OnPropertyChanged(nameof(TotalExpenses));
             OnPropertyChanged(nameof(Balance));
-            /*OnPropertyChanged(nameof(IncomeChart))*/;
+            /*OnPropertyChanged(nameof(IncomeChart))*/
+            ;
             OnPropertyChanged(nameof(IncomeChartEntries));
             //OnPropertyChanged(nameof(ExpenseChart));
             OnPropertyChanged(nameof(ExpenseChartEntries));
             OnPropertyChanged(nameof(SelectedAccount));
         }
-
         /// <summary>
         /// Assigns a unique color to each category.
         /// </summary>
@@ -407,22 +414,101 @@ namespace DayTodayTransactions.ViewModels
             }
         }
 
+        [RelayCommand]
+        public void FilterByDay()
+        {
+            FilterDate = DateTime.Now.ToString("yyyy-MM-dd"); // current day
+            FilterTransactions();
+        }
+
+        [RelayCommand]
+        public void FilterByWeek()
+        {
+            // Get the start of the week (e.g., Monday)
+            var startOfWeek = DateTime.Now.StartOfWeek(DayOfWeek.Monday);
+            var endOfWeek = startOfWeek.AddDays(7); // 7 days later
+
+            FilterDate = $"From {startOfWeek.ToString("yyyy-MM-dd")} to {endOfWeek.ToString("yyyy-MM-dd")}";
+            FilterTransactionsByRange(startOfWeek, endOfWeek);
+        }
+
+
+        [RelayCommand]
+        public void FilterByMonth()
+        {
+            // First day of the current month
+            var startOfMonth = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+            // Last day of the current month
+            var endOfMonth = startOfMonth.AddMonths(1).AddDays(-1);
+
+            FilterDate = $"From {startOfMonth.ToString("yyyy-MM-dd")} to {endOfMonth.ToString("yyyy-MM-dd")}";
+            FilterTransactionsByRange(startOfMonth, endOfMonth);
+        }
+
+
+        [RelayCommand]
+        public void FilterByYear()
+        {
+            // First day of the current year
+            var startOfYear = new DateTime(DateTime.Now.Year, 1, 1);
+            // Last day of the current year
+            var endOfYear = new DateTime(DateTime.Now.Year, 12, 31);
+
+            FilterDate = $"From {startOfYear.ToString("yyyy-MM-dd")} to {endOfYear.ToString("yyyy-MM-dd")}";
+            FilterTransactionsByRange(startOfYear, endOfYear);
+        }
+
+        public void FilterTransactionsByRange(DateTime startDate, DateTime endDate)
+        {
+            var filteredTransactions = _database.Table<Transaction>();
+
+            filteredTransactions = filteredTransactions.Where(t => t.Date >= startDate && t.Date <= endDate);
+
+            // Execute the query and update the Transactions list
+            Transactions = new ObservableCollection<Transaction>(filteredTransactions.ToListAsync().Result);
+
+            CalculateBalances();
+            OnPropertyChanged(nameof(Transactions));
+            this.LoadTransactionsAndSetGrid(Transactions);
+
+        }
+
+
+        [RelayCommand]
+        public void FilterByAll()
+        {
+            FilterDate = null; // No date filter
+            FilterTransactions();
+        }
 
 
         // Filter transactions by the given criteria
-        public void FilterTransactions()
+        public async void FilterTransactions()
         {
             var filteredTransactions = _database.Table<Transaction>();
 
             if (!string.IsNullOrEmpty(FilterDate))
             {
-                var date = DateTime.Parse(FilterDate);
-                filteredTransactions = filteredTransactions.Where(t => t.Date.Date == date.Date);
+                // If FilterDate contains a range (e.g., "From 2023-01-01 to 2023-01-07")
+                if (FilterDate.Contains("to"))
+                {
+                    var dateRange = FilterDate.Split(" to ");
+                    var startDate = DateTime.Parse(dateRange[0]);
+                    var endDate = DateTime.Parse(dateRange[1]);
+
+                    filteredTransactions = filteredTransactions.Where(t => t.Date >= startDate && t.Date <= endDate);
+                }
+                else
+                {
+                    // Filter by a single date (e.g., current day)
+                    var date = DateTime.Parse(FilterDate);
+                    filteredTransactions = filteredTransactions.Where(t => t.Date == date.Date);
+                }
             }
 
             if (!string.IsNullOrEmpty(FilterCategory))
             {
-                filteredTransactions = filteredTransactions.Where(t => t.Category.Name ==(FilterCategory));
+                filteredTransactions = filteredTransactions.Where(t => t.Category.Name == FilterCategory);
             }
 
             if (!string.IsNullOrEmpty(FilterType))
@@ -430,12 +516,23 @@ namespace DayTodayTransactions.ViewModels
                 filteredTransactions = filteredTransactions.Where(t => t.Type.Equals(FilterType, StringComparison.OrdinalIgnoreCase));
             }
 
-            // Execute the query and update the Transactions list
-            Transactions = new ObservableCollection<Transaction>(filteredTransactions.ToListAsync().Result);
+            //var transactionCount = await filteredTransactions.CountAsync(); // Await the async method to get the count
 
-            CalculateBalances();
-            OnPropertyChanged(nameof(Transactions));
+            //if (transactionCount > 0) // Now you can compare the count
+            {
+                // Execute the query asynchronously and update the Transactions list
+                var transactionList = await filteredTransactions.ToListAsync();
+
+                // Update the ObservableCollection with the filtered results
+                Transactions = new ObservableCollection<Transaction>(transactionList);
+
+                CalculateBalances();
+                OnPropertyChanged(nameof(Transactions));
+            }
+            LoadTransactionsAndSetGrid(Transactions);
         }
+
+
 
         [ObservableProperty]
         string? scrollMessage = "Swipe up for more";
