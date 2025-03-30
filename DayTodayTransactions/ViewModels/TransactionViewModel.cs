@@ -16,7 +16,11 @@ public partial class TransactionViewModel : ObservableObject
         _transactionService = transactionService;
         _categoryService = categoryService;
         _accountService = accountService;
+
     }
+
+    [ObservableProperty]
+    private bool isCategoryVisible = false;
 
     public void LoadData()
     {
@@ -36,7 +40,7 @@ public partial class TransactionViewModel : ObservableObject
     private string type = string.Empty;
 
     [ObservableProperty]
-    private string transactionText = "Add Transaction";
+    private string transactionText = "Transaction";
 
     [ObservableProperty]
     private ObservableCollection<Category> listOfCategories;
@@ -93,6 +97,14 @@ public partial class TransactionViewModel : ObservableObject
         {
             SelectedAccount = ListOfAccounts.FirstOrDefault(a => a.Id == selectedAccount.Id);
         }
+
+        if (type == "Income")
+        {
+            this.isCategoryVisible = false;
+        }
+        else
+            this.isCategoryVisible = true;
+        OnPropertyChanged(nameof(IsCategoryVisible));
     }
 
     [RelayCommand]
@@ -111,7 +123,7 @@ public partial class TransactionViewModel : ObservableObject
 
         try
         {
-            if (transaction.Id == 0)
+            if (transaction.Id == null || transaction.Id == 0)
                 await _transactionService.AddTransactionAsync(transaction);
             else
                 await _transactionService.UpdateTransactionAsync(transaction);

@@ -4,11 +4,13 @@
              xmlns:microcharts="clr-namespace:Microcharts.Maui;assembly=Microcharts.Maui"
              xmlns:coreControls="clr-namespace:Core.Controls.Controls;assembly=Core.Controls"
              xmlns:local="clr-namespace:DayTodayTransactions.ViewModels"
+             xmlns:converters="clr-namespace:DayTodayTransactions.Converters"
              x:Class="DayTodayTransactions.Pages.TransactionHistoryPage"
              >
     <ContentPage.Resources>
         <ResourceDictionary>
             <local:InverseBooleanConverter x:Key="InverseBooleanConverter" />
+            <converters:BooleanToTextConverter x:Key="BooleanToTextConverter" />
         </ResourceDictionary>
     </ContentPage.Resources>
 
@@ -54,9 +56,13 @@
         </Grid>
         <coreControls:CardView Title="Filters" Grid.Row="1" Margin="5,0,5,5">
             <StackLayout>
-                <!-- Top Bar -->
-                <Grid Grid.Row="0" ColumnDefinitions="*, Auto, Auto" Margin="0,0,0,10">
-                    <!-- Account Picker -->
+                
+                <!-- Toggle Filter Button -->
+                <Button Text="{Binding IsFilterExpanded, Converter={StaticResource BooleanToTextConverter}}" 
+                Command="{Binding ToggleFilterCommand}" />
+
+                <!-- Collapsible Filter Section -->
+                <Grid IsVisible="{Binding IsFilterExpanded}" Grid.Row="0" ColumnDefinitions="*, Auto, Auto" Margin="0,0,0,10">
                     <Picker Title="Account" 
                     Grid.Column="0"
                     ItemsSource="{Binding ListOfAccounts}" 
@@ -65,23 +71,19 @@
                             <Binding Path="Name" />
                         </Picker.ItemDisplayBinding>
                     </Picker>
-                   
-                </Grid>
-                <!-- Filters Section with Horizontal Scroll -->
-                <!-- Filters Section with Title -->
 
-                <ScrollView Orientation="Horizontal" Padding="10">
-                    <HorizontalStackLayout Spacing="10">
-                        <Button Text="Day" Command="{Binding FilterByDayCommand}" />
-                        <Button Text="Week" Command="{Binding FilterByWeekCommand}" />
-                        <Button Text="Month" Command="{Binding FilterByMonthCommand}" />
-                        <Button Text="Year" Command="{Binding FilterByYearCommand}" />
-                        <Button Text="Interval" Command="{Binding FilterByIntervalCommand}" />
-                        <Button Text="Choose Date" Command="{Binding ChooseDateCommand}" />
-                    </HorizontalStackLayout>
-                </ScrollView>
+                    <ScrollView Orientation="Horizontal" Padding="10">
+                        <Picker Title="Select Filter"
+                            ItemsSource="{Binding FilterOptions}"
+                            SelectedItem="{Binding SelectedFilterOption}"
+                        />
+
+                    </ScrollView>
+                </Grid>
             </StackLayout>
         </coreControls:CardView>
+
+
         <!-- Content Area -->
         <ScrollView Grid.Row="3">
             <Grid RowDefinitions="*" Padding="0">
@@ -234,51 +236,6 @@
 
         <!-- Add/Withdraw Buttons -->
         <Grid Grid.Row="5" ColumnDefinitions="Auto, Auto, Auto, Auto">
-            <!--<Button Text="+" 
-                    Grid.Column="0" 
-                    WidthRequest="100" 
-                    HeightRequest="100" 
-                    CornerRadius="50"
-                    BorderColor="Green"
-                    BorderWidth="7"
-                    BackgroundColor="Transparent"
-                    TextColor="Green"
-                    Command="{Binding onAddMoneyClickedCommand}"
-                    FontSize="36" />-->
-            <!--<Button Text="Upload Pdf" 
-                    Grid.Column="1" 
-                    WidthRequest="100" 
-                    HeightRequest="50" 
-                    CornerRadius="25"
-                    BorderColor="Orange"
-                    BorderWidth="7"
-                    BackgroundColor="Transparent"
-                    TextColor="Red"
-                    Command="{Binding onUploadPdfClickedCommand}"
-                    FontSize="10" />
-            
-            <Button Text="Download" 
-                    Grid.Column="2" 
-                    WidthRequest="100" 
-                    HeightRequest="50" 
-                    CornerRadius="25"
-                    BorderColor="Blue"
-                    BorderWidth="5"
-                    BackgroundColor="Transparent"
-                    TextColor="Red"
-                    Command="{Binding onDownloadClickedCommand}"
-                    FontSize="10" />-->
-            <!--<Button Text="-" 
-                    Grid.Column="3" 
-                    WidthRequest="100" 
-                    HeightRequest="100" 
-                    CornerRadius="50"
-                    BorderColor="Red"
-                    BorderWidth="7"
-                    BackgroundColor="Transparent"
-                    TextColor="Red"
-                    Command="{Binding onWidthDrawMoneyClickedCommand}"
-                    FontSize="36" />-->
         </Grid>
     </Grid>
 </ContentPage>

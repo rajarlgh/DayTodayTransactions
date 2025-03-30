@@ -34,21 +34,59 @@ namespace DayTodayTransactions.ViewModels
         [ObservableProperty]
         private ObservableCollection<Transaction> selectedCategoryBreakdown;
 
+        [ObservableProperty]
+        private bool isFilterExpanded = false;
+
+
+        [RelayCommand]
+        private void ToggleFilter()
+        {
+            IsFilterExpanded = !IsFilterExpanded;
+        }
+
+        partial void OnSelectedFilterOptionChanged(string value)
+        {
+            switch (value)
+            {
+                case "Day":
+                    FilterByDay();
+                    break;
+                case "Week":
+                    FilterByWeek();
+                    break;
+                case "Month":
+                    FilterByMonth();
+                    break;
+                case "Year":
+                    FilterByYear();
+                    break;
+                //case "Interval":
+                //    FilterByIntervalCommand.Execute(null);
+                //    break;
+                //case "Choose Date":
+                //    ChooseDateCommand.Execute(null);
+                //    break;
+            }
+        }
+
+
         private readonly SQLiteAsyncConnection _database;
         private readonly ITransactionService _transactionService;
         private readonly IAccountService _accountService;
 
         public TransactionHistoryViewModel(string dbPath, ITransactionService transactionService, IAccountService accountService)
         {
+            //SelectedFilterOption = FilterOptions[0]; // Default to "Day"
+
             this._accountService = accountService;
 
             _database = new SQLiteAsyncConnection(dbPath);
-            //var transactions = transactionService.GetTransactionsAsync().Result;
-            //var t = transactions.ToList<Transaction>();
-            //  var t= transactionService.GetTransactionsAsync();
+            var transactions = transactionService.GetTransactionsAsync().Result;
+            //var t1 = transactions.ToList<Transaction>();
+            //var t2 = transactionService.GetTransactionsAsync();
             //LoadTransactionsAndSetGrid(transactions);
             //Task.Run(async () => await LoadAccountsAsync(0));
-            
+
             //RefreshDataAsync();
         }
 
@@ -319,6 +357,7 @@ namespace DayTodayTransactions.ViewModels
             // Destination path in the public "Downloads" folder
             var destinationPath = Path.Combine(AndroidOS.Environment.GetExternalStoragePublicDirectory(Android.OS.Environment.DirectoryDownloads).AbsolutePath, "expenses.db");
 
+            if (File.Exists(sourcePath))
             // Copy the file to the destination
             File.Copy(sourcePath, destinationPath, true);
 #endif
@@ -390,6 +429,20 @@ namespace DayTodayTransactions.ViewModels
             //OnPropertyChanged(nameof(ExpenseChart));
 
         }
+
+        [ObservableProperty]
+        private ObservableCollection<string> filterOptions = new()
+        {
+            "Day",
+            "Week",
+            "Month",
+            "Year",
+            "Interval",
+            "Choose Date"
+        };
+
+        [ObservableProperty]
+        private string selectedFilterOption = String.Empty;
 
         [RelayCommand]
         public async Task EditTransactionDetailsAsync(Transaction transaction)
