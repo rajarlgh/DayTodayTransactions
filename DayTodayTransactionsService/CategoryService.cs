@@ -9,31 +9,75 @@ namespace DayTodayTransactionsService
     public class CategoryService : ICategoryService
     {
         private readonly SQLiteAsyncConnection _database;
+        public async Task InitializeAsync()
+        {
+            await _database.CreateTableAsync<Category>();
+        }
 
         public CategoryService(string dbPath)
         {
             _database = new SQLiteAsyncConnection(dbPath);
-            _database.CreateTableAsync<Category>().Wait();
         }
 
-        public Task<List<Category>> GetCategoriesAsync()
+        public async Task<List<Category>> GetCategoriesAsync()
         {
-            return _database.Table<Category>().ToListAsync();
+            await EnsureInitializedAsync();
+            return await _database.Table<Category>().ToListAsync();
+        }
+        private bool _isInitialized = false;
+        private readonly SemaphoreSlim _initLock = new(1, 1); // Thread-safe initialization
+        private async Task EnsureInitializedAsync()
+        {
+            if (_isInitialized) return;
+
+            await _initLock.WaitAsync();
+            try
+            {
+                if (!_isInitialized)
+                {
+                    await _database.CreateTableAsync<Category>();
+                    _isInitialized = true;
+                }
+            }
+            finally
+            {
+                _initLock.Release();
+            }
         }
 
-        public Task AddCategoryAsync(Category category)
+        public async Task<Category> AddCategoryAsync(Category category)
         {
-            return _database.InsertAsync(category);
+            await EnsureInitializedAsync(); // Critical to prevent hanging
+            // Check if an account with the same name already exists
+            var existingCategory = _database.Table<Category>()
+                                                 .Where(a => a.Name == category.Name)
+                                                 .FirstOrDefaultAsync().Result;
+            if (existingCategory != null)
+            {
+                // Return the existing account with its ID
+                return existingCategory;
+            }
+
+            // Insert the new account
+            var t = _database.InsertAsync(category).Result;
+
+            // Return the newly created account with its generated ID
+            return category;
         }
 
-        public Task DeleteCategoryAsync(int? id)
+        public async Task DeleteCategoryAsync(int? id)
         {
-            return _database.DeleteAsync<Category>(id);
+            await EnsureInitializedAsync(); // Critical to prevent hanging
+
+            await _database.DeleteAsync<Category>(id);
         }
 
-        public Task UpdateCategoryAsync(Category category)
+        public async Task UpdateCategoryAsync(Category category)
         {
-            return _database.UpdateAsync(category);
+            await EnsureInitializedAsync(); // Critical to prevent hanging
+
+            await _database.UpdateAsync(category);
         }
+
     }
 }

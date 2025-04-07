@@ -12,6 +12,7 @@ public class Transaction
 
     [Ignore]
     public Category Category { get; set; } // Ignore the direct Category property
+    public int CategoryId { get; set; }
 
     public string CategorySerialized
     {

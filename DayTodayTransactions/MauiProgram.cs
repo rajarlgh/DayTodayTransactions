@@ -32,8 +32,19 @@ namespace DayTodayTransactions
 
             // Dependency Injection Registration
             builder.Services.AddSingleton<ITransactionService>(new TransactionService(dbPath));
-            builder.Services.AddSingleton<IAccountService>(new AccountService(dbPath));
-            builder.Services.AddSingleton<ICategoryService>(new CategoryService(dbPath));
+            builder.Services.AddSingleton<IAccountService>(provider =>
+            {
+                //var dbPath = Path.Combine(FileSystem.AppDataDirectory, "transactions.db3");
+                return new AccountService(dbPath); // Don't call InitializeAsync here
+            });
+
+
+            builder.Services.AddSingleton<ICategoryService>(
+
+                provider => {
+                    return new CategoryService(dbPath);
+                    });
+            //builder.Services.AddSingleton<IAccountService>(provider => provider.GetRequiredService<AccountService>());
 
             // Register pages and their ViewModels with the required dbPath
             RegisterPageWithViewModel<TransactionViewModel, AddTransactionPage>(builder);
@@ -44,6 +55,7 @@ namespace DayTodayTransactions
 
             // Update to use the App constructor that accepts IServiceProvider
             builder.Services.AddSingleton<App>();
+           
 
             return builder.Build();
         }
@@ -72,8 +84,9 @@ namespace DayTodayTransactions
                 {
                     var transactionService = provider.GetRequiredService<ITransactionService>();
                     var accountService = provider.GetRequiredService<IAccountService>();
+                    var categoryService = provider.GetRequiredService<ICategoryService>();
 
-                    return (TViewModel)Activator.CreateInstance(typeof(TViewModel), dbPath, transactionService, accountService);
+                    return (TViewModel)Activator.CreateInstance(typeof(TViewModel), dbPath, transactionService, accountService, categoryService);
                 });
             }
             else

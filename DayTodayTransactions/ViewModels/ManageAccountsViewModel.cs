@@ -51,13 +51,14 @@ namespace DayTodayTransactions.ViewModels
 
             var account = new Account
             {
-                Id = AccountId,
+                
+                Id =   AccountId.Value,
                 Name = NewAccountName,
             };
 
             try
             {
-                if (account.Id == 0)
+                if (account.Id == null || account.Id == 0)
                 {
                     // Add new account
                     await _accountService.AddAccountAsync(account);

@@ -73,13 +73,16 @@ namespace DayTodayTransactions.ViewModels
         private readonly SQLiteAsyncConnection _database;
         private readonly ITransactionService _transactionService;
         private readonly IAccountService _accountService;
+        private readonly ICategoryService _categoryService;
 
-        public TransactionHistoryViewModel(string dbPath, ITransactionService transactionService, IAccountService accountService)
+
+        public TransactionHistoryViewModel(string dbPath, ITransactionService transactionService, IAccountService accountService, ICategoryService categoryService)
         {
             //SelectedFilterOption = FilterOptions[0]; // Default to "Day"
 
             this._accountService = accountService;
-
+            this._categoryService = categoryService;
+            this._categoryService.GetCategoriesAsync();
             _database = new SQLiteAsyncConnection(dbPath);
             var transactions = transactionService.GetTransactionsAsync().Result;
             //var t1 = transactions.ToList<Transaction>();

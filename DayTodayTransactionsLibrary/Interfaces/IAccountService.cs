@@ -4,8 +4,9 @@ namespace DayTodayTransactionsLibrary.Interfaces
 {
     public interface IAccountService
     {
+        Task InitializeAsync();
         Task<List<Account>> GetAccountsAsync();
-        Task AddAccountAsync(Account account);
+        Task<Account> AddAccountAsync(Account account);
         Task DeleteAccountAsync(int? id);
         Task UpdateAccountAsync(Account account);
     }

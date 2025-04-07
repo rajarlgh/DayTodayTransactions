@@ -9,8 +9,11 @@ namespace DayTodayTransactionsLibrary.Interfaces
 {
     public interface ICategoryService
     {
+        Task InitializeAsync();
+
         Task<List<Category>> GetCategoriesAsync();
-        Task AddCategoryAsync(Category category);
+        Task<Category> AddCategoryAsync(Category category);
+        
         Task DeleteCategoryAsync(int? id);
         Task UpdateCategoryAsync(Category category);
     }

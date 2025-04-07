@@ -5,11 +5,27 @@ using ExcelDataReader;
 using Microsoft.Maui.Controls.PlatformConfiguration;
 using System.Collections.ObjectModel;
 using System.Globalization;
+#if ANDROID
+using Android.Content;
+using Android.Net;
+#endif
+using Microsoft.Maui.ApplicationModel;
+using Microsoft.Maui.Storage;
+//using Android.Hardware.Usb;
+
+using CsvHelper;
+using CsvHelper.Configuration;
+using DayTodayTransactionsLibrary.Interfaces;
+using System.Security.Principal;
 
 namespace DayTodayTransactions.ViewModels
 {
     public partial class ExcelUploaderViewModel : ObservableObject
     {
+        private readonly ITransactionService _transactionService;
+        private readonly IAccountService _accountService;
+        private readonly ICategoryService _categoryService;
+
         [ObservableProperty]
         private string selectedFilePath;
 
@@ -18,13 +34,17 @@ namespace DayTodayTransactions.ViewModels
 
         public ObservableCollection<Transaction> Transactions { get; } = new();
 
-        public ExcelUploaderViewModel()
+        public ExcelUploaderViewModel(ITransactionService transactionService, IAccountService accountService, ICategoryService categoryService)
         {
+            _transactionService = transactionService;
+            _accountService = accountService;
+            _categoryService = categoryService;
             CanUpload = false; // Upload button is disabled initially
+            _categoryService = categoryService;
         }
 
 
-    public void ExportDatabase()
+        public void ExportDatabase()
     {
 #if ANDROID
             // Source path for the database in app-specific storage
@@ -39,34 +59,29 @@ namespace DayTodayTransactions.ViewModels
     }
 
 
-    [RelayCommand]
+
+
+        [RelayCommand]
         private async Task BrowseAsync()
         {
-            try
+            var result = await FilePicker.Default.PickAsync(new PickOptions
             {
-                var result = await FilePicker.Default.PickAsync(new PickOptions
-                {
-                    FileTypes = new FilePickerFileType(new Dictionary<DevicePlatform, IEnumerable<string>>
-            {
-                { DevicePlatform.Android, new[] { "application/vnd.ms-excel", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "text/csv" } }
-            }),
-                    PickerTitle = "Select an Excel or CSV File"
-                });
+                FileTypes = new FilePickerFileType(new Dictionary<DevicePlatform, IEnumerable<string>>
+    {
+         { DevicePlatform.Android, new[] { "*/*" } } // ✅ Allows all file types
+    }),
+                PickerTitle = "Select an Excel or CSV File"
+            });
 
-                if (result != null)
-                {
-                    using var stream = await result.OpenReadAsync();
-                    // Handle the file (read/write)
-                    var fileContents = await ReadFileContentsAsync(stream);
-                    SelectedFilePath = result.FullPath;
-                    CanUpload = true; // Enable upload button
-                }
-            }
-            catch (Exception ex)
+            if (result != null)
             {
-                await ShowErrorAsync($"Failed to select a file: {ex.Message}");
+                using var stream = await result.OpenReadAsync();
+                SelectedFilePath = result.FullPath;
+                CanUpload = true;
             }
         }
+
+
 
         private async Task CopyFileToLocalStorageAsync(FileResult fileResult)
         {
@@ -100,16 +115,20 @@ namespace DayTodayTransactions.ViewModels
                 }
 
                 // Read the Excel file
-                var transactions = ReadExcel(SelectedFilePath);
+                var transactions = 
+                    ReadCsv(SelectedFilePath).Result;
 
                 // Update the ObservableCollection
                 Transactions.Clear();
+                
                 foreach (var transaction in transactions)
                 {
                     Transactions.Add(transaction);
+                    await _transactionService.AddTransactionAsync(transaction);
+
                 }
 
-                await App.Current.MainPage.DisplayAlert("Success", "File uploaded and transactions loaded!", "OK");
+                //await App.Current.MainPage.DisplayAlert("Success", "File uploaded and transactions loaded!", "OK");
             }
             catch (Exception ex)
             {
@@ -117,37 +136,56 @@ namespace DayTodayTransactions.ViewModels
             }
         }
 
-        private List<Transaction> ReadExcel(string filePath)
+        private async Task<List<Transaction>> ReadCsv(string filePath)
         {
             var transactions = new List<Transaction>();
 
-            using (var stream = File.Open(filePath, FileMode.Open, FileAccess.Read))
+            if (!File.Exists(filePath))
+                throw new FileNotFoundException("File not found", filePath);
+
+            var config = new CsvConfiguration(CultureInfo.InvariantCulture)
             {
-                System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
-                using (var reader = ExcelReaderFactory.CreateReader(stream))
+                HasHeaderRecord = true // Set to false if the CSV has no headers
+            };
+
+            using (var reader = new StreamReader(filePath))
+            using (var csv = new CsvReader(reader, config))
+            {
+                while (csv.Read())
                 {
-                    var dataSet = reader.AsDataSet();
-                    var dataTable = dataSet.Tables[0];
-
-                    for (int i = 1; i < dataTable.Rows.Count; i++)
+                    if (csv.GetField(0) != "date")
                     {
-                        var row = dataTable.Rows[i];
-
-                        var category = new Category
+                        var accountAndCategoryField = csv.GetField(2);
+                        var account = CreateAccount(csv.GetField(1));//.Wait();
+                        var transferredAccountTask = await DeriveAccountAsync(accountAndCategoryField);
+                        
+                       // if (!(accountAndCategoryField.Contains("From") || accountAndCategoryField.Contains("To")))
                         {
-                            Name = row[2]?.ToString()
-                        };
 
-                        var transaction = new Transaction
-                        {
-                            Date = DateTime.ParseExact(row[0]?.ToString() ?? string.Empty, "d/M/yyyy", CultureInfo.InvariantCulture),
-                            AccountId = ResolveAccountId(row[1]?.ToString()),
-                            Category = category,
-                            Amount = decimal.Parse(row[3]?.ToString() ?? "0"),
-                            Reason = row[4]?.ToString()
-                        };
+                            var category = await DeriveCategory(accountAndCategoryField);
 
-                        transactions.Add(transaction);
+                            var transferredAccount = transferredAccountTask;
+                            if (category == null)
+                            {
+                                if (transferredAccount != null )
+                                    category = new Category() { Id = transferredAccount.Id, Name = transferredAccount.Name };
+                            }
+                            var amount = decimal.Parse(csv.GetField(3) ?? "0");
+                            var transaction = new Transaction
+                            {
+                                Date = DateTime.ParseExact(csv.GetField(0), "d/M/yyyy", CultureInfo.InvariantCulture),
+                                AccountId = account.Id,
+                                Category = category,
+                                CategoryId = category.Id,
+                                Amount = amount,
+                                Type = (amount > 0) ? "Income": "Expenses",
+                                
+
+                                Reason = csv.GetField(7)
+                            };
+
+                            transactions.Add(transaction);
+                        }
                     }
                 }
             }
@@ -155,17 +193,58 @@ namespace DayTodayTransactions.ViewModels
             return transactions;
         }
 
-        private int ResolveAccountId(string accountName)
+        private async Task<Category> DeriveCategory(string accountAndCategoryField)
         {
-            var accountMapping = new Dictionary<string, int>
-        {
-            { "Cash in Bank", 1 },
-            { "Paytm", 2 },
-            { "Cash in Hand", 3 }
-        };
-
-            return accountMapping.GetValueOrDefault(accountName, 0);
+            Category cat = null;
+            if (!accountAndCategoryField.Contains("From ") && !accountAndCategoryField.Contains("To "))
+            {
+                var category = accountAndCategoryField;
+                if (category.Length > 0)    
+                {
+                    cat  = await _categoryService.AddCategoryAsync(new Category() { Name = category });
+                }
+            }
+            return cat;
         }
+        private async Task<Account> CreateAccount(string? accountField)
+        {
+            Account account = null;
+            {
+                var accField = accountField;
+                if (accField.Length > 0)
+                {
+                    account = await _accountService.AddAccountAsync(new Account() { Name = accField });
+                }
+            }
+            return account;
+        }
+        private async Task<Account> DeriveAccountAsync(string? accountField)
+        {
+            Account account = null;
+
+            if (accountField.Contains("To '"))
+            {
+                var field = accountField.Split("To '");
+                if (field.Length > 0)
+                {
+                    var accField = field[1].Replace("'", "");
+                    account = await _accountService.AddAccountAsync(new Account() { Name = accField });
+                }
+            }
+            else if (accountField.Contains("From '"))
+            {
+                var field = accountField.Split("From '");
+                if (field.Length > 0)
+                {
+                    var accField = field[1].Replace("'", "");
+                    account = await _accountService.AddAccountAsync(new Account() { Name = accField });
+                }
+            }
+            return account;
+        }
+
+
+
 
         private async Task ShowErrorAsync(string message)
         {
