@@ -57,7 +57,7 @@ public partial class AddTransactionPage : ContentPage
                 await transactionViewModel.LoadCategoriesAsync(Transaction.Category);
 
                 // Load categories and set the selected category
-                await transactionViewModel.LoadAccountsAsync(Transaction.AccountId);
+                await transactionViewModel.LoadAccountsAsync(Transaction.Id);
 
                 // Update other fields
                 transactionViewModel.TransactionText = "Edit Transaction";

@@ -10,7 +10,7 @@ namespace DayTodayTransactionsLibrary.Models
         public string Name { get; set; } // e.g., "Savings Account"
         public string Currency { get; set; } // e.g., "USD", "EUR"
 
-        public double InititalAccBalance { get; set; }
+        public decimal InititalAccBalance { get; set; }
         public DateTime InitialAccDate { get; set; }
     }
 

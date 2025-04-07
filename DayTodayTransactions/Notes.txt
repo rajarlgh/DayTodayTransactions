@@ -1,0 +1,7 @@
+command to pull from emulator.
+------------------------------
+adb pull /storage/emulated/0/Android/data/com.companyname.daytodaytransactions/files/expenses.db D:\Monefy\
+
+Push to emulator
+-----------------
+adb push D:\Monefy\V1_Monefy.Data.30-03-25.csv /sdcard/Download/V1_Monefy.Data.30-03-25.csv

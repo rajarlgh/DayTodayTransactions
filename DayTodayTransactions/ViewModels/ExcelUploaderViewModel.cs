@@ -156,9 +156,15 @@ namespace DayTodayTransactions.ViewModels
                     if (csv.GetField(0) != "date")
                     {
                         var accountAndCategoryField = csv.GetField(2);
-                        var account = CreateAccount(csv.GetField(1));//.Wait();
+                        var account = await CreateAccount(csv.GetField(1));//.Wait();
                         var transferredAccountTask = await DeriveAccountAsync(accountAndCategoryField);
-                        
+                        var amount = decimal.Parse(csv.GetField(3) ?? "0");
+                        // Update the Initital Amount & Currency for an account
+                        if (account != null)
+                        {
+                            UpdateAccountAsync(account, accountAndCategoryField, amount);
+                        }
+
                        // if (!(accountAndCategoryField.Contains("From") || accountAndCategoryField.Contains("To")))
                         {
 
@@ -170,13 +176,17 @@ namespace DayTodayTransactions.ViewModels
                                 if (transferredAccount != null )
                                     category = new Category() { Id = transferredAccount.Id, Name = transferredAccount.Name };
                             }
-                            var amount = decimal.Parse(csv.GetField(3) ?? "0");
+                           
                             var transaction = new Transaction
                             {
-                                Date = DateTime.ParseExact(csv.GetField(0), "d/M/yyyy", CultureInfo.InvariantCulture),
-                                AccountId = account.Id,
+                                FromAccountId = account.Id,
+                                ToAccountId = account.Id,
                                 Category = category,
-                                CategoryId = category.Id,
+                                CategoryId = category == null ? null: category.Id,
+
+                                Date = DateTime.ParseExact(csv.GetField(0), "d/M/yyyy", CultureInfo.InvariantCulture),
+                                
+                                
                                 Amount = amount,
                                 Type = (amount > 0) ? "Income": "Expenses",
                                 
@@ -196,7 +206,7 @@ namespace DayTodayTransactions.ViewModels
         private async Task<Category> DeriveCategory(string accountAndCategoryField)
         {
             Category cat = null;
-            if (!accountAndCategoryField.Contains("From ") && !accountAndCategoryField.Contains("To "))
+            if (!accountAndCategoryField.Contains("From ") && !accountAndCategoryField.Contains("To ") && !accountAndCategoryField.Contains("Initial balance '"))
             {
                 var category = accountAndCategoryField;
                 if (category.Length > 0)    
@@ -240,9 +250,24 @@ namespace DayTodayTransactions.ViewModels
                     account = await _accountService.AddAccountAsync(new Account() { Name = accField });
                 }
             }
-            return account;
+           
+                return account;
         }
 
+        private async Task<Account> UpdateAccountAsync(Account account, string? accountField, decimal amount )
+        {
+            if (accountField.Contains("Initial balance '"))
+            {
+                var field = accountField.Split("Initial balance '");
+                if (field.Length > 0)
+                {
+                    account.InititalAccBalance = amount;
+                    account.InitialAccDate = DateTime.Now;
+                    await _accountService.UpdateAccountAsync(account);
+                }
+            }
+            return account;
+        }
 
 
 
