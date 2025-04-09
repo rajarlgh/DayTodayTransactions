@@ -155,8 +155,8 @@ namespace DayTodayTransactions.ViewModels
                 {
                     if (csv.GetField(0) != "date")
                     {
-                        var accountAndCategoryField = csv.GetField(2);
-                        var account = await CreateAccount(csv.GetField(1));//.Wait();
+                        var accountAndCategoryField = csv.GetField(2); //Category
+                        var account = await CreateAccount(csv.GetField(1));//Account
                         var transferredAccountTask = await DeriveAccountAsync(accountAndCategoryField);
                         var amount = decimal.Parse(csv.GetField(3) ?? "0");
                         // Update the Initital Amount & Currency for an account
@@ -173,14 +173,14 @@ namespace DayTodayTransactions.ViewModels
                             var transferredAccount = transferredAccountTask;
                             if (category == null)
                             {
-                                if (transferredAccount != null )
-                                    category = new Category() { Id = transferredAccount.Id, Name = transferredAccount.Name };
+                                //if (transferredAccount != null )
+                                //    category = new Category() { Id = transferredAccount.Id, Name = transferredAccount.Name };
                             }
                            
                             var transaction = new Transaction
                             {
                                 FromAccountId = account.Id,
-                                ToAccountId = account.Id,
+                                ToAccountId = transferredAccountTask == null? null: transferredAccountTask.Id,
                                 Category = category,
                                 CategoryId = category == null ? null: category.Id,
 
@@ -188,7 +188,7 @@ namespace DayTodayTransactions.ViewModels
                                 
                                 
                                 Amount = amount,
-                                Type = (amount > 0) ? "Income": "Expenses",
+                                Type = (amount > 0) ? "Income": "Expense",
                                 
 
                                 Reason = csv.GetField(7)

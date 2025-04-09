@@ -147,7 +147,7 @@ namespace DayTodayTransactions.ViewModels
 
         public void ShowBreakdownForCategory(Category category, string type)
         {
-            var breakdown = transactions.Where(t => t.Type == type && t.Category.Name  ==  category.Name)
+            var breakdown = transactions.Where(t => t.Category != null && t.Type == type && t.Category.Name  ==  category.Name)
                 .ToList();
 
             SelectedCategoryBreakdown = new ObservableCollection<Transaction>(breakdown);
@@ -170,6 +170,7 @@ namespace DayTodayTransactions.ViewModels
         {
             // Group transactions by category and calculate the total amount for each category
             var groupedData = transactions
+                .Where(t => t.Category != null)
                 .GroupBy(t => t.Category.Name)
                 .Select(g => new
                 {
@@ -177,7 +178,7 @@ namespace DayTodayTransactions.ViewModels
                     TotalAmount = g.Sum(t => t.Amount)
                 });
 
-            var incomeGroupedData = transactions.Where(r=> r.Type=="Income" && r.Category != null)
+            var incomeGroupedData = transactions.Where(r=> r.Category != null && r.Type=="Income")
                .GroupBy(t => t.Category.Name)
                .Select(g => new
                {
@@ -198,22 +199,32 @@ namespace DayTodayTransactions.ViewModels
             OnPropertyChanged(nameof(IncomeChartEntries));
 
 
-            var expenseGroupedData = transactions.Where(r => r.Type == "Expense")
+            var expenseGroupedData = transactions.Where(r => r.Type == "Expense" && r.Category != null)
               .GroupBy(t => t.Category.Name)
               .Select(g => new
               {
                   Category = g.Key,
                   TotalAmount = g.Sum(t => t.Amount)
               });
-            // Map the grouped data to ChartEntry objects
-            ExpenseChartEntries = new ObservableCollection<ChartEntry>(
-                expenseGroupedData.Select(data => new ChartEntry((float)data.TotalAmount)
-                {
-                    Label = data.Category,
-                    ValueLabel = data.TotalAmount.ToString("F0"), // Format as integer
-                    Color = GetCategoryColor(data.Category) // Assign a color based on the category
-                })
-            );
+              //.Where(r => r !=null &&  r.Category != null);
+            try
+            {
+                // Map the grouped data to ChartEntry objects
+                ExpenseChartEntries = new ObservableCollection<ChartEntry>(
+                    expenseGroupedData.Select(
+                        data => 
+                        new ChartEntry((float)data.TotalAmount)
+                    {
+                        Label = data.Category,
+                        ValueLabel = data.TotalAmount.ToString("F0"), // Format as integer
+                        Color = GetCategoryColor(data.Category) // Assign a color based on the category
+                    })
+                );
+            }
+            catch (Exception e)
+            {
+
+            }
             OnPropertyChanged(nameof(ExpenseChartEntries));
 
             //LoadTransactions();
