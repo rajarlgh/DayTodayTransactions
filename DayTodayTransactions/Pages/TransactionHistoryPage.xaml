@@ -168,25 +168,30 @@
                                 <CollectionView.ItemTemplate>
                                     <DataTemplate>
                                         <Border Padding="10" Margin="5" BackgroundColor="Transparent">
-                                            <Grid BackgroundColor="Transparent" RowSpacing="20" RowDefinitions="Auto, Auto" ColumnDefinitions="Auto, Auto, Auto">
+                                            <Grid BackgroundColor="Transparent" RowSpacing="20" RowDefinitions="Auto, Auto" ColumnDefinitions="Auto, Auto, Auto, Auto">
 
                                                 <!-- Headers for the columns -->
-                                                <Label Text="Reason" FontAttributes="Bold" HorizontalOptions="Start" Grid.Row="0" Grid.Column="0" />
-                                                <Label Text="Amount" FontAttributes="Bold" HorizontalOptions="Start" Grid.Row="0" Grid.Column="1" />
-                                                <Label Text="Action" FontAttributes="Bold" HorizontalOptions="Start" Grid.Row="0" Grid.Column="2" />
+                                                <Label Text="Date" FontAttributes="Bold" HorizontalOptions="Start" Grid.Row="0" Grid.Column="0" />
+                                                <Label Text="Reason" FontAttributes="Bold" HorizontalOptions="Start" Grid.Row="0" Grid.Column="1" />
+                                                <Label Text="Amount" FontAttributes="Bold" HorizontalOptions="Start" Grid.Row="0" Grid.Column="2" />
+                                                <Label Text="Action" FontAttributes="Bold" HorizontalOptions="Start" Grid.Row="0" Grid.Column="3" />
+
 
 
                                                 <!-- Description column -->
-                                                <Label Text="{Binding Reason}" Grid.Row="1" Grid.Column="0" HorizontalOptions="Start" VerticalOptions="Center" />
+                                                <Label Text="{Binding Date}" Grid.Row="1" Grid.Column="0" HorizontalOptions="Start" VerticalOptions="Center" />
+
+                                                <!-- Description column -->
+                                                <Label Text="{Binding Reason}" Grid.Row="1" Grid.Column="1" HorizontalOptions="Start" VerticalOptions="Center" />
 
                                                 <!-- Amount column -->
-                                                <Label Text="{Binding Amount}" Grid.Row="1" Grid.Column="1" HorizontalOptions="Start" VerticalOptions="Center" />
+                                                <Label Text="{Binding Amount}" Grid.Row="1" Grid.Column="2" HorizontalOptions="Start" VerticalOptions="Center" />
 
 
                                                 <!-- Edit Button -->
                                                 <Button Text="Edit" 
                                                                 Grid.Row="1" 
-                                                                Grid.Column="2" 
+                                                                Grid.Column="3" 
                                                                 Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.EditTransactionDetailsCommand}" 
                                                                 CommandParameter="{Binding}" 
                                                                 HorizontalOptions="Start" 

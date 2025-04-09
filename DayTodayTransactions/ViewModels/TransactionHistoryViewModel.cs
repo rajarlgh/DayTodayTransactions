@@ -274,7 +274,7 @@ namespace DayTodayTransactions.ViewModels
             //        Transactions = new ObservableCollection<Transaction>();
             //    Transactions.Add(transaction);
             //}
-            LoadTransactionsAndSetGrid(Transactions);
+            //LoadTransactionsAndSetGrid(Transactions);
             CalculateBalances();
             await LoadAccountsAsync(0);
             this.notifyChanges();
