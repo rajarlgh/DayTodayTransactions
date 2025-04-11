@@ -558,12 +558,12 @@ namespace DayTodayTransactions.ViewModels
         }
 
 
-        public void FilterTransactionsByRange(DateTime startDate, DateTime endDate)
+        public async void FilterTransactionsByRange(DateTime startDate, DateTime endDate)
         {
             var filteredTransactions = _database.Table<Transaction>();
             var t =  filteredTransactions.ToListAsync().Result;
             // Get record counts grouped by month from the database
-            var dbMonthlyCounts = GetRecordCountsByMonthFromDatabaseAsync().Result;
+            var dbMonthlyCounts = await GetRecordCountsByMonthFromDatabaseAsync();
 
             if (selectedAccount != null && selectedAccount.Id>0)
             filteredTransactions = filteredTransactions.Where(t => t.Date >= startDate && t.Date <= endDate && t.AccountId == selectedAccount.Id);
