@@ -11,6 +11,8 @@ using SkiaSharp;
 using SQLite;
 using System.Collections.ObjectModel;
 using DayTodayTransactions.Extensions;
+using System.Runtime.InteropServices;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace DayTodayTransactions.ViewModels
 {
@@ -66,6 +68,8 @@ namespace DayTodayTransactions.ViewModels
         }
         partial void OnSelectedFilterOptionChanged(string value)
         {
+            this.isIntervalFilterSelected = false;
+            this.isDateFilterSelected = false;
             switch (value)
             {
                 case "Day":
@@ -80,12 +84,12 @@ namespace DayTodayTransactions.ViewModels
                 case "Year":
                     FilterByYear();
                     break;
-                //case "Interval":
-                //    FilterByIntervalCommand.Execute(null);
-                //    break;
-                //case "Choose Date":
-                //    ChooseDateCommand.Execute(null);
-                //    break;
+                case "Interval":
+                    FilterByInterval();
+                    break;
+                case "Choose Date":
+                    FilterByDate();
+                    break;
             }
         }
 
@@ -464,7 +468,7 @@ namespace DayTodayTransactions.ViewModels
         };
 
         [ObservableProperty]
-        private string selectedFilterOption = String.Empty;
+        private string selectedFilterOption;// String.Empty;
 
         [RelayCommand]
         public async Task EditTransactionDetailsAsync(Transaction transaction)
@@ -492,8 +496,9 @@ namespace DayTodayTransactions.ViewModels
         [RelayCommand]
         public void FilterByDay()
         {
-            FilterDate = DateTime.Now.ToString("yyyy-MM-dd"); // current day
-            FilterTransactions();
+            //FilterDate = DateTime.Now; // current day
+            //FilterTransactions();
+            FilterTransactionsByRange(DateTime.Now, DateTime.Now);
         }
 
         [RelayCommand]
@@ -532,6 +537,36 @@ namespace DayTodayTransactions.ViewModels
             FilterDate = $"From {startOfYear.ToString("yyyy-MM-dd")} to {endOfYear.ToString("yyyy-MM-dd")}";
             FilterTransactionsByRange(startOfYear, endOfYear);
         }
+
+        [ObservableProperty]
+        private bool isIntervalFilterSelected = false;
+
+        [ObservableProperty]
+        private bool isDateFilterSelected = false;
+
+        public void FilterByInterval()
+        {
+            // Get the date for which we need to filter out.
+            var date = DateTime.Now;
+            this.isIntervalFilterSelected = true;
+            this.isDateFilterSelected = false;
+            FilterTransactionsByRange(date, date);
+            OnPropertyChanged(nameof(IsIntervalFilterSelected));
+            OnPropertyChanged(nameof(IsDateFilterSelected));
+        }
+
+        public void FilterByDate()
+        {
+            // Get the date for which we need to filter out.
+            var date = DateTime.Now;
+            this.isDateFilterSelected = true;
+            this.isIntervalFilterSelected = false;
+            FilterTransactionsByRange(date, date);
+            OnPropertyChanged(nameof(IsDateFilterSelected));
+            OnPropertyChanged(nameof(IsIntervalFilterSelected));
+
+
+        }
         public async Task<Dictionary<string, int>> GetRecordCountsByMonthFromDatabaseAsync()
         {
             var query = @"
@@ -563,7 +598,7 @@ namespace DayTodayTransactions.ViewModels
             var filteredTransactions = _database.Table<Transaction>();
             var t =  filteredTransactions.ToListAsync().Result;
             // Get record counts grouped by month from the database
-            var dbMonthlyCounts = await GetRecordCountsByMonthFromDatabaseAsync();
+           // var dbMonthlyCounts = await GetRecordCountsByMonthFromDatabaseAsync();
 
             if (selectedAccount != null && selectedAccount.Id>0)
             filteredTransactions = filteredTransactions.Where(t => t.Date >= startDate && t.Date <= endDate && t.AccountId == selectedAccount.Id);
