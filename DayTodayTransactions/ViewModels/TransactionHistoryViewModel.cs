@@ -37,6 +37,12 @@ namespace DayTodayTransactions.ViewModels
         [ObservableProperty]
         private bool isFilterExpanded = false;
 
+        [ObservableProperty]
+        private bool isIncomeExpanded = false;
+        
+        [ObservableProperty]
+        private bool isExpensesExpanded = false;
+
 
         [RelayCommand]
         private void ToggleFilter()
@@ -44,6 +50,16 @@ namespace DayTodayTransactions.ViewModels
             IsFilterExpanded = !IsFilterExpanded;
         }
 
+        [RelayCommand]
+        private void ToggleIncome()
+        {
+            IsIncomeExpanded = !IsIncomeExpanded;
+        }
+        [RelayCommand]
+        private void ToggleExpenses()
+        {
+            IsExpensesExpanded = !IsExpensesExpanded;
+        }
         partial void OnSelectedFilterOptionChanged(string value)
         {
             switch (value)
