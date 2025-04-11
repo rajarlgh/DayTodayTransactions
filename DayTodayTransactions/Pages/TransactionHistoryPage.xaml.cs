@@ -57,15 +57,17 @@ namespace DayTodayTransactions.Pages
         private void OnIncomeItemSelected(object sender, SelectionChangedEventArgs e)
         {
             // Deselect the previously selected item in CollectionView2
-            var selectedEntry = e.CurrentSelection.FirstOrDefault() as ChartEntry;
-            if (selectedEntry != null)
+            var selectedWrapper = e.CurrentSelection.FirstOrDefault() as ChartEntryWrapper;
+            if (selectedWrapper != null)
             {
-                // Assuming the Label is the Category name
-                this.SelectedCategory.Name = selectedEntry.Label;
+                // Use the ID and Name from the wrapper
+                this.SelectedCategory.Id = selectedWrapper.CategoryId;
+                this.SelectedCategory.Name = selectedWrapper.Entry.Label;
 
                 // Call the method in the ViewModel to fetch the breakdown
-                var viewModel = BindingContext as TransactionHistoryViewModel;
+                
                 this.CategoryType = "Income";
+                var viewModel = BindingContext as TransactionHistoryViewModel;
                 viewModel?.ShowBreakdownForCategory(this.SelectedCategory, this.CategoryType);
                 collectionViewExpense.SelectedItems = null;
             }
@@ -73,18 +75,19 @@ namespace DayTodayTransactions.Pages
 
         private void OnExpenseItemSelected(object sender, SelectionChangedEventArgs e)
         {
-            var selectedEntry = e.CurrentSelection.FirstOrDefault() as ChartEntry;
-            if (selectedEntry != null)
+            var selectedWrapper = e.CurrentSelection.FirstOrDefault() as ChartEntryWrapper;
+            if (selectedWrapper != null)
             {
-                // Assuming the Label is the Category name
-                this.SelectedCategory.Name = selectedEntry.Label;
+                // Use the ID and Name from the wrapper
+                this.SelectedCategory.Id = selectedWrapper.CategoryId;
+                this.SelectedCategory.Name = selectedWrapper.Entry.Label;
 
-                // Call the method in the ViewModel to fetch the breakdown
-                var viewModel = BindingContext as TransactionHistoryViewModel;
                 this.CategoryType = "Expense";
+                var viewModel = BindingContext as TransactionHistoryViewModel;
                 viewModel?.ShowBreakdownForCategory(this.SelectedCategory, this.CategoryType);
                 collectionViewIncome.SelectedItem = null;
             }
         }
+
     }
 }

@@ -19,7 +19,11 @@ namespace DayTodayTransactions.ViewModels
         [ObservableProperty]
         private ObservableCollection<ChartEntry> incomeChartEntries;
         [ObservableProperty]
+        private ObservableCollection<ChartEntryWrapper> incomeChartEntryWrappers;
+        [ObservableProperty]
         private ObservableCollection<ChartEntry> expenseChartEntries;
+        [ObservableProperty]
+        private ObservableCollection<ChartEntryWrapper> expenseChartEntryWrappers;
         [ObservableProperty]
         private ObservableCollection<Transaction> transactions;
         private ObservableCollection<Transaction> allTransactions;
@@ -163,17 +167,23 @@ namespace DayTodayTransactions.ViewModels
 
         public void ShowBreakdownForCategory(Category category, string type)
         {
-            var breakdown = transactions.Where(t => t.Category != null && t.Type == type && t.Category.Name  ==  category.Name)
+
+            var categoryId = category.Id;
+
+            var breakdown = transactions
+                .Where(t => t.Type == type && t.CategoryId == categoryId)
                 .ToList();
+
 
             SelectedCategoryBreakdown = new ObservableCollection<Transaction>(breakdown);
         }
 
-        private DonutChart CreateChart(ObservableCollection<ChartEntry> entries)
+      
+        private DonutChart CreateChart(IEnumerable<ChartEntryWrapper> entryWrappers)
         {
             return new DonutChart
             {
-                Entries = entries,
+                Entries = entryWrappers.Select(wrapper => wrapper.Entry),
                 LabelMode = LabelMode.LeftAndRight,
                 IsAnimated = true,
                 Margin = 10,
@@ -181,101 +191,83 @@ namespace DayTodayTransactions.ViewModels
             };
         }
 
-        
+
+
         private void LoadTransactionsAndSetGrid(IList<Transaction> transactions)
         {
-            // Group transactions by category and calculate the total amount for each category
-            var groupedData = transactions
-                .Where(t => t.Category != null)
-                .GroupBy(t => t.Category.Name)
-                .Select(g => new
+            var incomeGroupedData = transactions
+                .Where(t => t.Category != null && t.Type == "Income")
+                .GroupBy(t => t.Category.Id)
+                .Select(g =>
                 {
-                    Category = g.Key,
-                    TotalAmount = g.Sum(t => t.Amount)
+                    var first = g.First();
+                    return new
+                    {
+                        CategoryId = g.Key,
+                        CategoryName = first.Category.Name,
+                        TotalAmount = g.Sum(t => t.Amount)
+                    };
                 });
 
-            var incomeGroupedData = transactions.Where(r=> r.Category != null && r.Type=="Income")
-               .GroupBy(t => t.Category.Name)
-               .Select(g => new
-               {
-                   Category = g.Key,
-                   TotalAmount = g.Sum(t => t.Amount)
-               });
+            var incomeData = incomeGroupedData.Select(data => new ChartEntryWrapper
+            {
+                Entry = new ChartEntry((float)data.TotalAmount)
+                {
+                    Label = data.CategoryName,
+                    ValueLabel = data.TotalAmount.ToString("F0"),
+                    Color = GetCategoryColor(data.CategoryName)
+                },
+                CategoryId = data.CategoryId
+            }).ToList();
 
-            if (incomeGroupedData!= null)
-                // Map the grouped data to ChartEntry objects
-                IncomeChartEntries = new ObservableCollection<ChartEntry>(
-                    incomeGroupedData.Select(data => new ChartEntry((float)data.TotalAmount)
-                    {
-                        Label = data.Category,
-                        ValueLabel = data.TotalAmount.ToString("F0"), // Format as integer
-                        Color = GetCategoryColor(data.Category) // Assign a color based on the category
-                    })
-                );
+            // Set collection of ChartEntryWrapper for CollectionView
+            IncomeChartEntryWrappers = new ObservableCollection<ChartEntryWrapper>(incomeData);
+
+            // Set collection of ChartEntry for Chart view
+            IncomeChartEntries = new ObservableCollection<ChartEntry>(incomeData.Select(x => x.Entry));
+
             OnPropertyChanged(nameof(IncomeChartEntries));
+            OnPropertyChanged(nameof(IncomeChartEntryWrappers));
 
 
-            var expenseGroupedData = transactions.Where(r => r.Type == "Expense" && r.Category != null)
-              .GroupBy(t => t.Category.Name)
-              .Select(g => new
-              {
-                  Category = g.Key,
-                  TotalAmount = g.Sum(t => t.Amount)
-              });
-              //.Where(r => r !=null &&  r.Category != null);
-            try
-            {
-                // Map the grouped data to ChartEntry objects
-                ExpenseChartEntries = new ObservableCollection<ChartEntry>(
-                    expenseGroupedData.Select(
-                        data => 
-                        new ChartEntry((float)data.TotalAmount)
+            var expenseGroupedData = transactions
+                .Where(t => t.Category != null && t.Type == "Expense")
+                .GroupBy(t => t.Category.Id)
+                .Select(g =>
+                {
+                    var first = g.First();
+                    return new
                     {
-                        Label = data.Category,
-                        ValueLabel = data.TotalAmount.ToString("F0"), // Format as integer
-                        Color = GetCategoryColor(data.Category) // Assign a color based on the category
-                    })
-                );
-            }
-            catch (Exception e)
+                        CategoryId = g.Key,
+                        CategoryName = first.Category.Name,
+                        TotalAmount = g.Sum(t => t.Amount)
+                    };
+                });
+
+            var expenseData = expenseGroupedData.Select(data => new ChartEntryWrapper
             {
+                Entry = new ChartEntry((float)data.TotalAmount)
+                {
+                    Label = data.CategoryName,
+                    ValueLabel = data.TotalAmount.ToString("F0"),
+                    Color = GetCategoryColor(data.CategoryName)
+                },
+                CategoryId = data.CategoryId
+            }).ToList();
+            // Set collection of ChartEntryWrapper for CollectionView
+            ExpenseChartEntryWrappers = new ObservableCollection<ChartEntryWrapper>(expenseData);
 
-            }
+            // Set collection of ChartEntry for Chart view
+            ExpenseChartEntries = new ObservableCollection<ChartEntry>(expenseData.Select(x => x.Entry));
+
             OnPropertyChanged(nameof(ExpenseChartEntries));
+            OnPropertyChanged(nameof(ExpenseChartEntryWrappers));
 
-            //LoadTransactions();
-
-            // Recreate the chart instance with new entries
-            //IncomeChart = new DonutChart
-            //{
-            //    Entries = IncomeChartEntries,
-            //    LabelMode = LabelMode.LeftAndRight,
-            //    IsAnimated = true,
-            //    Margin = 10,
-            //    LabelTextSize = 40
-            //};
-
-            // Replace chart creation calls:
-            // Calculate chart entries...
-            IncomeChart = CreateChart(IncomeChartEntries);
-            ExpenseChart = CreateChart(ExpenseChartEntries);
-
-
-            // Notify property changes
-            //OnPropertyChanged(nameof(IncomeChart));
-            //OnPropertyChanged(nameof(ExpenseChart));
-
-            // Recreate the chart instance with new entries
-            //ExpenseChart = new DonutChart
-            //{
-            //    Entries = ExpenseChartEntries,
-            //    LabelMode = LabelMode.LeftAndRight,
-            //    IsAnimated = true,
-            //    Margin = 10,
-            //    LabelTextSize = 40
-            //};
-
+            // Recreate charts
+            IncomeChart = CreateChart(IncomeChartEntryWrappers);
+            ExpenseChart = CreateChart(ExpenseChartEntryWrappers);
         }
+
 
         public async Task RefreshDataAsync()
         {
@@ -669,4 +661,10 @@ namespace DayTodayTransactions.ViewModels
             }
         }
     }
+}
+public class ChartEntryWrapper
+{
+    public ChartEntry Entry { get; set; }
+    public int CategoryId { get; set; }
+    public string CategoryName => Entry?.Label;
 }

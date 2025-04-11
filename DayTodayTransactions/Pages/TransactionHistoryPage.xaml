@@ -97,7 +97,7 @@
 
                             <Grid RowDefinitions="Auto, Auto" Padding="10" IsVisible="{Binding IsIncomeExpanded}" >
                                 <CollectionView x:Name="collectionViewIncome"
-                                            ItemsSource="{Binding IncomeChartEntries}"
+                                            ItemsSource="{Binding IncomeChartEntryWrappers}"
                                             IsVisible="{Binding DoVisibleChart, Converter={StaticResource InverseBooleanConverter}}"
                                             SelectionMode="Single"
                                             SelectionChanged="OnIncomeItemSelected">
@@ -108,8 +108,8 @@
                                         <DataTemplate>
                                             <Border Padding="10" Margin="5" BackgroundColor="Transparent">
                                                 <Grid ColumnDefinitions="Auto,Auto">
-                                                    <Label Text="{Binding Label}" FontAttributes="Bold" Grid.Column="0" />
-                                                    <Label Text="{Binding ValueLabel}" FontSize="Small" Grid.Column="1"/>
+                                                    <Label Text="{Binding Entry.Label}" FontAttributes="Bold" Grid.Column="0" />
+                                                    <Label Text="{Binding Entry.ValueLabel}" FontSize="Small" Grid.Column="1"/>
                                                 </Grid>
                                             </Border>
                                         </DataTemplate>
@@ -118,7 +118,7 @@
 
                                 <Grid IsVisible="{Binding DoVisibleChart}" Grid.Row="1" Padding="10">
                                     <Label Text="Income Chart" FontSize="24" HorizontalOptions="Center" />
-                                    <coreControls:BindableChartView Entries="{Binding IncomeChartEntries}"
+                                    <coreControls:BindableChartView Entries="{Binding IncomeChartEntryWrappers}"
                                                                 HeightRequest="200"
                                                                 WidthRequest="300" />
                                 </Grid>
@@ -133,7 +133,7 @@
                                     Command="{Binding ToggleExpensesCommand}" />
                             <Grid RowDefinitions="Auto, Auto" Padding="10" IsVisible="{Binding IsExpensesExpanded}">
                                 <CollectionView x:Name="collectionViewExpense"
-                                            ItemsSource="{Binding ExpenseChartEntries}"
+                                            ItemsSource="{Binding ExpenseChartEntryWrappers}"
                                             IsVisible="{Binding DoVisibleChart, Converter={StaticResource InverseBooleanConverter}}"
                                             SelectionMode="Single"
                                             SelectionChanged="OnExpenseItemSelected">
@@ -144,8 +144,8 @@
                                         <DataTemplate>
                                             <Border Padding="10" Margin="5" BackgroundColor="Transparent">
                                                 <Grid ColumnDefinitions="Auto,Auto">
-                                                    <Label Text="{Binding Label}" FontAttributes="Bold" Grid.Column="0" />
-                                                    <Label Text="{Binding ValueLabel}" FontSize="Small" Grid.Column="1"/>
+                                                    <Label Text="{Binding Entry.Label}" FontAttributes="Bold" Grid.Column="0" />
+                                                    <Label Text="{Binding Entry.ValueLabel}" FontSize="Small" Grid.Column="1"/>
                                                 </Grid>
                                             </Border>
                                         </DataTemplate>
@@ -154,7 +154,7 @@
 
                                 <Grid IsVisible="{Binding DoVisibleChart}" Grid.Row="1" Padding="10">
                                     <Label Text="Expense Chart" FontSize="24" HorizontalOptions="Center" />
-                                    <coreControls:BindableChartView Entries="{Binding ExpenseChartEntries}"
+                                    <coreControls:BindableChartView Entries="{Binding ExpenseChartEntryWrappers}"
                                                                 HeightRequest="200"
                                                                 WidthRequest="300" />
                                 </Grid>
