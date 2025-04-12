@@ -13,8 +13,24 @@
 
         <Button Text="Upload" Command="{Binding UploadCommand}" IsEnabled="{Binding CanUpload}" />
 
+        <ActivityIndicator IsRunning="{Binding IsUploading}" 
+                   IsVisible="{Binding IsUploading}" 
+                   Color="DarkBlue"
+                   HeightRequest="40" 
+                   WidthRequest="40" 
+                   HorizontalOptions="Center" />
+
+        <ProgressBar Progress="{Binding UploadProgress}"
+             IsVisible="{Binding IsUploading}"
+             HeightRequest="20" />
+
+        <Label Text="{Binding UploadStatus}"
+       IsVisible="{Binding IsUploading}"
+       HorizontalOptions="Center" />
+
+
         <!-- DataGrid for displaying transactions -->
-        <CollectionView ItemsSource="{Binding Transactions}" ItemsLayout="VerticalList">
+        <!--<CollectionView ItemsSource="{Binding Transactions}" ItemsLayout="VerticalList">
             <CollectionView.ItemTemplate>
                 <DataTemplate>
                     <Frame BorderColor="LightGray" Padding="10" Margin="5">
@@ -27,6 +43,6 @@
                     </Frame>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
-        </CollectionView>
+        </CollectionView>-->
     </VerticalStackLayout>
 </ContentPage>

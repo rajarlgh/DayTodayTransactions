@@ -101,6 +101,14 @@ namespace DayTodayTransactions.ViewModels
             return await reader.ReadToEndAsync();
         }
 
+        [ObservableProperty]
+        private bool isUploading;
+
+        [ObservableProperty]
+        private double uploadProgress;
+
+        [ObservableProperty]
+        private string uploadStatus;
 
 
         [RelayCommand]
@@ -114,27 +122,38 @@ namespace DayTodayTransactions.ViewModels
                     return;
                 }
 
-                // Read the Excel file
-                var transactions = 
-                    ReadCsv(SelectedFilePath).Result;
+                IsUploading = true;
+                UploadStatus = "Reading file...";
+                UploadProgress = 0;
 
-                // Update the ObservableCollection
-                Transactions.Clear();
-                
+                var transactions = await Task.Run(() => ReadCsv(SelectedFilePath));
+
+                int total = transactions.Count;
+                int index = 0;
+
                 foreach (var transaction in transactions)
                 {
-                    Transactions.Add(transaction);
                     await _transactionService.AddTransactionAsync(transaction);
 
+                    index++;
+                    UploadProgress = (double)index / total;
+                    UploadStatus = $"Uploading... {index} of {total}";
                 }
 
-                //await App.Current.MainPage.DisplayAlert("Success", "File uploaded and transactions loaded!", "OK");
+                UploadStatus = "Upload completed!";
             }
             catch (Exception ex)
             {
                 await ShowErrorAsync($"Failed to upload file: {ex.Message}");
             }
+            finally
+            {
+                await Task.Delay(1000);
+                IsUploading = false;
+            }
         }
+ 
+
 
         private async Task<List<Transaction>> ReadCsv(string filePath)
         {
