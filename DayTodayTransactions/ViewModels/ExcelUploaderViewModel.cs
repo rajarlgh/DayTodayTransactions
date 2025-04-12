@@ -129,13 +129,26 @@ namespace DayTodayTransactions.ViewModels
                 var transactions = await Task.Run(() => ReadCsv(SelectedFilePath));
 
                 int total = transactions.Count;
+                int batchSize = 100; // Set batch size to process records in smaller groups
+                int batchCount = (total + batchSize - 1) / batchSize; // Calculate the number of batches
                 int index = 0;
 
-                foreach (var transaction in transactions)
+                // Process transactions in batches
+                for (int i = 0; i < batchCount; i++)
                 {
-                    await _transactionService.AddTransactionAsync(transaction);
+                    var batch = transactions.Skip(i * batchSize).Take(batchSize).ToList();
+                    var batchTasks = new List<Task>();
 
-                    index++;
+                    foreach (var transaction in batch)
+                    {
+                        batchTasks.Add(_transactionService.AddTransactionAsync(transaction));
+                    }
+
+                    // Await all tasks in the current batch concurrently
+                    await Task.WhenAll(batchTasks);
+
+                    // Update progress after each batch
+                    index += batch.Count;
                     UploadProgress = (double)index / total;
                     UploadStatus = $"Uploading... {index} of {total}";
                 }
@@ -152,6 +165,8 @@ namespace DayTodayTransactions.ViewModels
                 IsUploading = false;
             }
         }
+
+
 
         private async Task<List<Transaction>> ReadCsv(string filePath)
         {
