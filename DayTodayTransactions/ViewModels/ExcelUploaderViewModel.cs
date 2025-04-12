@@ -152,8 +152,6 @@ namespace DayTodayTransactions.ViewModels
                 IsUploading = false;
             }
         }
- 
-
 
         private async Task<List<Transaction>> ReadCsv(string filePath)
         {
@@ -164,59 +162,71 @@ namespace DayTodayTransactions.ViewModels
 
             var config = new CsvConfiguration(CultureInfo.InvariantCulture)
             {
-                HasHeaderRecord = true // Set to false if the CSV has no headers
+                HasHeaderRecord = true
             };
 
-            using (var reader = new StreamReader(filePath))
-            using (var csv = new CsvReader(reader, config))
+            var existingAccounts = (await _accountService.GetAccountsAsync())
+                .ToDictionary(a => a.Name, a => a);
+
+            var existingCategories = (await _categoryService.GetCategoriesAsync())
+                .ToDictionary(c => c.Name, c => c);
+
+            using var reader = new StreamReader(filePath);
+            using var csv = new CsvReader(reader, config);
+
+            while (csv.Read())
             {
-                while (csv.Read())
+                if (csv.GetField(0) == "date")
+                    continue;
+
+                var date = DateTime.ParseExact(csv.GetField(0), "d/M/yyyy", CultureInfo.InvariantCulture);
+                var accField = csv.GetField(1);
+                var accCatField = csv.GetField(2);
+                var amount = decimal.Parse(csv.GetField(3) ?? "0");
+                var reason = csv.GetField(7);
+
+                // Get or add account
+                if (!existingAccounts.TryGetValue(accField, out var account))
                 {
-                    if (csv.GetField(0) != "date")
+                    account = await _accountService.AddAccountAsync(new Account { Name = accField });
+                    existingAccounts[accField] = account;
+                }
+
+                // Get or derive transferred account
+                var transferredAccount = await DeriveAccountAsync(accCatField, existingAccounts);
+
+                // Update account balance if needed
+                if (accCatField.Contains("Initial balance '"))
+                {
+                    account.InititalAccBalance = amount;
+                    account.InitialAccDate = DateTime.Now;
+                    await _accountService.UpdateAccountAsync(account);
+                }
+
+                // Derive category
+                Category category = null;
+                if (!accCatField.Contains("From ") && !accCatField.Contains("To ") && !accCatField.Contains("Initial balance '"))
+                {
+                    if (!existingCategories.TryGetValue(accCatField, out category))
                     {
-                        var accountAndCategoryField = csv.GetField(2); //Category
-                        var account = await CreateAccount(csv.GetField(1));//Account
-                        var transferredAccountTask = await DeriveAccountAsync(accountAndCategoryField);
-                        var amount = decimal.Parse(csv.GetField(3) ?? "0");
-                        // Update the Initital Amount & Currency for an account
-                        if (account != null)
-                        {
-                            UpdateAccountAsync(account, accountAndCategoryField, amount);
-                        }
-
-                       // if (!(accountAndCategoryField.Contains("From") || accountAndCategoryField.Contains("To")))
-                        {
-
-                            var category = await DeriveCategory(accountAndCategoryField);
-
-                            var transferredAccount = transferredAccountTask;
-                            if (category == null)
-                            {
-                                //if (transferredAccount != null )
-                                //    category = new Category() { Id = transferredAccount.Id, Name = transferredAccount.Name };
-                            }
-                           
-                            var transaction = new Transaction
-                            {
-                                FromAccountId = account.Id,
-                                ToAccountId = transferredAccountTask == null? null: transferredAccountTask.Id,
-                                Category = category,
-                                CategoryId = category == null ? null: category.Id,
-
-                                Date = DateTime.ParseExact(csv.GetField(0), "d/M/yyyy", CultureInfo.InvariantCulture),
-                                
-                                
-                                Amount = amount,
-                                Type = (amount > 0) ? "Income": "Expense",
-                                
-
-                                Reason = csv.GetField(7)
-                            };
-
-                            transactions.Add(transaction);
-                        }
+                        category = await _categoryService.AddCategoryAsync(new Category { Name = accCatField });
+                        existingCategories[accCatField] = category;
                     }
                 }
+
+                var transaction = new Transaction
+                {
+                    FromAccountId = account?.Id??0,
+                    ToAccountId = transferredAccount?.Id,
+                    Category = category,
+                    CategoryId = category?.Id,
+                    Date = date,
+                    Amount = amount,
+                    Type = amount > 0 ? "Income" : "Expense",
+                    Reason = reason
+                };
+
+                transactions.Add(transaction);
             }
 
             return transactions;
@@ -247,30 +257,25 @@ namespace DayTodayTransactions.ViewModels
             }
             return account;
         }
-        private async Task<Account> DeriveAccountAsync(string? accountField)
+        private async Task<Account> DeriveAccountAsync(string accountField, Dictionary<string, Account> accountCache)
         {
-            Account account = null;
+            string accName = null;
 
             if (accountField.Contains("To '"))
-            {
-                var field = accountField.Split("To '");
-                if (field.Length > 0)
-                {
-                    var accField = field[1].Replace("'", "");
-                    account = await _accountService.AddAccountAsync(new Account() { Name = accField });
-                }
-            }
+                accName = accountField.Split("To '").ElementAtOrDefault(1)?.Replace("'", "");
             else if (accountField.Contains("From '"))
+                accName = accountField.Split("From '").ElementAtOrDefault(1)?.Replace("'", "");
+
+            if (string.IsNullOrWhiteSpace(accName))
+                return null;
+
+            if (!accountCache.TryGetValue(accName, out var account))
             {
-                var field = accountField.Split("From '");
-                if (field.Length > 0)
-                {
-                    var accField = field[1].Replace("'", "");
-                    account = await _accountService.AddAccountAsync(new Account() { Name = accField });
-                }
+                account = await _accountService.AddAccountAsync(new Account { Name = accName });
+                accountCache[accName] = account;
             }
-           
-                return account;
+
+            return account;
         }
 
         private async Task<Account> UpdateAccountAsync(Account account, string? accountField, decimal amount )
