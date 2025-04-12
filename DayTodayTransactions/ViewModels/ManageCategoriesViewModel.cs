@@ -27,13 +27,23 @@ using System.Collections.ObjectModel;
         public ManageCategoriesViewModel(ICategoryService categoryService)
         {
             // Load existing categories (you can fetch these from a database or other storage)
-            Categories = new ObservableCollection<string>
-            {
-                "Car", "Food", "Pet", "Health", "Cafe", "Bar", "Dental"
-            };
+            //Categories = new ObservableCollection<string>
+            //{
+            //    "Car", "Food", "Pet", "Health", "Cafe", "Bar", "Dental"
+            //};
             _categoryService = categoryService;
-            var categories = _categoryService.GetCategoriesAsync().Result;
-            listOfCategories = new ObservableCollection<Category>(categories);
+           // var categories = _categoryService.GetCategoriesAsync().Result;
+      
+        }
+
+        public async Task InitializeAsync()
+        {
+            var categories = await _categoryService.GetCategoriesAsync();
+            listOfCategories = new ObservableCollection<Category>();
+            foreach (var category in categories)
+            {
+                listOfCategories.Add(category);
+            }
         }
 
         [RelayCommand]

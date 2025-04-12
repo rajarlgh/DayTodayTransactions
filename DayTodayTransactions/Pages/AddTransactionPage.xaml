@@ -15,8 +15,8 @@
             </Picker.ItemsSource>
         </Picker>
 
-        <!-- Category Picker -->
-        <Picker Title="Category" IsVisible="{Binding IsCategoryVisible}"
+        <!-- Category Picker --> <!--IsVisible="{Binding IsCategoryVisible}"-->
+        <Picker Title="Category" 
                 ItemsSource="{Binding ListOfCategories}" 
                 SelectedItem="{Binding SelectedCategory}">
             <Picker.ItemDisplayBinding>

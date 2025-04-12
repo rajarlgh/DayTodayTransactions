@@ -98,12 +98,12 @@ public partial class TransactionViewModel : ObservableObject
             SelectedAccount = ListOfAccounts.FirstOrDefault(a => a.Id == selectedAccount.Id);
         }
 
-        if (type == "Income")
-        {
-            this.isCategoryVisible = false;
-        }
-        else
-            this.isCategoryVisible = true;
+        //if (type == "Income")
+        //{
+        //    this.isCategoryVisible = false;
+        //}
+        //else
+        //    this.isCategoryVisible = true;
         OnPropertyChanged(nameof(IsCategoryVisible));
     }
 

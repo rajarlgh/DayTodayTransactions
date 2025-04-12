@@ -79,7 +79,12 @@ namespace DayTodayTransactions.ViewModels
             IsYearFilterSelected = value == "Year";
 
             if (value == "Day")
-                FilterTransactionsByRange(DateTime.Now, DateTime.Now);
+            {
+                var today = DateTime.Today; // midnight (00:00)
+                var endOfDay = today.AddDays(1).AddTicks(-1); // 23:59:59.9999999
+                FilterTransactionsByRange(today, endOfDay);
+            }
+
             //switch (value)
             //{
             //    //case "Day":
@@ -103,6 +108,7 @@ namespace DayTodayTransactions.ViewModels
             //}
             OnPropertyChanged(nameof(IsDateFilterSelected));
             OnPropertyChanged(nameof(IsIntervalFilterSelected));
+            OnPropertyChanged(nameof(IsAnyFilterVisible));
         }
 
 
@@ -621,7 +627,10 @@ namespace DayTodayTransactions.ViewModels
             var lastDayOfYear = new DateTime(year, 12, 31);
             // Handle filtering logic
             FilterTransactionsByRange(firstDayOfYear, lastDayOfYear);
-        }   
+        }
+        public bool IsAnyFilterVisible =>
+    IsWeekFilterSelected || IsMonthFilterSelected || IsYearFilterSelected || IsIntervalFilterSelected || IsDateFilterSelected;
+
         [ObservableProperty]
         private bool isIntervalFilterSelected = false;
 
