@@ -13,6 +13,7 @@ using System.Collections.ObjectModel;
 using DayTodayTransactions.Extensions;
 using System.Runtime.InteropServices;
 using static System.Runtime.InteropServices.JavaScript.JSType;
+using System.Globalization;
 
 namespace DayTodayTransactions.ViewModels
 {
@@ -68,29 +69,40 @@ namespace DayTodayTransactions.ViewModels
         }
         partial void OnSelectedFilterOptionChanged(string value)
         {
-            this.isIntervalFilterSelected = false;
-            this.isDateFilterSelected = false;
-            switch (value)
-            {
-                case "Day":
-                    FilterByDay();
-                    break;
-                case "Week":
-                    FilterByWeek();
-                    break;
-                case "Month":
-                    FilterByMonth();
-                    break;
-                case "Year":
-                    FilterByYear();
-                    break;
-                case "Interval":
-                    FilterByInterval();
-                    break;
-                case "Choose Date":
-                    FilterByDate();
-                    break;
-            }
+            //this.isIntervalFilterSelected = false;
+            //this.isDateFilterSelected = false;
+
+            IsDateFilterSelected = value == "Choose Date";
+            IsIntervalFilterSelected = value == "Interval";
+            IsMonthFilterSelected = value == "Month";
+            IsWeekFilterSelected = value == "Week";
+            IsYearFilterSelected = value == "Year";
+
+            if (value == "Day")
+                FilterTransactionsByRange(DateTime.Now, DateTime.Now);
+            //switch (value)
+            //{
+            //    //case "Day":
+            //    //    FilterByDay();
+            //    //    break;
+            //    //case "Week":
+            //    //    FilterByWeek();
+            //    //    break;
+            //    //case "Month":
+            //    //    FilterByMonth();
+            //    //    break;
+            //    //case "Year":
+            //    //    FilterByYear();
+            //    //    break;
+            //    //case "Interval":
+            //    //    FilterByInterval();
+            //    //    break;
+            //    //case "Choose Date":
+            //    //    FilterByDate();
+            //    //    break;
+            //}
+            OnPropertyChanged(nameof(IsDateFilterSelected));
+            OnPropertyChanged(nameof(IsIntervalFilterSelected));
         }
 
 
@@ -98,7 +110,14 @@ namespace DayTodayTransactions.ViewModels
         private readonly ITransactionService _transactionService;
         private readonly IAccountService _accountService;
         private readonly ICategoryService _categoryService;
+        //[ObservableProperty] private DateTime selectedMonth = DateTime.Now;
+        [ObservableProperty] private DateTime selectedWeekDate = DateTime.Now;
+        //[ObservableProperty] private DateTime selectedYear = DateTime.Now;
+        [ObservableProperty] private string selectedWeek;
 
+
+        [ObservableProperty] private string selectedMonth;
+        [ObservableProperty] private int selectedYear;
 
         public TransactionHistoryViewModel(string dbPath, ITransactionService transactionService, IAccountService accountService, ICategoryService categoryService)
         {
@@ -493,80 +512,180 @@ namespace DayTodayTransactions.ViewModels
             }
         }
 
-        [RelayCommand]
-        public void FilterByDay()
-        {
-            //FilterDate = DateTime.Now; // current day
-            //FilterTransactions();
-            FilterTransactionsByRange(DateTime.Now, DateTime.Now);
-        }
+        //[RelayCommand]
+        //public void FilterByDay()
+        //{
+        //    //FilterDate = DateTime.Now; // current day
+        //    //FilterTransactions();
+        //    FilterTransactionsByRange(DateTime.Now, DateTime.Now);
+        //}
+
+        //[RelayCommand]
+        //public void FilterByWeek()
+        //{
+        //    // Get the start of the week (e.g., Monday)
+        //    var startOfWeek = DateTime.Now.StartOfWeek(DayOfWeek.Monday);
+        //    var endOfWeek = startOfWeek.AddDays(7); // 7 days later
+
+        //    FilterDate = $"From {startOfWeek.ToString("yyyy-MM-dd")} to {endOfWeek.ToString("yyyy-MM-dd")}";
+        //    FilterTransactionsByRange(startOfWeek, endOfWeek);
+        //}
+
+        public ObservableCollection<string> Months { get; } = new(
+               CultureInfo.CurrentCulture.DateTimeFormat.MonthNames
+        .Where(m => !string.IsNullOrEmpty(m))
+        .ToList());
+
+        public ObservableCollection<string> Weeks { get; } = new(
+            Enumerable.Range(1, 52).Select(w => $"Week {w}").ToList());
+
+        public ObservableCollection<int> Years { get; } = new(
+            Enumerable.Range(DateTime.Now.Year - 5, 11).ToList()); // 5 years back & forward
+
 
         [RelayCommand]
-        public void FilterByWeek()
+        public void FilterByWeekProvided()
         {
-            // Get the start of the week (e.g., Monday)
-            var startOfWeek = DateTime.Now.StartOfWeek(DayOfWeek.Monday);
-            var endOfWeek = startOfWeek.AddDays(7); // 7 days later
+            if (string.IsNullOrWhiteSpace(SelectedWeek) || SelectedYear == 0)
+                return;
 
-            FilterDate = $"From {startOfWeek.ToString("yyyy-MM-dd")} to {endOfWeek.ToString("yyyy-MM-dd")}";
+            // Extract the number from the string like "Week 12"
+            if (!int.TryParse(SelectedWeek.Replace("Week ", ""), out int week) || week <= 0)
+                return;
+
+            int year = SelectedYear;
+
+            // Get the first Monday of the year
+            DateTime jan1 = new DateTime(year, 1, 1);
+            int daysOffset = DayOfWeek.Monday - jan1.DayOfWeek;
+            DateTime firstMonday = jan1.AddDays(daysOffset >= 0 ? daysOffset : daysOffset + 7);
+
+            DateTime startOfWeek = firstMonday.AddDays((week - 1) * 7);
+            DateTime endOfWeek = startOfWeek.AddDays(6);
+
+            // Clamp to correct year boundaries
+            if (startOfWeek.Year < year) startOfWeek = new DateTime(year, 1, 1);
+            if (endOfWeek.Year > year) endOfWeek = new DateTime(year, 12, 31);
+
             FilterTransactionsByRange(startOfWeek, endOfWeek);
         }
 
 
-        [RelayCommand]
-        public void FilterByMonth()
-        {
-            // First day of the current month
-            var startOfMonth = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
-            // Last day of the current month
-            var endOfMonth = startOfMonth.AddMonths(1).AddDays(-1);
 
-            FilterDate = $"From {startOfMonth.ToString("yyyy-MM-dd")} to {endOfMonth.ToString("yyyy-MM-dd")}";
-            FilterTransactionsByRange(startOfMonth, endOfMonth);
+
+        //[RelayCommand]
+        //public void FilterByMonth()
+        //{
+        //    // First day of the current month
+        //    var startOfMonth = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+        //    // Last day of the current month
+        //    var endOfMonth = startOfMonth.AddMonths(1).AddDays(-1);
+
+        //    //FilterDate = $"From {startOfMonth.ToString("yyyy-MM-dd")} to {endOfMonth.ToString("yyyy-MM-dd")}";
+        //    //FilterTransactionsByRange(startOfMonth, endOfMonth);
+        //}
+
+
+        [RelayCommand]
+        public void FilterByMonthProvided()
+        {
+            if (string.IsNullOrWhiteSpace(SelectedMonth) || SelectedYear == 0)
+                return;
+
+            int month = DateTime.ParseExact(SelectedMonth, "MMMM", CultureInfo.CurrentCulture).Month;
+            int year = SelectedYear;
+
+            var firstDayOfMonth = new DateTime(year, month, 1);
+            var lastDayOfMonth = firstDayOfMonth.AddMonths(1).AddDays(-1);
+            FilterTransactionsByRange(firstDayOfMonth, lastDayOfMonth);
         }
 
 
         [RelayCommand]
         public void FilterByYear()
         {
-            // First day of the current year
-            var startOfYear = new DateTime(DateTime.Now.Year, 1, 1);
-            // Last day of the current year
-            var endOfYear = new DateTime(DateTime.Now.Year, 12, 31);
+            //// First day of the current year
+            //var startOfYear = new DateTime(DateTime.Now.Year, 1, 1);
+            //// Last day of the current year
+            //var endOfYear = new DateTime(DateTime.Now.Year, 12, 31);
 
-            FilterDate = $"From {startOfYear.ToString("yyyy-MM-dd")} to {endOfYear.ToString("yyyy-MM-dd")}";
-            FilterTransactionsByRange(startOfYear, endOfYear);
+            //FilterDate = $"From {startOfYear.ToString("yyyy-MM-dd")} to {endOfYear.ToString("yyyy-MM-dd")}";
+            //FilterTransactionsByRange(startOfYear, endOfYear);
         }
 
+        [RelayCommand]
+        public void FilterByYearProvided()
+        {
+            int year = SelectedYear;
+            var firstDayOfYear= new DateTime(year, 1, 1);
+            var lastDayOfYear = new DateTime(year, 12, 31);
+            // Handle filtering logic
+            FilterTransactionsByRange(firstDayOfYear, lastDayOfYear);
+        }   
         [ObservableProperty]
         private bool isIntervalFilterSelected = false;
 
         [ObservableProperty]
         private bool isDateFilterSelected = false;
 
-        public void FilterByInterval()
+        [ObservableProperty] private bool isMonthFilterSelected;
+        [ObservableProperty] private bool isWeekFilterSelected;
+        [ObservableProperty] private bool isYearFilterSelected;
+
+        //public void FilterByInterval()
+        //{
+        //    // Get the date for which we need to filter out.
+        //    var date = DateTime.Now;
+        //    this.isIntervalFilterSelected = true;
+        //    this.isDateFilterSelected = false;
+        //    OnPropertyChanged(nameof(IsIntervalFilterSelected));
+        //    OnPropertyChanged(nameof(IsDateFilterSelected));
+        //    OnPropertyChanged(nameof(FromDate));
+        //    OnPropertyChanged(nameof(ToDate));
+
+        //}
+
+        [ObservableProperty]
+        private DateTime fromDate = DateTime.Today;
+
+
+        [ObservableProperty]
+        private DateTime toDate = DateTime.Today;
+
+        [RelayCommand]
+        public void FilterByIntervalProvided()
         {
-            // Get the date for which we need to filter out.
-            var date = DateTime.Now;
-            this.isIntervalFilterSelected = true;
-            this.isDateFilterSelected = false;
-            FilterTransactionsByRange(date, date);
-            OnPropertyChanged(nameof(IsIntervalFilterSelected));
-            OnPropertyChanged(nameof(IsDateFilterSelected));
+            FilterTransactionsByRange(FromDate, ToDate);
+           
         }
 
-        public void FilterByDate()
+
+
+        //public void FilterByDate()
+        //{
+        //    // Get the date for which we need to filter out.
+        //    var date = DateTime.Now;
+        //    this.isDateFilterSelected = true;
+        //    this.isIntervalFilterSelected = false;
+        //    onDate = DateTime.Now;
+        //    //FilterTransactionsByRange(date, date);
+        //    OnPropertyChanged(nameof(IsDateFilterSelected));
+        //    OnPropertyChanged(nameof(IsIntervalFilterSelected));
+        //    OnPropertyChanged(nameof(OnDate));
+
+
+        //}
+        [ObservableProperty]
+        private DateTime onDate;
+
+        [RelayCommand]
+        public void FilterByDateProvided()
         {
-            // Get the date for which we need to filter out.
-            var date = DateTime.Now;
-            this.isDateFilterSelected = true;
-            this.isIntervalFilterSelected = false;
-            FilterTransactionsByRange(date, date);
+            FilterTransactionsByRange(onDate, onDate);
             OnPropertyChanged(nameof(IsDateFilterSelected));
             OnPropertyChanged(nameof(IsIntervalFilterSelected));
-
-
         }
+
         public async Task<Dictionary<string, int>> GetRecordCountsByMonthFromDatabaseAsync()
         {
             var query = @"

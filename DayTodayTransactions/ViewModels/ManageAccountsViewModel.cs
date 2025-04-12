@@ -52,7 +52,7 @@ namespace DayTodayTransactions.ViewModels
             var account = new Account
             {
                 
-                Id =   AccountId.Value,
+                Id = AccountId == null? 0: AccountId.Value,
                 Name = NewAccountName,
             };
 
