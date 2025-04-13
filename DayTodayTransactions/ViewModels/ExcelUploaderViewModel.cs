@@ -224,7 +224,13 @@ namespace DayTodayTransactions.ViewModels
                 {
                     if (!existingCategories.TryGetValue(accCatField, out category))
                     {
-                        category = await _categoryService.AddCategoryAsync(new Category { Name = accCatField });
+                        var categoryType = string.Empty;
+                        if (amount > 0)
+                            categoryType = "Income";
+                        else
+                            categoryType = "Expense";
+
+                        category = await _categoryService.AddCategoryAsync(new Category { Name = accCatField, Type=categoryType});
                         existingCategories[accCatField] = category;
                     }
                 }

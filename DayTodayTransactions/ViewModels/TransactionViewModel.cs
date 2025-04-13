@@ -76,6 +76,7 @@ public partial class TransactionViewModel : ObservableObject
     public async Task LoadCategoriesAsync(Category selectedCategory)
     {
         var categories = await _categoryService.GetCategoriesAsync();
+        categories = categories.Where(c => c.Type == Type).ToList();
         ListOfCategories = new ObservableCollection<Category>(categories);
         ListOfCategories.Add(new Category { Id = -1, Name = "Add New Category" });
 

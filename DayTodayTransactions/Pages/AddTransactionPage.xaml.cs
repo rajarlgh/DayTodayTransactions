@@ -69,6 +69,7 @@ public partial class AddTransactionPage : ContentPage
             }
             else
             {
+                transactionViewModel.Type = Type;
                 await transactionViewModel.LoadCategoriesAsync(null);
                 await transactionViewModel.LoadAccountsAsync(0);
             }

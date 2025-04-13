@@ -4,4 +4,4 @@ adb pull /storage/emulated/0/Android/data/com.companyname.daytodaytransactions/f
 
 Push to emulator
 -----------------
-adb push D:\Monefy\Monefy.Data.30-03-25.csv /sdcard/Download/V3_Monefy.Data.30-03-25.csv
+adb push D:\Monefy\dbMonefy.Data.30-03-25.csv /sdcard/Download/V3_Monefy.Data.30-03-25.csv
