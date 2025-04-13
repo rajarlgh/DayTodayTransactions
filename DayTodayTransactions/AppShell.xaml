@@ -7,19 +7,30 @@
     FlyoutBehavior="Flyout"
     Title="Day Today Transactions">
 
-    <!-- Flyout menu items -->
-    <FlyoutItem Title="Transactions" Icon="transactions_icon.png">
-        <ShellContent
-            Title="Transaction History"
-            ContentTemplate="{DataTemplate pages:TransactionHistoryPage}"
-            Route="TransactionHistoryPage" />
-    </FlyoutItem>
+    <!-- Tab bar to replace TabbedPage -->
+    <TabBar>
+        <Tab Title="Income">
+            <ShellContent
+                Title="Income"
+                ContentTemplate="{DataTemplate pages:IncomePage}" />
+        </Tab>
 
-    <MenuFlyoutItem Text="Day" Command="{Binding FilterByDayCommand}" />
-    <MenuFlyoutItem Text="Week" Command="{Binding FilterByWeekCommand}" />
-    <MenuFlyoutItem Text="Month" Command="{Binding FilterByMonthCommand}" />
-    <MenuFlyoutItem Text="Year" Command="{Binding FilterByYearCommand}" />
-    <MenuFlyoutItem Text="All" Command="{Binding FilterByAllCommand}" />
-    <MenuFlyoutItem Text="Interval" Command="{Binding FilterByIntervalCommand}" />
-    <MenuFlyoutItem Text="Choose Date" Command="{Binding ChooseDateCommand}" />
+        <Tab Title="Expense">
+            <ShellContent
+                Title="Expense"
+                ContentTemplate="{DataTemplate pages:ExpensePage}" />
+        </Tab>
+
+        <Tab Title="Breakdown">
+            <ShellContent
+                Title="Breakdown"
+                ContentTemplate="{DataTemplate pages:BreakdownPage}" />
+        </Tab>
+        <Tab Title="Transactions">
+            <ShellContent
+                Title="Breakdown"
+                ContentTemplate="{DataTemplate pages:TransactionHistoryPage}" />
+        </Tab>
+    </TabBar>
+
 </Shell>

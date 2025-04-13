@@ -4,7 +4,7 @@
              x:Class="Core.Controls.Controls.CardView">
     <ContentView.ControlTemplate>
         <ControlTemplate>
-            <Border Padding="5,5,5,0" Margin="10,10,10,0" StrokeThickness="1" BackgroundColor="Transparent">
+            <Border Padding="5,5,5,5" Margin="10,10,10,10" StrokeThickness="1" BackgroundColor="Transparent">
                 <Border.Shadow>
                     <Shadow Brush="Black" Opacity=".1" Offset="2,2"/>
                 </Border.Shadow>

@@ -22,6 +22,7 @@ namespace DayTodayTransactions
             Routing.RegisterRoute(nameof(ManageCategoriesPage), typeof(ManageCategoriesPage));
             Routing.RegisterRoute(nameof(ManageAccountsPage), typeof(ManageAccountsPage));
             Routing.RegisterRoute(nameof(ExcelUploaderPage), typeof(ExcelUploaderPage));
+            Routing.RegisterRoute(nameof(DayTodayTransactionsMainPage), typeof(DayTodayTransactionsMainPage));
         }
     }
 }

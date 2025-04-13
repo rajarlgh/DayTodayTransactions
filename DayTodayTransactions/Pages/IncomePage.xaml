@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="DayTodayTransactions.Pages.IncomePage"
+             xmlns:coreControls="clr-namespace:Core.Controls.Controls;assembly=Core.Controls"
+             xmlns:converters="clr-namespace:DayTodayTransactions.Converters"
+             
+             xmlns:local="clr-namespace:DayTodayTransactions.ViewModels"
+             
+             Title="IncomePage">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <local:InverseBooleanConverter x:Key="InverseBooleanConverter" />
+            <converters:BooleanToTextConverter x:Key="BooleanToTextConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <Grid Padding="20">
+        <Label Text="This is the Income Page" 
+               FontSize="24"
+               HorizontalOptions="Center" 
+               VerticalOptions="Center" />
+
+        <coreControls:CardView Title="Transactions" Margin="10,0">
+            <StackLayout Spacing="10">
+
+                <!-- Income Section -->
+                <coreControls:CardView Title="Income" >
+                    <StackLayout>
+                        <Button Margin="5" Text="{Binding IsIncomeExpanded, Converter={StaticResource BooleanToTextConverter}}"
+                                    Command="{Binding ToggleIncomeCommand}" />
+
+
+                        <Grid RowDefinitions="Auto, Auto" Padding="10" IsVisible="{Binding IsIncomeExpanded}" >
+                            <CollectionView x:Name="collectionViewIncome"
+                                            ItemsSource="{Binding IncomeChartEntryWrappers}"
+                                            IsVisible="{Binding DoVisibleChart, Converter={StaticResource InverseBooleanConverter}}"
+                                            SelectionMode="Single">
+                                <!--SelectionChanged="OnIncomeItemSelected">-->
+                                <CollectionView.ItemsLayout>
+                                    <GridItemsLayout Orientation="Vertical" Span="1" />
+                                </CollectionView.ItemsLayout>
+                                <CollectionView.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Padding="10" Margin="5" BackgroundColor="Transparent">
+                                            <Grid ColumnDefinitions="Auto,Auto">
+                                                <Label Text="{Binding Entry.Label}" FontAttributes="Bold" Grid.Column="0" />
+                                                <Label Text="{Binding Entry.ValueLabel}" FontSize="Small" Grid.Column="1"/>
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </CollectionView.ItemTemplate>
+                            </CollectionView>
+
+                            <Grid IsVisible="{Binding DoVisibleChart}" Grid.Row="1" Padding="10">
+                                <Label Text="Income Chart" FontSize="24" HorizontalOptions="Center" />
+                                <coreControls:BindableChartView Entries="{Binding IncomeChartEntryWrappers}"
+                                                                HeightRequest="200"
+                                                                WidthRequest="300" />
+                            </Grid>
+                        </Grid>
+                    </StackLayout>
+                </coreControls:CardView>
+            </StackLayout>
+        </coreControls:CardView>
+    </Grid>
+</ContentPage>
