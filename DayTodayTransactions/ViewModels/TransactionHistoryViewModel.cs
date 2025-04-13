@@ -10,21 +10,19 @@ using Microcharts;
 using SkiaSharp;
 using SQLite;
 using System.Collections.ObjectModel;
-using DayTodayTransactions.Extensions;
-using System.Runtime.InteropServices;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 using System.Globalization;
+using Core.Controls.Controls;
 
 namespace DayTodayTransactions.ViewModels
 {
     public partial class TransactionHistoryViewModel : ObservableObject
     {
-        [ObservableProperty]
-        private ObservableCollection<ChartEntry> incomeChartEntries;
+        //[ObservableProperty]
+        //private ObservableCollection<ChartEntry> incomeChartEntries;
         [ObservableProperty]
         private ObservableCollection<ChartEntryWrapper> incomeChartEntryWrappers;
-        [ObservableProperty]
-        private ObservableCollection<ChartEntry> expenseChartEntries;
+        //[ObservableProperty]
+        //private ObservableCollection<ChartEntry> expenseChartEntries;
         [ObservableProperty]
         private ObservableCollection<ChartEntryWrapper> expenseChartEntryWrappers;
         [ObservableProperty]
@@ -252,10 +250,10 @@ namespace DayTodayTransactions.ViewModels
             // Set collection of ChartEntryWrapper for CollectionView
             IncomeChartEntryWrappers = new ObservableCollection<ChartEntryWrapper>(incomeData);
 
-            // Set collection of ChartEntry for Chart view
-            IncomeChartEntries = new ObservableCollection<ChartEntry>(incomeData.Select(x => x.Entry));
+            //// Set collection of ChartEntry for Chart view
+            //IncomeChartEntries = new ObservableCollection<ChartEntry>(incomeData.Select(x => x.Entry));
 
-            OnPropertyChanged(nameof(IncomeChartEntries));
+            //OnPropertyChanged(nameof(IncomeChartEntries));
             OnPropertyChanged(nameof(IncomeChartEntryWrappers));
 
 
@@ -286,10 +284,10 @@ namespace DayTodayTransactions.ViewModels
             // Set collection of ChartEntryWrapper for CollectionView
             ExpenseChartEntryWrappers = new ObservableCollection<ChartEntryWrapper>(expenseData);
 
-            // Set collection of ChartEntry for Chart view
-            ExpenseChartEntries = new ObservableCollection<ChartEntry>(expenseData.Select(x => x.Entry));
+            //// Set collection of ChartEntry for Chart view
+            //ExpenseChartEntries = new ObservableCollection<ChartEntry>(expenseData.Select(x => x.Entry));
 
-            OnPropertyChanged(nameof(ExpenseChartEntries));
+            //OnPropertyChanged(nameof(ExpenseChartEntries));
             OnPropertyChanged(nameof(ExpenseChartEntryWrappers));
 
             // Recreate charts
@@ -327,9 +325,9 @@ namespace DayTodayTransactions.ViewModels
             OnPropertyChanged(nameof(Balance));
             /*OnPropertyChanged(nameof(IncomeChart))*/
             ;
-            OnPropertyChanged(nameof(IncomeChartEntries));
+            OnPropertyChanged(nameof(IncomeChartEntryWrappers));
             //OnPropertyChanged(nameof(ExpenseChart));
-            OnPropertyChanged(nameof(ExpenseChartEntries));
+            OnPropertyChanged(nameof(ExpenseChartEntryWrappers));
             OnPropertyChanged(nameof(SelectedAccount));
         }
         /// <summary>
@@ -465,21 +463,21 @@ namespace DayTodayTransactions.ViewModels
 
         }
 
-        [RelayCommand]
-        public void ShowMenu()
-        {
-            IncomeChartEntries = new ObservableCollection<ChartEntry>();
-            ExpenseChartEntries = new ObservableCollection<ChartEntry>();
+        //[RelayCommand]
+        //public void ShowMenu()
+        //{
+        //    /*IncomeChartEntries*/ = new ObservableCollection<ChartEntry>();
+        //    ExpenseChartEntries = new ObservableCollection<ChartEntry>();
 
-            IncomeChart = new DonutChart();
-            ExpenseChart = new DonutChart();
-            OnPropertyChanged(nameof(ExpenseChartEntries));
-            OnPropertyChanged(nameof(IncomeChartEntries));
+        //    IncomeChart = new DonutChart();
+        //    ExpenseChart = new DonutChart();
+        //    OnPropertyChanged(nameof(ExpenseChartEntries));
+        //    OnPropertyChanged(nameof(IncomeChartEntries));
 
-            //OnPropertyChanged(nameof(IncomeChart));
-            //OnPropertyChanged(nameof(ExpenseChart));
+        //    //OnPropertyChanged(nameof(IncomeChart));
+        //    //OnPropertyChanged(nameof(ExpenseChart));
 
-        }
+        //}
 
         [ObservableProperty]
         private ObservableCollection<string> filterOptions = new()
@@ -511,6 +509,7 @@ namespace DayTodayTransactions.ViewModels
             {
                 TotalIncome = Transactions.Where(t => t.Type == "Income").Sum(t => t.Amount);
                 TotalExpenses = Transactions.Where(t => t.Type == "Expense").Sum(t => t.Amount);
+
                 Balance = TotalIncome - TotalExpenses;
                 OnPropertyChanged(nameof(TotalIncome));
                 OnPropertyChanged(nameof(TotalExpenses));
@@ -824,10 +823,4 @@ namespace DayTodayTransactions.ViewModels
             }
         }
     }
-}
-public class ChartEntryWrapper
-{
-    public ChartEntry Entry { get; set; }
-    public int CategoryId { get; set; }
-    public string CategoryName => Entry?.Label;
 }
